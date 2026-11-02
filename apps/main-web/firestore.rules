@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function getUserTier(appId) {
+      return get(/databases/$(database)/documents/artifacts/$(appId)/users/$(request.auth.token.email)).data.tier;
+    }
+
+    function isArchitect() {
+      return request.auth != null && request.auth.token.email == "dusan.fajnor.business@gmail.com";
+    }
+    
+    function isAdminOrHigher(appId) {
+      return request.auth != null && (isArchitect() || getUserTier(appId) in ['ADMIN', 'MASTER', 'ARCHITECT']);
+    }
+
+    function isOmegaOrHigher(appId) {
+      return request.auth != null && (isArchitect() || getUserTier(appId) in ['OMEGA', 'MODERATOR', 'ADMIN', 'MASTER', 'ARCHITECT']);
+    }
+
+    function canDeleteForeignPosts(appId) {
+      return request.auth != null && (isArchitect() || getUserTier(appId) in ['ADMIN', 'ARCHITECT']);
+    }
+
+    match /artifacts/{appId} {
+      // ⚡ PRAVIDLÁ PRE BLOG (nexus_posts)
+      match /public/data/nexus_posts/{docId} {
+          allow read: if true;
+          allow create: if request.auth != null;
+          
+          // ⚡ Odomknutie Lajkov! Dovolí update, ak meníš VLASTNÝ príspevok,
+          // ALEBO ak meníš CUDZÍ príspevok, no meníš VÝHRADNE iba pole 'reactions'!
+          allow update: if request.auth != null 
+                        && (
+                            resource.data.authorId == request.auth.token.email 
+                            || isAdminOrHigher(appId)
+                            || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions'])
+                        );
+          
+          allow delete: if request.auth != null 
+                        && (resource.data.authorId == request.auth.token.email || canDeleteForeignPosts(appId));
+      }
+
+      // ⚡ PRAVIDLÁ PRE STATICKÉ UZLY (posts) - Zodpovedá za reakcie v ID00-ID14
+      match /public/data/posts/{docId} {
+          allow read: if true;
+          
+          // Dovolí bežnému operátorovi vytvoriť uzol PRI PRVEJ REAKCII, ak ID začína na NODE_
+          allow create: if request.auth != null && docId.matches('^NODE_.*');
+          
+          // Dovolí upravovať výhradne iba pole reakcií
+          allow update: if request.auth != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions']);
+          
+          // Mazať statické uzly môže iba Architekt
+          allow delete: if isArchitect();
+      }
+
+      // ⚡ ZVYŠNÉ KOLEKCIE V DATA (Ochrana)
+      match /public/data/{collectionName}/{docId} {
+          allow read: if true;
+          // Architekt má plnú moc nad všetkým ostatným (okrem vyššie špecifikovaných)
+          allow create, update, delete: if isArchitect() 
+                                        && collectionName != 'nexus_posts' 
+                                        && collectionName != 'posts'
+                                        && collectionName != 'node_videos';
+      }
+
+      match /public/data/node_videos/{docId} {
+          allow read: if isOmegaOrHigher(appId);
+          allow write: if isArchitect();
+      }
+
+      match /users/{userEmail} {
+          allow read: if true;
+          allow create, update: if request.auth != null && (request.auth.token.email == userEmail || isArchitect());
+          allow delete: if isArchitect();
+          
+          match /messages/{messageId} {
+             allow create: if request.auth != null;
+             allow read, update, delete: if request.auth != null && (request.auth.token.email == userEmail || isArchitect());
+          }
+          match /sent_messages/{messageId} {
+             allow create, read, update, delete: if request.auth != null && request.auth.token.email == userEmail;
+          }
+          match /transactions/{tId} {
+             allow read: if request.auth != null && (request.auth.token.email == userEmail || isArchitect());
+             allow create: if request.auth != null;
+             allow update, delete: if isArchitect(); 
+          }
+      }
+    }
+    match /{document=**} {
+      allow read, write: if isArchitect();
+    }
+  }
+}

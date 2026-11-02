@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/src/*"],
+      "@main-web/*": ["apps/main-web/src/*"],
+      "@shop/*": ["apps/shop/src/*"],
+      "@agency/*": ["apps/agency/src/*"],
+      "@uplink/*": ["apps/uplink/src/*"],
+      "@operators/*": ["apps/operators/src/*"],
+      "@admin/*": ["apps/admin/src/*"],
+      "@settings/*": ["apps/settings/src/*"],
+      "@blog/*": ["apps/blog/src/*"]
+    },
+    "jsx": "react-jsx"
+  },
+  "exclude": ["node_modules", "**/dist"]
+}

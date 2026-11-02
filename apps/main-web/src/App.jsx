@@ -1,0 +1,1723 @@
+﻿import React, { useState, useEffect, useRef } from "react";
+import {
+  Wand2,
+  Shield,
+  Grid,
+  Terminal,
+  Users,
+  ShoppingCart,
+  Settings,
+  User,
+  LogOut,
+  Cpu,
+  Database,
+  Activity,
+  AlertTriangle,
+  Mail,
+  ShieldAlert,
+  Briefcase,
+  Wallet,
+} from "lucide-react";
+/* eslint-disable no-undef */
+
+// ============================================================================
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (MAIN WEB ROUTING APP V20.95)
+// Súbor: apps/main-web/src/App.jsx
+// Status: 100% GROUNDED // CANONICAL ALIASES & ROUTING MATRIX V20
+// Author: Dušan Fajnor @nexus-core2Mb (CyberTech Architect)
+// ============================================================================
+
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
+
+// 📡 1. DATABÁZOVÉ MOSTY A SLUŽBY (@shared/services/)
+import { supabase } from "@shared/services/NexusDB_Supabase"; // ⚡ CENTRÁLNY MOST SUPABASE
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config";
+import { NexusDB } from "@shared/services/NexusDB_Core";
+
+// 🗄️ 2. DÁTA A REGISTRE (@shared/data/)
+import { getTierColor, DIMENSIONS } from "@shared/data/nexusConfig";
+import { checkPermission } from "@shared/data/permissionsRegistry";
+
+// 🛠️ 3. NÁSTROJE A ENGINE (@shared/utils/)
+import { SoundFX } from "@shared/utils/SoundEngine";
+
+// 🧩 4. GLOBÁLNE UI KOMPONENTY (@shared/components/ & @main-web/components/)
+import { GlobalComponents } from "@shared/components/GlobalComponents";
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu";
+import { GlobalFooter } from "@shared/components/GlobalFooter";
+import { GlobalProfil } from "@shared/components/GlobalProfil";
+import { GlobalMessages } from "@shared/components/GlobalMessages";
+import UplinkModal from "@uplink/pages/UplinkModal";
+import SettingsPage from "@settings/pages/SettingsPage";
+import MetaTags from "@shared/components/MetaTags";
+import ShopDocumentsMedia from "@shop/components/ShopDocumentsMedia";
+import ShopImageMedia from "@shop/components/ShopImageMedia";
+import ShopAudioMedia from "@shop/components/ShopAudioMedia";
+import ShopVideoMedia from "@shop/components/ShopVideoMedia";
+import ShopAppsMedia from "@shop/components/ShopAppsMedia";
+import GlobalWallet from "@shop/components/GlobalWallet";
+import GlobalQuestAuth from "@shop/components/GlobalQuestAuth";
+import { GlobalKeyboard } from "@main-web/components/GlobalKeyboard";
+import {
+  PublicRoute,
+  AuthRoute,
+  StrictRoute,
+} from "@shared/components/NexusRouting";
+
+// 🏠 5. HLAVNÉ STRÁNKY A PORTÁLY (@main-web/pages/ & Subdomény)
+import { HomePage } from "@main-web/pages/HomePage";
+import OperatorsPage from "@operators/pages/OperatorsPage";
+import ShopPage from "@shop/pages/ShopPage";
+import AdminPage from "@admin/pages/AdminPage";
+import VopPage from "@shared/pages/VopPage";
+import PrivacyPage from "@shared/pages/PrivacyPage";
+import BlogPage from "@blog/pages/BlogPage";
+import OperatorPage from "@operators/pages/OperatorPage";
+
+// 🌌 6. KOGNITÍVNE DIMENZIE (@main-web/pages/IDxx)
+import ID00_Mentor from "@main-web/pages/ID00-Mentor";
+import ID01_Identity from "@main-web/pages/ID01-Identity";
+import ID02_Workflow from "@main-web/pages/ID02-Workflow";
+import ID03_Finance from "@main-web/pages/ID03-Finance";
+import ID04_Revenue from "@main-web/pages/ID04-Revenue";
+import ID05_Assets from "@main-web/pages/ID05-Assets";
+import ID06_Study from "@main-web/pages/ID06-Study";
+import ID07_Skills from "@main-web/pages/ID07-Skills";
+import ID08_Reader from "@main-web/pages/ID08-Reader";
+import ID09_Player from "@main-web/pages/ID09-Player";
+import ID10_Home from "@main-web/pages/ID10-Home";
+import ID11_Recovery from "@main-web/pages/ID11-Recovery";
+import ID12_Codex from "@main-web/pages/ID12-Codex";
+import ID13_Habits from "@main-web/pages/ID13-Habits";
+import ID14_Blog from "@main-web/pages/ID14-Blog";
+import ID15_Death from "@main-web/pages/ID15-Death";
+
+// 🌌 7. SYSTÉMOVÉ UZLY (@main-web/pages/SysXX)
+import Sys01_VideoNodes from "@main-web/pages/Sys01_VideoNodes";
+import Sys02_Mentoring from "@main-web/pages/Sys02_Mentoring";
+import Sys03_ImgGallery from "@main-web/pages/Sys03_ImgGallery";
+import Sys04_VideoGallery from "@main-web/pages/Sys04_VideoGallery";
+import { SYS05_Directory } from "@main-web/pages/SYS05_Directory";
+
+export const CORE_VERSION = "SK-App V20.95_STABLE";
+
+// Inicializačný signál zrodu do konzoly operátora
+console.log(
+  `%c[📡 EXODUS DEPLOYMENT] Inicializujem CORE ${CORE_VERSION} — Smerovacie štíty plne aktívne.`,
+  "background: #050a0e; color: #39FF14; font-weight: bold; border: 1px solid #39FF14; padding: 3px;",
+);
+
+// DOČASNÉ MOCK KOMPONENTY (Kým ich fyzicky nenakódime ako samostatné súbory)
+const SysModuleViewer = ({ title, color }) => (
+  <div
+    className="p-20 mt-20 text-center font-black uppercase text-2xl flex flex-col items-center gap-4 animate-in fade-in duration-700"
+    style={{ color: color }}
+  >
+    <div
+      className="w-16 h-16 rounded-full border-4 animate-pulse"
+      style={{ borderColor: color, boxShadow: `0 0 20px ${color}` }}
+    ></div>
+    {title}
+    <div className="text-[10px] text-white/30 tracking-[0.3em] mt-4">
+      SYSTÉMOVÝ MODUL VO VÝVOJI // OFFLINE_MODE
+    </div>
+  </div>
+);
+
+// DOČASNÉ MOCK KOMPONENTY (Kým ich fyzicky nenakódime ako samostatné súbory)
+const NodeViewer = () => (
+  <div className="p-20 mt-20 text-center text-[#00f3ff] font-black uppercase text-2xl">
+    ZOBRAZOVAČ DYNAMICKÉHO UZLA (VO VÝVOJI)
+  </div>
+);
+const NotFoundPage = () => (
+  <div className="p-20 mt-20 text-center text-[#FF003C] font-black uppercase text-2xl">
+    404: ERROR LOG - UZOL NENÁJDENÝ
+  </div>
+);
+
+// ⚡ ZMAZANÝ LOKÁLNY createClient (Aby nevznikali Multiple Instances)
+
+const DEFAULT_USER_STATE = {
+  email: "",
+  tier: "FREE",
+  credits: 0,
+  isGuest: true,
+  displayName: "",
+  dossier: "",
+  avatar: "",
+  diagnosis: "",
+  medication: "",
+  www: "",
+  phone: "",
+  facebook: "",
+  google: "",
+  unlockedNodes: [],
+  lastActive: null,
+};
+
+// ⚡ EXODUS FIX: Presunuté z UplinkModal sem, aby si App.jsx vedel vytvoriť Adminov sám.
+const getInitialTierInfo = (mailStr) => {
+  const m = mailStr.toLowerCase().trim();
+
+  // 👑 GOD MODE PRE ARCHITEKTA A TESTOVACIE ÚČTY (Aplikuje sa iba pri PRVEJ registrácii)
+  if (m === "dusan.fajnor.business@gmail.com")
+    return { tier: "ARCHITECT", credits: 9999999 };
+  if (m === "dusan.fajnor.finance@gmail.com")
+    return { tier: "OMEGA", credits: 9999999 };
+  if (m === "dusan.fajnor.personall@gmail.com")
+    return { tier: "PRO", credits: 9999999 };
+
+  // 🛡️ ADMINISTRATÍVNE TIERY
+  if (m === "dusan.fajnor.player@gmail.com")
+    return { tier: "MASTER", credits: 9999999 };
+  if (m === "dusan.fajnor.work@gmail.com")
+    return { tier: "ADMIN", credits: 9999999 };
+  if (m === "dusan.fajnor.investments@gmail.com")
+    return { tier: "MODERATOR", credits: 9999999 };
+
+  // 🧪 TESTOVACIE ÚČTY PRE BEŽNÝCH HRÁČOV (FREE TIER)
+  if (m === "dusan.fajnor.study@gmail.com")
+    return { tier: "FREE", credits: 9999999 }; // Veľa OC na testovanie Shopu
+  if (m === "dusan.fajnor.professional@gmail.com")
+    return { tier: "FREE", credits: 9999999 }; // Stredná hodnota
+  if (m === "dusan.fajnor.reader@gmail.com")
+    return { tier: "FREE", credits: 9999999 }; // Málo OC (na testovanie varovaní)
+  if (m === "dusan.fajnor.home@gmail.com")
+    return { tier: "FREE", credits: 9999999 }; // Minimum OC
+
+  // 🛡️ OBYČAJNÍ SMRTEĽNÍCI (Nové registrácie zvonka)
+  return { tier: "FREE", credits: 0 };
+  // quest tiež doplniť
+};
+
+const setNexusCookie = (state) => {
+  if (typeof window !== "undefined") {
+    const domainStr = window.location.hostname.includes("projekt-nexus.sk")
+      ? "domain=.projekt-nexus.sk;"
+      : "";
+    const lightState = {
+      email: state.email,
+      tier: state.tier,
+      isGuest: state.isGuest,
+      displayName: state.displayName,
+      credits: state.credits,
+      avatar: state.avatar,
+    };
+    document.cookie = `nexus_active_identity=${encodeURIComponent(JSON.stringify(lightState))}; ${domainStr} path=/; max-age=2592000; secure; samesite=lax`;
+  }
+};
+
+const getNexusCookie = () => {
+  if (typeof window !== "undefined") {
+    const match = document.cookie.match(
+      new RegExp("(^| )nexus_active_identity=([^;]+)"),
+    );
+    if (match) return JSON.parse(decodeURIComponent(match[2]));
+  }
+  return null;
+};
+
+const clearNexusCookie = () => {
+  if (typeof window !== "undefined") {
+    const domainStr = window.location.hostname.includes("projekt-nexus.sk")
+      ? "domain=.projekt-nexus.sk;"
+      : "";
+    document.cookie = `nexus_active_identity=; ${domainStr} path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax`;
+  }
+};
+
+const CoreChronometer = ({ themeColor }) => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const yy = String(time.getFullYear()).slice(-2);
+  const mm = String(time.getMonth() + 1).padStart(2, "0");
+  const dd = String(time.getDate()).padStart(2, "0");
+  const hh = String(time.getHours()).padStart(2, "0");
+  const min = String(time.getMinutes()).padStart(2, "0");
+  const ss = String(time.getSeconds()).padStart(2, "0");
+
+  const genesisDate = new Date(2018, 7, 4);
+  let years = time.getFullYear() - genesisDate.getFullYear();
+  let months = time.getMonth() - genesisDate.getMonth();
+  let days = time.getDate() - genesisDate.getDate();
+
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(time.getFullYear(), time.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const tooltipText = `MATRIX CORE UPTIME: ${years} rokov ${months} mesiacov ${days} dní`;
+
+  return (
+    <div
+      title={tooltipText}
+      className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-[#050505]/80 backdrop-blur-md transition-colors duration-500 cursor-help hover:scale-105"
+      style={{
+        borderColor: `${themeColor}30`,
+        boxShadow: `0 0 10px ${themeColor}10`,
+      }}
+    >
+      <Activity
+        size={12}
+        style={{ color: themeColor }}
+        className="animate-pulse opacity-70"
+      />
+      <span
+        className="font-mono text-[10px] font-black tracking-widest"
+        style={{ color: themeColor }}
+      >
+        {dd}.{mm}.{yy} | {hh}:{min}:{ss}
+      </span>
+    </div>
+  );
+};
+
+class SystemErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("🔥 SYSTEM CRASH DETECTED:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in-95 duration-500 font-mono">
+          <AlertTriangle
+            size={80}
+            className="text-red-600 mb-8 animate-pulse drop-shadow-[0_0_30px_rgba(220,38,38,0.8)]"
+          />
+          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-4 tracking-[0.3em] italic">
+            System_Crash
+          </h2>
+          <p className="text-white/50 text-sm md:text-base max-w-2xl mb-12">
+            V tomto sektore nastala fatálna chyba kompilácie kódu. Systém
+            zablokoval bielu obrazovku a spustil núdzový režim.
+            <br />
+            <br />
+            <span className="text-red-500 font-bold bg-red-500/10 px-4 py-4 rounded-xl border border-red-500/20 block text-left overflow-x-auto whitespace-pre-wrap">
+              {this.state.error?.toString()}
+            </span>
+          </p>
+          <button
+            onClick={() => (window.location.href = "/")}
+            className="px-10 py-5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black border border-red-600/30 transition-all rounded-2xl font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(220,38,38,0.2)]"
+          >
+            Reboot System (Return Home)
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const DimensionConstruction = ({ dimId, dimName, color, navigateTo }) => (
+  <div className="min-h-[85vh] flex flex-col items-center justify-center relative z-10 text-center p-8 animate-in fade-in zoom-in-95 duration-1000 mt-20">
+    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none" />
+    <div
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] blur-[200px] rounded-full opacity-10 pointer-events-none animate-pulse"
+      style={{ backgroundColor: color }}
+    />
+    <div className="relative z-10 flex flex-col items-center">
+      <div className="relative mb-16 group">
+        <div className="absolute inset-0 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-1000" />
+        <Database
+          size={160}
+          className="relative z-10 opacity-20 group-hover:opacity-40 transition-opacity duration-1000"
+          style={{ color: color }}
+        />
+        <Activity
+          size={40}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-ping"
+          style={{ color: color }}
+        />
+      </div>
+      <h1 className="text-6xl md:text-9xl font-black uppercase tracking-tighter text-white mb-8 italic leading-none drop-shadow-2xl">
+        {dimId}{" "}
+        <span style={{ color: color }} className="not-italic drop-shadow-glow">
+          {dimName}
+        </span>
+      </h1>
+      <p className="text-white/30 font-mono text-sm md:text-lg max-w-3xl leading-relaxed mb-20 italic mx-auto px-4 border-l-2 border-white/5">
+        Tento segment Matrixu bol inicializovaný, ale momentálne čaká na
+        sémantickú dekompresiu zo strany Architekta.
+      </p>
+      <button
+        onClick={() => navigateTo("home")}
+        className="flex items-center justify-center gap-5 px-12 py-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl transition-all shadow-2xl backdrop-blur-xl text-white/50 hover:text-white font-black uppercase tracking-[0.5em] text-xs md:text-sm hover:scale-105 active:scale-95 group"
+      >
+        <Grid
+          size={20}
+          style={{ color: color }}
+          className="group-hover:rotate-90 transition-transform duration-700"
+        />{" "}
+        Návrat na Grid
+      </button>
+    </div>
+  </div>
+);
+
+const getIsAdminSubdomain = () => {
+  if (typeof window === "undefined") return false;
+  const urlParams = new URLSearchParams(window.location.search);
+  // Detekcia: začína na admin. ALEBO má v URL ?admin=true (pre localhost)
+  return (
+    window.location.hostname.startsWith("admin.") ||
+    urlParams.get("admin") === "true"
+  );
+};
+
+const getIsAgencySubdomain = () => {
+  if (typeof window === "undefined") return false;
+  return window.location.hostname.startsWith("agency.");
+};
+
+const AgencyTeleport = () => {
+  useEffect(() => {
+    window.location.replace("https://agency.projekt-nexus.sk");
+  }, []);
+  return null;
+};
+
+export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation(); // 🟢 INJEKCIA LOKÁTORA
+
+  // 🛑 OMEGA FIX: Absolútna synchronizácia Farieb a Favicony
+  // Tento systémový Radar neustále skenuje URL adresu a mení farby naprieč celým Matrixom
+  useEffect(() => {
+    const path = location.pathname.toLowerCase();
+    const host = typeof window !== "undefined" ? window.location.hostname : "";
+
+    if (path.includes("/home")) {
+      setActiveTab("home");
+    } else if (path.includes("/blog")) {
+      setActiveTab("blog");
+    } else if (path.includes("/shop")) {
+      setActiveTab("shop");
+    } else if (path.includes("/operators")) {
+      setActiveTab("operators");
+    } else if (path.includes("/settings")) {
+      setActiveTab("settings");
+    } else if (path.includes("/blog")) {
+    }
+  }, [location.pathname]);
+
+  const [activeTab, setActiveTab] = useState("home");
+  const [userState, setUserState] = useState(DEFAULT_USER_STATE);
+  // 🛑 OMEGA BOT DETEKTOR: Chrome môže "ReactSnap" prepísať. Reagujeme na akéhokoľvek headless bota.
+  const isBot =
+    typeof navigator !== "undefined" &&
+    /ReactSnap|HeadlessChrome|Puppeteer|bot|spider|crawl/i.test(
+      navigator.userAgent,
+    );
+
+  // Bot okamžite preskočí Boot Screen a dostane naservírované čisté UI
+  const [isBooting, setIsBooting] = useState(() => {
+    // 🛑 GHOST-MODE BYPASS: Ak klope SEO Bot, okamžite vypni Boot Screen.
+    // Bot nečaká na animácie, potrebuje okamžite sťahovať HTML a SEO tagy!
+    if (
+      typeof navigator !== "undefined" &&
+      navigator.userAgent === "ReactSnap"
+    ) {
+      return false;
+    }
+    return true; // Pre bežných ľudí sa Boot Screen normálne zobrazí
+  });
+  const lastDbUpdateRef = useRef(0);
+  const [systemStatus, setSystemStatus] = useState("INITIALIZING CORE...");
+  const [showGlobalProfile, setShowGlobalProfile] = useState(false);
+  const [isProfileMaximized, setIsProfileMaximized] = useState(false);
+
+  useEffect(() => {
+    // 1. OTVÁRANIE MODÁLOV
+    const handleOpenProfilSignal = () => setShowGlobalProfile(true);
+    const handleOpenInboxSignal = () => setIsGlobalMessagesOpen(true);
+    const handleOpenQuestAuthSignal = () => setIsQuestAuthOpen(true);
+
+    // 2. ZATVÁRANIE MODÁLOV (Pre zmazanie activeModal v Hamburger Menu)
+    const handleCloseProfilSignal = () => setShowGlobalProfile(false);
+    const handleCloseInboxSignal = () => setIsGlobalMessagesOpen(false);
+
+    // REST REGISTRÁCIA POSLUCHÁČOV
+    window.addEventListener("nexus_open_profil_modal", handleOpenProfilSignal);
+    window.addEventListener("nexus_open_inbox_modal", handleOpenInboxSignal);
+    window.addEventListener("nexus_open_quest_auth", handleOpenQuestAuthSignal);
+
+    window.addEventListener(
+      "nexus_close_profil_modal",
+      handleCloseProfilSignal,
+    );
+    window.addEventListener("nexus_close_inbox_modal", handleCloseInboxSignal);
+
+    return () => {
+      window.removeEventListener(
+        "nexus_open_profil_modal",
+        handleOpenProfilSignal,
+      );
+      window.removeEventListener(
+        "nexus_open_inbox_modal",
+        handleOpenInboxSignal,
+      );
+      window.removeEventListener(
+        "nexus_open_quest_auth",
+        handleOpenQuestAuthSignal,
+      );
+
+      window.removeEventListener(
+        "nexus_close_profil_modal",
+        handleCloseProfilSignal,
+      );
+      window.removeEventListener(
+        "nexus_close_inbox_modal",
+        handleCloseInboxSignal,
+      );
+    };
+  }, []);
+
+  // 🛑 FIX: Stav pre uloženie dát entity, na ktorú sme klikli z Blogu/Operátorov
+  const [targetDossier, setTargetDossier] = useState(null);
+
+  // 📡 LAPAČ SIGNÁLOV: Čaká na povel na otvorenie cudzieho Dossieru
+  useEffect(() => {
+    const handleOpenDossier = (e) => {
+      // 🛑 FIX: Ak event 'e' neexistuje, funkcia nepokračuje (Záchranná brzda)
+      if (!e || !e.detail) return;
+
+      // console.log(
+      //   "🛠️ [SONDA - LAPAČ]: Signál prijatý. Dekódujem entitu:",
+      //   e.detail.email || e.detail.id,
+      // );
+
+      // 1. Okamžite načíta to, čo prišlo v signáli
+      setTargetDossier(e.detail);
+      setShowGlobalProfile(true);
+
+      // 2. Stiahne plný profil z DB, aby vnútorné deti nezostali prázdne
+      const targetId = e.detail.email || e.detail.id;
+
+      if (
+        targetId &&
+        typeof NexusDB !== "undefined" &&
+        NexusDB.subscribeToProfile
+      ) {
+        const unsub = NexusDB.subscribeToProfile(targetId, (fullData) => {
+          if (fullData) {
+            setTargetDossier((prev) => ({ ...prev, ...fullData }));
+          }
+          // Memory Leak ochrana
+          setTimeout(() => {
+            if (typeof unsub === "function") unsub();
+          }, 1000);
+        });
+      }
+    };
+
+    // 📡 Prijímač naladený na správnu frekvenciu
+    window.addEventListener("nexus_open_profile", handleOpenDossier);
+    return () =>
+      window.removeEventListener("nexus_open_profile", handleOpenDossier);
+  }, []);
+
+  const [firebaseUser, setFirebaseUser] = useState(null);
+
+  const [isGlobalMessagesOpen, setIsGlobalMessagesOpen] = useState(false);
+  const [isQuestAuthOpen, setIsQuestAuthOpen] = useState(false);
+
+  const [globalComposeData, setGlobalComposeData] = useState(null);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+
+  const [showUplink, setShowUplink] = useState(() => {
+    if (typeof window !== "undefined") {
+      // 🛑 OPRAVA: Úplné zrušenie Login-Wallu! Noví návštevníci z TikToku/YT už nesmú byť blokovaní.
+      const path = window.location.pathname;
+
+      // Uplink Modal vyskočí na celú obrazovku IBA ak systém operátora katapultuje na "/login" (napr. po odhlásení)
+      if (path === "/login") return true;
+
+      // Pre všetky ostatné trasy (HomePage, Shop, Blog) sa systém otvorí bez modálu.
+      // Skafander sa môže voľne pohybovať, systém ho automaticky berie ako Neznámy Uzol (QUEST / FREE).
+      return false;
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    // Tento strážca beží nonstop a čaká, kým Supabase zahlási úspešný OAuth návrat
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          const currentLocal = JSON.parse(
+            localStorage.getItem("nexus_active_identity") || "{}",
+          );
+
+          // Ak je email v pamäti iný (alebo prázdny), urobíme okamžitý Bypass Zápis
+          if (currentLocal.email !== session.user.email) {
+            localStorage.setItem(
+              "nexus_active_identity",
+              JSON.stringify({
+                ...currentLocal,
+                email: session.user.email,
+                tier: currentLocal.tier || "FREE",
+                isGuest: false,
+              }),
+            );
+
+            // Ak by sme náhodou mali aktívny užívateľský stav, updatneme aj ten
+            setUserState((prev) => ({
+              ...prev,
+              email: session.user.email,
+              isGuest: false,
+            }));
+          }
+        }
+      },
+    );
+
+    return () => {
+      if (authListener?.subscription) authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // PREPÍSANÁ FUNKCIA PRE NAVIGÁCIU (Prepojenie tlačidiel na URL)
+  const navigateTo = (targetId) => {
+    if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
+
+    // 🛡️ OCHRANNÝ ŠTÍT: Ak sme na subdoméne agency alebo admin, unikáme na hlavný portál
+    if (targetId === "home") {
+      if (getIsAgencySubdomain() || getIsAdminSubdomain()) {
+        window.location.href = "https://projekt-nexus.sk";
+        return;
+      }
+      setActiveTab("home");
+      navigate("/");
+      return;
+    }
+
+    // 1. Zmeníme vizuálny stav (aby tlačidlá svietili správnou farbou)
+    setActiveTab(targetId);
+
+    // 2. Fyzicky presmerujeme URL adresu v prehliadači
+    if (targetId === "uplinkmodal") {
+      navigate("/uplinkmodal"); // Zachytenie starého modalu na novú URL
+    } else {
+      // Všetky ostatné dimenzie (/ID01, /blog, /shop, /settings)
+      navigate(`/${targetId}`);
+    }
+  };
+
+  useEffect(() => {
+    const handleUrlSync = () => {
+      const host = window.location.hostname;
+      const path = window.location.pathname.replace("/", "");
+      const searchParams = new URLSearchParams(window.location.search);
+      const tabParam = searchParams.get("tab");
+
+      if (tabParam && tabParam.startsWith("ID")) {
+        setActiveTab(tabParam.split("-")[0]);
+        return;
+      }
+      if (path.startsWith("ID")) {
+        const targetDim = path.split("-")[0];
+        setActiveTab(targetDim);
+      } else if (host.startsWith("blog.") || path.startsWith("blog"))
+        setActiveTab("blog");
+      else if (host.startsWith("shop.") || path.startsWith("shop"))
+        setActiveTab("shop");
+      else if (
+        host.startsWith("operators.") ||
+        path.startsWith("operators") ||
+        path.startsWith("operator")
+      )
+        setActiveTab("operators");
+      else if (host.startsWith("settings.") || path.startsWith("settings"))
+        setActiveTab("settings");
+      else if (path.startsWith("login"))
+        setActiveTab("login"); // 🛑 Tento port tu chýbal!
+      // 🌐 ZACHYTENIE SYSTÉMOVÝCH UZLOV (SYS)
+      else if (path.startsWith("video_nodes")) setActiveTab("sys01");
+      else if (path.startsWith("video_mentoring")) setActiveTab("sys02");
+      else if (path.startsWith("nexus_img_gallery")) setActiveTab("sys03");
+      else if (path.startsWith("nexus_video_gallery")) setActiveTab("sys04");
+      else if (path.startsWith("sys05-directory") || path.startsWith("links"))
+        setActiveTab("sys05");
+      else if (path === "" || path === "home") {
+        setActiveTab("home");
+      }
+    };
+
+    handleUrlSync();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleOpenInbox = (e) => {
+      if (e.detail) setGlobalComposeData(e.detail);
+      setIsGlobalMessagesOpen(true);
+    };
+    window.addEventListener("nexus_open_inbox", handleOpenInbox);
+    return () =>
+      window.removeEventListener("nexus_open_inbox", handleOpenInbox);
+  }, []);
+
+  useEffect(() => {
+    if (
+      userState.isGuest ||
+      !userState.email ||
+      userState.email === "anonymous" ||
+      userState.email === "quest"
+    )
+      return;
+    const unsubscribeCounts = NexusDB.subscribeToUnreadMessages(
+      userState.email,
+      setUnreadMessagesCount,
+    );
+    return () => {
+      if (unsubscribeCounts) unsubscribeCounts();
+    };
+  }, [userState.email, userState.isGuest]);
+
+  useEffect(() => {
+    if (userState.isGuest || !userState.email) return;
+
+    const updatePresence = async () => {
+      const now = Date.now();
+      if (now - lastDbUpdateRef.current > 60000) {
+        lastDbUpdateRef.current = now;
+        let sessionMins =
+          parseInt(localStorage.getItem("nexus_uptime_minutes") || "0", 10) + 1;
+        const { resetMins } = await NexusDB.updatePresenceAndMining(
+          userState,
+          sessionMins,
+        );
+
+        if (resetMins) localStorage.setItem("nexus_uptime_minutes", "0");
+        else
+          localStorage.setItem("nexus_uptime_minutes", sessionMins.toString());
+      }
+    };
+
+    updatePresence();
+    const events = ["mousemove", "keydown", "click", "touchstart"];
+    const handleActivity = () => updatePresence();
+
+    events.forEach((evt) =>
+      window.addEventListener(evt, handleActivity, { passive: true }),
+    );
+    return () =>
+      events.forEach((evt) => window.removeEventListener(evt, handleActivity));
+  }, [userState.email, userState.isGuest]);
+
+  const getThemeColorDyn = () => {
+    if (activeTab === "home") return "#39FF14";
+    if (activeTab === "shop") return "#FFD700";
+    if (activeTab === "operators") return "#00FFFF";
+    if (activeTab === "settings") return "#8A2BE2";
+
+    if (activeTab === "admin") return "#FF003C"; // ⚡ PRIDANÉ: Farba Architekta pre Admin Panel
+    if (activeTab === "sys01" || activeTab === "video_uzly") return "#FF0000";
+    if (activeTab === "sys02" || activeTab === "video_mentoring")
+      return "#E91E63";
+    if (activeTab === "sys03") return "#BF00FF";
+    if (activeTab === "sys04") return "#FF0000";
+    if (activeTab === "sys05") return "#39FF14";
+
+    const dimPrefix = activeTab?.split("-")[0];
+    const dimObj = DIMENSIONS?.find((d) => d.id === dimPrefix);
+
+    if (dimObj && dimObj.color) return dimObj.color;
+    if (typeof getTierColor === "function")
+      return getTierColor(userState.tier) || "#FF003C";
+    return "#FF003C";
+  };
+  const themeColor = getThemeColorDyn();
+
+  useEffect(() => {
+    const sequence = [
+      { status: "LOADING SUPABASE MATRIX...", delay: 600 },
+      { status: "VERIFYING SECURITY...", delay: 1200 },
+      { status: "AWAITING LOGIN PROTOCOL", delay: 1800 },
+    ];
+    sequence.forEach((step) =>
+      setTimeout(() => setSystemStatus(step.status), step.delay),
+    );
+    // Odstránené natvrdo zhodenie boot screenu. Teraz to riadi plne Auth Listener.
+    setTimeout(() => {
+      if (SoundFX?.hover) SoundFX.hover();
+    }, 2000);
+  }, []);
+
+  // ⚡ ZÁCHRANA IDENTITY A PRE-AUTH (SUPABASE EDITION - RACE CONDITION FIX)
+  useEffect(() => {
+    // 🛑 TOTO TI TAM CHÝBALO: Deklarácia premennej na samom vrchu hooku!
+    let authSubscription = null;
+
+    const handleSession = async (session) => {
+      const user = session?.user;
+      if (user && !user.is_anonymous) {
+        setFirebaseUser(user);
+
+        // 🛑 1. UI uzamkneme do stavu "Loading". Žiadne prázdne zobrazenia.
+        setIsBooting(true);
+        setSystemStatus("DEŠIFRUJEM IDENTITU...");
+
+        try {
+          const userEmail = user.email.toLowerCase();
+          const initInfo = getInitialTierInfo(userEmail);
+
+          // 🛑 2. Extrahujeme VŠETKY dáta z DB ešte PREDTÝM, než vpustíme operátora do UI.
+          const userData = await NexusDB.verifyAndInitEntity(
+            userEmail,
+            initInfo,
+          );
+
+          setUserState((prev) => {
+            const safeData = { ...userData };
+            Object.keys(safeData).forEach((key) => {
+              if (safeData[key] === null) safeData[key] = "";
+            });
+
+            // 🛑 3. Kompletne vyskladaný operátor.
+            const recoveredState = {
+              ...prev,
+              ...safeData,
+              email: userEmail,
+              // ⚡ NEXUS FIX: Najprv ťaháme DB meno, Discord/Twitch je len záloha (fallback)!
+              displayName:
+                safeData.displayName ||
+                prev.displayName ||
+                user.user_metadata?.full_name ||
+                userEmail.split("@")[0],
+              isGuest: false,
+              // ⚡ NEXUS FIX: DB avatar je svätý, prepíše akýkoľvek OAuth (Twitch/Github) avatar!
+              avatar:
+                safeData.avatar ||
+                prev.avatar ||
+                user.user_metadata?.avatar_url ||
+                user.user_metadata?.picture ||
+                "",
+            };
+
+            setNexusCookie(recoveredState);
+            localStorage.setItem(
+              "nexus_active_identity",
+              JSON.stringify(recoveredState),
+            );
+            return recoveredState;
+          });
+
+          // 🛑 4. Keď je profil plne naloadovaný, schováme UplinkModal.
+          setShowUplink(false);
+        } catch (error) {
+          console.error("🔥 Profil Sync Error:", error);
+        } finally {
+          // 🛑 5. Až teraz vypíname Loading. Žiadne blikanie na 3-krát.
+          setIsBooting(false);
+        }
+      } else if (user?.is_anonymous) {
+        setFirebaseUser(user);
+        setUserState({
+          ...DEFAULT_USER_STATE,
+          email: "quest",
+          displayName: "Quest Operátor",
+          tier: "QUEST",
+          isGuest: true,
+          credits: 0,
+          unlockedNodes: [],
+        });
+        setIsBooting(false);
+      } else {
+        // 🛑 GHOST-MODE FIX: Ak neexistuje ŽIADNA relácia (čistý/odhlásený užívateľ),
+        // musíme okamžite zhodiť Boot Screen, inak tam zamrzne navždy!
+        setFirebaseUser(null);
+        setUserState({
+          ...DEFAULT_USER_STATE,
+          email: "quest",
+          displayName: "Quest Operátor",
+          tier: "QUEST",
+          isGuest: true,
+          credits: 0,
+          unlockedNodes: [],
+        });
+        setIsBooting(false);
+      }
+    };
+
+    const initAuth = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session) {
+          await handleSession(session);
+        } else {
+          let localState = {};
+          try {
+            localState = JSON.parse(
+              localStorage.getItem("nexus_active_identity") || "{}",
+            );
+          } catch (e) {
+            console.warn(
+              "⚠️ [AUTH INIT]: Poškodený localState, prepínam na QUEST.",
+            );
+          }
+
+          if (!localState.email || localState.email === "quest") {
+            setUserState({
+              ...DEFAULT_USER_STATE,
+              email: "quest",
+              displayName: "Quest Operátor",
+              tier: "QUEST",
+              isGuest: true,
+              credits: 0,
+              unlockedNodes: [],
+            });
+          }
+          setShowUplink(false);
+          // Zhodenie Boot Screenu
+          setTimeout(() => setIsBooting(false), 2000);
+        }
+
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange((event, newSession) => {
+          if (event === "SIGNED_OUT") {
+            clearNexusCookie();
+            localStorage.removeItem("nexus_active_identity");
+            setUserState(DEFAULT_USER_STATE);
+            setShowUplink(false); // Host po odhlásení ostáva v Matrixe
+            setFirebaseUser(null);
+          } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+            handleSession(newSession);
+          }
+        });
+
+        // TOTO TI CHÝBALO: Správne odhlásenie listenera a uzatvorenie TRY bloku!
+        return () => subscription.unsubscribe();
+      } catch (e) {
+        console.error("Auth Init Error:", e);
+        setIsBooting(false);
+      }
+    };
+    // 🚀 EXEKÚCIA MOTORA:
+    initAuth();
+
+    // 🛑 ULTIMÁTNA ZÁCHRANNÁ BRZDA (Failsafe)
+    // Ak by Supabase náhodou zamrzol a neposlal odpoveď, o 3.5 sekundy sa UI odomkne násilím!
+    const failsafe = setTimeout(() => {
+      setIsBooting(false);
+    }, 3500);
+
+    // CLEAN-UP PRI ZAVRETÍ APPKY (Zabraňuje Memory Leakom)
+    return () => {
+      clearTimeout(failsafe);
+      if (authSubscription) authSubscription.unsubscribe();
+    };
+  }, []); // 🛑 TU SA KONČÍ USE EFFECT PRE AUTH.
+
+  useEffect(() => {
+    if (!userState.isGuest && userState.email && userState.email !== "quest") {
+      NexusDB.pingActiveStatus(userState.email);
+
+      const unsub = NexusDB.subscribeToProfile(userState.email, (data) => {
+        if (data) {
+          setUserState((prev) => {
+            const safeData = { ...data };
+            Object.keys(safeData).forEach((key) => {
+              if (safeData[key] === null) safeData[key] = "";
+            });
+
+            const nextState = {
+              ...prev,
+              ...safeData,
+              unlockedNodes: safeData.unlockedNodes || prev.unlockedNodes || [],
+            };
+
+            // ⚡ OCHRANA: Neupdatujeme state, ak nedošlo k žiadnej zmene!
+            // Týmto sme definitívne eliminovali re-rendery a blikanie profilu!
+            if (JSON.stringify(prev) === JSON.stringify(nextState)) return prev;
+
+            setNexusCookie(nextState);
+            localStorage.setItem(
+              "nexus_active_identity",
+              JSON.stringify(nextState),
+            );
+            return nextState;
+          });
+        }
+      });
+      return () => {
+        if (unsub) unsub();
+      };
+    }
+  }, [userState.email, userState.isGuest]);
+
+  // Tento handleUnlock sa teraz volá výhradne pre Quest užívateľov!
+  const handleUnlock = (data) => {
+    setUserState((prev) => {
+      const newState = { ...DEFAULT_USER_STATE, ...data };
+      setNexusCookie(newState);
+      localStorage.setItem("nexus_active_identity", JSON.stringify(newState));
+      return newState;
+    });
+    setShowUplink(false);
+  };
+
+  const handleLogout = async () => {
+    if (typeof SoundFX !== "undefined" && SoundFX.click) SoundFX.click();
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error("Supabase SignOut Error:", e);
+    } finally {
+      if (typeof clearNexusCookie === "function") clearNexusCookie();
+      // Automatický výmaz VŠETKÝCH súčasných aj BUDÚCICH nexus_* kľúčov
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("nexus_")) localStorage.removeItem(key);
+      });
+      Object.keys(sessionStorage).forEach((key) => {
+        if (key.startsWith("nexus_")) sessionStorage.removeItem(key);
+      });
+
+      // Tvrdý reštart pre 100% prečistenie React RAM a návrat na Uplink
+      window.location.href = "/login";
+    }
+  };
+
+  // 🛑 ULTIMÁTNA OCHRANA: Bot NESMIE vidieť Boot Screen, aj keby sa state náhodou prepol!
+  if (isBooting && !isBot) {
+    return (
+      <div className="min-h-screen bg-[#03080a] flex flex-col items-center justify-center font-mono p-6">
+        <div className="w-20 h-20 border-2 border-purple-500 rounded-full animate-ping opacity-20 absolute" />
+        <Cpu
+          className="text-purple-500 animate-pulse relative z-10"
+          size={32}
+        />
+        <div className="mt-8 text-center space-y-2">
+          <h2 className="text-white text-xl font-black tracking-[10px] uppercase italic">
+            Nexus <span className="text-purple-500">OS</span>
+          </h2>
+          <p className="text-[#39FF14] text-[10px] uppercase tracking-widest font-bold">
+            {systemStatus}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Pridaný obal <HelmetProvider>, aby SEO tagy vnútri modalu nespadli
+  if (showUplink) {
+    return (
+      <HelmetProvider>
+        <UplinkModal
+          onUnlock={handleUnlock}
+          onViewVop={() => {
+            setActiveTab("vop"); // Prepne Matrix na podmienky
+            setShowUplink(false); // Dočasne schová modal, aby si ich mohol čítať
+          }}
+        />
+      </HelmetProvider>
+    );
+  }
+
+  const NavButton = ({ id, icon: Icon, label, onClick }) => {
+    const isActive = activeTab === id;
+    return (
+      <button
+        title={label}
+        onMouseEnter={() => SoundFX?.hover && SoundFX.hover()}
+        onClick={() => {
+          if (SoundFX?.click) SoundFX.click();
+          if (onClick) {
+            onClick();
+          } else {
+            navigateTo(id);
+          }
+        }}
+        style={{
+          cursor: "pointer",
+          ...(isActive
+            ? {
+                backgroundColor: `${themeColor}20`,
+                borderColor: `${themeColor}60`,
+                boxShadow: `0 0 15px ${themeColor}30`,
+              }
+            : {}),
+        }}
+        className={`flex items-center gap-1.5 px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 ${
+          isActive
+            ? "text-white"
+            : "text-gray-500 hover:text-white hover:bg-white/5 border border-transparent"
+        }`}
+      >
+        <Icon
+          size={14}
+          style={{ color: isActive ? themeColor : "inherit" }}
+          className="transition-colors duration-500 shrink-0"
+        />
+        <span className="hidden xl:inline">{label}</span>
+      </button>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-[#03080a] text-[#b3d4d6] font-mono overflow-x-hidden flex flex-col relative text-left">
+      <MetaTags
+        title="PROJEKT NEXUS OS | GENESIS EDITION"
+        description="Kybernetický operačný systém pre ľudské vedomie. Sémantická dekompresia, taktické kódexy a B2B digitálna architektúra."
+        image="/img-nexus/pages/ShopPage.jpg"
+        color={themeColor || "#FFD700"}
+        url={location.pathname}
+      />
+      {/* 🛑 FIX: transform-gpu odstránený kvôli obnove fixed pozícií (Hamburger Menu opäť levituje) */}
+      <style>{`
+        ::selection { background-color: ${themeColor}; color: #000; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* ⚡ GLOBÁLNY RADAR OFFSET: Zastaví scroll 150px pred nadpisom */
+        [id^="nexus-"] { scroll-margin-top: 150px; }
+    `}</style>
+      {/* ⚡ INJEKTÁŽ RÝCHLEHO NAVIGAČNÉHO UZLA (CHAMELEÓN) ⚡ */}
+      {/* ⚡ ABSOLÚTNA KARANTÉNA: NA LOGINE VYPÍNAME GLOBÁLNE MENU AJ BLESKY */}
+      {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
+      {location.pathname !== "/login" &&
+        !location.pathname.includes("/ID") &&
+        !location.pathname.includes("nexus_") &&
+        !location.pathname.includes("video_") && (
+          <div
+            className={`relative z-50 pointer-events-none transition-all duration-300 ${showGlobalProfile ? "opacity-0 invisible" : "opacity-100 visible"}`}
+          >
+            <div className="pointer-events-auto">
+              <GlobalHamburgerMenu
+                activeTab={activeTab}
+                themeColor={themeColor}
+              />
+              {/* 📡 DÁTOVÝ MOST: Posielame identitu priamo do motora pre overenie v Ústave */}
+              <GlobalComponents themeColor={themeColor} userState={userState} />
+            </div>
+          </div>
+        )}
+      <GlobalProfil
+        isOpen={showGlobalProfile}
+        onClose={() => {
+          setShowGlobalProfile(false);
+          setTimeout(() => setTargetDossier(null), 300); // Po zatvorení vyčistí cudzie dáta
+        }}
+        isMaximized={isProfileMaximized}
+        onToggleMaximize={() => setIsProfileMaximized(!isProfileMaximized)}
+        // Ak existuje targetDossier, ukáž cudzí. Ak nie, ukáž tvoj vlastný (userState)
+        profileData={targetDossier || userState}
+        title={
+          targetDossier
+            ? `Dossier: ${targetDossier.displayName || "Entita"}`
+            : "Profil Operátora"
+        }
+      />
+      {GlobalMessages && (
+        <GlobalMessages
+          isOpen={isGlobalMessagesOpen}
+          onClose={() => setIsGlobalMessagesOpen(false)}
+          userState={userState}
+          composeData={globalComposeData}
+          clearComposeData={() => setGlobalComposeData(null)}
+        />
+      )}
+      {/* ==================================================================== */}
+      {/* 🧭 GLOBÁLNA SYSTÉMOVÁ NAVIGÁCIA (V20 CYBER-DOCK RESPONZÍVNY ŠTANDARD) */}
+      {/* ==================================================================== */}
+      {location.pathname !== "/login" && (
+        <nav
+          style={{ zIndex: 1000 }}
+          className="fixed top-0 left-0 w-full border-b border-white/5 bg-[#03080a]/95 backdrop-blur-xl px-2 sm:px-3 py-2 flex justify-between items-center shadow-2xl font-mono"
+        >
+          {/* 🛡️ ĽAVÁ ČASŤ: LOGO + CYBER-DOCK TLAČIDLÁ */}
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-1 min-w-0 pr-2">
+            {/* LOGO MATERSKEJ LODE */}
+            <div
+              className="flex items-center gap-2 shrink-0 cursor-pointer group px-1"
+              onClick={() => navigateTo("home")}
+              title="Projekt Nexus OS"
+            >
+              <div
+                className="p-1.5 rounded-lg transition-all duration-500"
+                style={{
+                  backgroundColor: themeColor,
+                  boxShadow: `0 0 15px ${themeColor}50`,
+                }}
+              >
+                <Shield size={15} className="text-black" />
+              </div>
+              <span className="text-white font-black tracking-tighter uppercase italic text-xs sm:text-sm hidden 2xl:block">
+                Nexus <span style={{ color: themeColor }}>OS</span>
+              </span>
+            </div>
+
+            {/* CYBER-DOCK IKONY / TLAČIDLÁ (TEXT AŽ PRI XL, NIKDY SA NEPREKRYJÚ) */}
+            <div className="flex items-center gap-1 xl:gap-1.5 overflow-x-auto flex-1 min-w-0 hide-scroll py-0.5">
+              <NavButton id="home" icon={Grid} label="Home" />
+              <NavButton id="blog" icon={Terminal} label="Blog" />
+              <NavButton id="operators" icon={Users} label="Operators" />
+              <NavButton id="shop" icon={ShoppingCart} label="Shop" />
+              <NavButton id="settings" icon={Settings} label="Settings" />
+
+              {userState?.tier === "ARCHITECT" && (
+                <NavButton id="admin" icon={ShieldAlert} label="ADMIN" />
+              )}
+
+              {/* CHRONOMETER (KOMPAKTNÝ ODSTUP) */}
+              <div className="ml-1 shrink-0">
+                <CoreChronometer themeColor={themeColor} />
+              </div>
+            </div>
+          </div>
+
+          {/* 🪙 PRAVÁ ČASŤ: PEŇAŽENKA + INBOX + PROFIL + LOGOUT */}
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 shrink-0">
+            {/* GLOBÁLNA PEŇAŽENKA */}
+            <GlobalWallet
+              balance={userState?.credits || 0}
+              userEmail={userState?.email || ""}
+              userTier={userState?.tier || "FREE"}
+              getTierColor={getTierColor}
+            />
+
+            {/* SÚKROMNÉ SIGNÁLY (INBOX) */}
+            {userState && !userState.isGuest && (
+              <button
+                onClick={() => {
+                  if (SoundFX?.click) SoundFX.click();
+                  setIsGlobalMessagesOpen(true);
+                }}
+                title="Súkromné Signály (INBOX)"
+                className="relative p-1.5 sm:p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20 hover:bg-blue-500 hover:text-black transition-colors shrink-0 cursor-pointer"
+              >
+                <Mail size={15} />
+                {unreadMessagesCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-[0_0_8px_red] animate-bounce">
+                    {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {/* MENO A TIER (ZOBRAZENÉ AŽ OD XL ŠÍRKY - ŽIADNY PRETLAK PRI F12) */}
+            <div className="hidden xl:block text-right leading-tight max-w-[130px]">
+              <p
+                className="text-[10px] font-black text-white uppercase tracking-wider truncate"
+                title={`Operátor: ${userState?.displayName || "GUEST_ENTITY"}`}
+              >
+                {userState?.displayName || "GUEST_ENTITY"}
+              </p>
+              {(() => {
+                const isQuest =
+                  userState?.isGuest ||
+                  userState?.tier === "QUEST" ||
+                  !userState?.email;
+                const activeTierLabel = isQuest
+                  ? "QUEST"
+                  : userState?.tier || "FREE";
+                const activeColor = getTierColor(activeTierLabel);
+                return (
+                  <p
+                    className="text-[7px] font-black uppercase tracking-widest"
+                    style={{ color: activeColor }}
+                  >
+                    {activeTierLabel} TIER
+                  </p>
+                );
+              })()}
+            </div>
+
+            {/* KOMPAKTNÝ AVATAR */}
+            <div
+              onClick={() => setShowGlobalProfile(true)}
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 cursor-pointer overflow-hidden flex items-center justify-center transition-transform hover:scale-105 bg-black shrink-0 relative"
+              style={{
+                borderColor: getTierColor(
+                  userState?.isGuest ||
+                    userState?.tier === "QUEST" ||
+                    !userState?.email
+                    ? "QUEST"
+                    : userState?.tier || "FREE",
+                ),
+              }}
+              title="Profil Operátora"
+            >
+              {userState?.avatar ? (
+                <img
+                  src={userState.avatar}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User
+                  size={14}
+                  style={{
+                    color:
+                      userState?.tier === "QUEST" || userState?.isGuest
+                        ? "#6B7280"
+                        : getTierColor(userState?.tier || "FREE"),
+                  }}
+                />
+              )}
+            </div>
+
+            {/* DYNAMICKÉ LOGOUT TLAČIDLO (TEXT AŽ PRI XL) */}
+            <button
+              onClick={() => {
+                if (typeof handleLogout === "function") {
+                  handleLogout();
+                } else if (typeof navigate === "function") {
+                  navigate("/login");
+                } else {
+                  window.location.href = "/login";
+                }
+              }}
+              title="Odhlásiť sa zo systému"
+              className="px-2 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-black transition-all shrink-0 flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider cursor-pointer"
+            >
+              <LogOut size={13} />
+              <span className="hidden xl:inline">LOGOUT</span>
+            </button>
+          </div>
+        </nav>
+      )}
+
+      {/* 🧭 HLAVNÝ OBSAHOVÝ KONTAJNER MATRIXU */}
+
+      <main
+        className={
+          getIsAdminSubdomain() ||
+          getIsAgencySubdomain() ||
+          location.pathname.includes("/agency")
+            ? "pt-24 flex-1 relative z-10"
+            : "pt-24 flex-1 px-2 md:px-8 pb-20 text-left relative z-10"
+        }
+      >
+        <div
+          className={
+            getIsAdminSubdomain() ||
+            getIsAgencySubdomain() ||
+            location.pathname.includes("/agency")
+              ? "w-full"
+              : "max-w-7xl mx-auto w-full text-left"
+          }
+        >
+          <HelmetProvider>
+            <SystemErrorBoundary>
+              {/* 🏰 0. Globálna Klávesnica (Aktívna pre celý OS Genesis) */}
+              <GlobalKeyboard />
+
+              {getIsAdminSubdomain() ? (
+                /* 🏰 1. ADMIN SUBDOMÉNA */
+                <AdminPage />
+              ) : (
+                /* 🌍 2. HLAVNÝ MATRIX (V20 BYPASS ROUTING) */
+                <Routes>
+                  {/* ======================================================= */}
+                  {/* 🚪 1. MODALS & AUTH GATEWAY                             */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/login/*"
+                    element={
+                      <PublicRoute>
+                        <UplinkModal />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/register/*"
+                    element={
+                      <PublicRoute>
+                        <UplinkModal />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/uplinkmodal/*"
+                    element={
+                      <PublicRoute>
+                        <UplinkModal />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🟢 2. PUBLIC CORE (Trojan Horse & Blog)                 */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/"
+                    element={
+                      <PublicRoute>
+                        <HomePage setActiveTab={setActiveTab} />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/home/*"
+                    element={
+                      <PublicRoute>
+                        <HomePage setActiveTab={() => {}} />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/blog/*"
+                    element={
+                      <PublicRoute>
+                        <BlogPage userState={userState} />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🛒 3. E-SHOP SURODENCI (Tokenomics & Media)             */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/shop/*"
+                    element={
+                      <GlobalQuestAuth activeUser={userState}>
+                        <ShopPage />
+                      </GlobalQuestAuth>
+                    }
+                  />
+                  <Route
+                    path="/shop/documents/*"
+                    element={
+                      <GlobalQuestAuth activeUser={userState}>
+                        <ShopDocumentsMedia />
+                      </GlobalQuestAuth>
+                    }
+                  />
+                  <Route
+                    path="/shop/images/*"
+                    element={
+                      <GlobalQuestAuth activeUser={userState}>
+                        <ShopImageMedia />
+                      </GlobalQuestAuth>
+                    }
+                  />
+                  <Route
+                    path="/shop/audios/*"
+                    element={
+                      <GlobalQuestAuth activeUser={userState}>
+                        <ShopAudioMedia />
+                      </GlobalQuestAuth>
+                    }
+                  />
+                  <Route
+                    path="/shop/videos/*"
+                    element={
+                      <GlobalQuestAuth activeUser={userState}>
+                        <ShopVideoMedia />
+                      </GlobalQuestAuth>
+                    }
+                  />
+                  <Route
+                    path="/shop/apps/*"
+                    element={
+                      <GlobalQuestAuth activeUser={userState}>
+                        <ShopAppsMedia />
+                      </GlobalQuestAuth>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🛡️ 4. SPRÁVA, OPERÁTORI & ADMIN                         */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/settings/*"
+                    element={
+                      <AuthRoute>
+                        <SettingsPage
+                          userState={userState}
+                          setUserState={setUserState}
+                        />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/operators/*"
+                    element={
+                      <AuthRoute>
+                        <OperatorsPage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/operator/:entityId/*"
+                    element={<OperatorPage />}
+                  />
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <AuthRoute>
+                        <AdminPage />
+                      </AuthRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🚀 5. SATELITNÝ BRAND TELEPORT (Nexus Agency)           */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/agency/*"
+                    element={
+                      <PublicRoute>
+                        <AgencyTeleport />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🌌 6. KOGNITÍVNE DIMENZIE (ID00 - ID15 PODĽA ČÍSEL)     */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/ID00/*"
+                    element={
+                      <PublicRoute>
+                        <ID00_Mentor />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID01/*"
+                    element={
+                      <PublicRoute>
+                        <ID01_Identity />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID02/*"
+                    element={
+                      <PublicRoute>
+                        <ID02_Workflow />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID03/*"
+                    element={
+                      <StrictRoute requiredTier="PRO">
+                        <ID03_Finance />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID04/*"
+                    element={
+                      <StrictRoute requiredTier="PRO">
+                        <ID04_Revenue />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID05/*"
+                    element={
+                      <StrictRoute requiredTier="OMEGA">
+                        <ID05_Assets />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID06/*"
+                    element={
+                      <StrictRoute requiredTier="PRO">
+                        <ID06_Study />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID07/*"
+                    element={
+                      <StrictRoute requiredTier="PRO">
+                        <ID07_Skills />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID08/*"
+                    element={
+                      <PublicRoute>
+                        <ID08_Reader />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID09/*"
+                    element={
+                      <PublicRoute>
+                        <ID09_Player />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID10/*"
+                    element={
+                      <PublicRoute>
+                        <ID10_Home />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID11/*"
+                    element={
+                      <StrictRoute requiredTier="PRO">
+                        <ID11_Recovery />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID12/*"
+                    element={
+                      <StrictRoute requiredTier="OMEGA">
+                        <ID12_Codex />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID13/*"
+                    element={
+                      <StrictRoute requiredTier="OMEGA">
+                        <ID13_Habits />
+                      </StrictRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID14/*"
+                    element={
+                      <PublicRoute>
+                        <ID14_Blog />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/ID15/*"
+                    element={
+                      <PublicRoute>
+                        <ID15_Death />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 📡 7. SYSTÉMOVÉ MODULY (SYS01 - SYS05)                  */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/video_nodes/*"
+                    element={
+                      <PublicRoute>
+                        <Sys01_VideoNodes />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/video_mentoring/*"
+                    element={
+                      <StrictRoute requiredTier="OMEGA">
+                        <Sys02_Mentoring />
+                      </StrictRoute>
+                    }
+                  />
+
+                  <Route
+                    path="/nexus_img_gallery/*"
+                    element={
+                      <PublicRoute>
+                        <Sys03_ImgGallery />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/nexus_video_gallery/*"
+                    element={
+                      <PublicRoute>
+                        <Sys04_VideoGallery />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/sys05-directory/*"
+                    element={<SYS05_Directory />}
+                  />
+                  <Route path="/links/*" element={<SYS05_Directory />} />
+
+                  {/* ======================================================= */}
+                  {/* ⚖️ 8. PRÁVNA INTEGRITA & DOKUMENTY                      */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/vop/*"
+                    element={
+                      <PublicRoute>
+                        <VopPage onBack={() => navigate("/")} />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/privacy/*"
+                    element={
+                      <PublicRoute>
+                        <PrivacyPage onBack={() => navigate("/")} />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🎯 9. DYNAMICKÝ PARAMETER UZLA (Až za konkrétnymi ID)    */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="/:nodeId/*"
+                    element={
+                      <PublicRoute>
+                        <NodeViewer />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* ======================================================= */}
+                  {/* 🛑 10. ZÁCHRANNÁ BRZDA 404 (ÚPLNE POSLEDNÁ)              */}
+                  {/* ======================================================= */}
+                  <Route
+                    path="*"
+                    element={
+                      <PublicRoute>
+                        <NotFoundPage />
+                      </PublicRoute>
+                    }
+                  />
+                </Routes>
+              )}
+            </SystemErrorBoundary>
+          </HelmetProvider>
+        </div>
+      </main>
+      {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
+      {!location.pathname.includes("/ID") &&
+        !location.pathname.includes("nexus_") &&
+        !location.pathname.includes("video_") &&
+        location.pathname !== "/login" && (
+          <GlobalFooter themeColor={themeColor} />
+        )}
+    </div>
+  );
+}

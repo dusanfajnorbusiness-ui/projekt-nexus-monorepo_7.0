@@ -1,0 +1,70 @@
+# ============================================================================
+# 👑 PROJEKT NEXUS OS: GENESIS EDITION V5.0 — MASTER GITIGNORE (SSOT)
+# ============================================================================
+
+# 1. DEPENDENCIES (ZÁVISLOSTI)
+node_modules/
+*/node_modules/
+/.pnp
+.pnp.js
+
+# 2. TESTING & COVERAGE
+/coverage
+*/coverage
+
+# 3. PRODUCTION BUILDS (BUILDOVANÉ SÚBORY)
+/build
+*/build
+/dist
+*/dist
+
+# 4. ENVIRONMENT VARIABLES & SECRETS (SECURITY FIREWALL)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+*.env.*
+
+# 5. VERCEL & CLOUD DEPLOYMENTS
+.vercel
+*/.vercel
+
+# 6. LOGS & DEBUGGING
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+*.log
+firestore-debug.log
+
+# 7. IDE & SYSTEM JUNKS (OS DEBRIS)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# 8. VS CODE & EDITOR SETTINGS
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 9. TEMP & CACHE
+.cache
+*/.cache
+.eslintcache
+
+# 10. ISOLATED MODULES & UNFINISHED APPS (STANDBY FIREWALL V20)
+NEXUS-AGENCY-PORTAL/

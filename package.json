@@ -1,0 +1,27 @@
+{
+  "name": "projekt-nexus-umbrella",
+  "type": "module",
+  "version": "6.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "shared"
+  ],
+  "scripts": {
+    "clean": "node -e \"const fs = require('fs'); ['apps/agency/dist', 'apps/main-web/dist', 'apps/shop/dist', 'apps/blog/dist', 'apps/operators/dist', 'apps/settings/dist', 'apps/admin/dist'].forEach(d => fs.existsSync(d) && fs.rmSync(d, { recursive: true, force: true })); console.log('🧹 [V20 CLEANUP]: Staré buildy (dist) boli kompletne vymazané!');\"",
+    "prebuild": "npm run clean",
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspace=apps/main-web -- --open",
+    "dev:all": "npm run dev --workspaces --if-present",
+    "dev:agency": "npm run dev --workspace=apps/agency -- --open",
+    "dev:main": "npm run dev --workspace=apps/main-web -- --open",
+    "snap": "node ./scripts/prerender-seo.mjs",
+    "postbuild": "npm run snap",
+    "snap:vercel": "npm run build && vercel --prod --yes",
+    "snap:git": "git add . && git commit -m \"⚡ [V20 SNAPSHOT]: Operational Checkpoint Deployment\" && git push origin main"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "firebase": "^13.1.0"
+  }
+}
