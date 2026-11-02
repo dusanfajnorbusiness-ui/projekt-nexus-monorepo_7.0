@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "agency": { "root": "apps/agency", "framework": "vite" },
+    "main-web": { "root": "apps/main-web", "framework": "vite" }
+  },
+  "rewrites": [
+    { "source": "/agency/(.*)", "destination": "agency" },
+    { "source": "/(.*)", "destination": "main-web" }
+  ]
+}
