@@ -1,4 +1,25 @@
 /* eslint-disable no-undef */
+// ============================================================================
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (V20 SUBDOMAINS NETWORK CONFIG)
+// Súbor: apps/subdomena_[XX]/vite.config.js
+// Status: 100% GROUNDED // UNIFIKOVANÝ PORT MATRIX [51800 - 51815]
+// ============================================================================
+// 📡 REGISTER PORTOV SUBDOMÉN OS GENESIS:
+// uplink (5170)
+// Base Modul: main-web (5171),
+// agency (5172),
+// blog (5173),
+// operators (5174),
+// shop (5175),
+// settings (5176),
+// admin (5177),
+// subdomeny (51800 - 51815)
+// ============================================================================
+// Súbor: shared/vite.config.js
+// ============================================================================
+// shared (51900)
+// ============================================================================
+
 import react from "@vitejs/plugin-react";
 
 import path from "path";
@@ -59,7 +80,7 @@ export const createViteConfig = (appDir, port = 5173) => {
         "@agency": path.resolve(rootDir, "apps/agency/src"),
         "@blog": path.resolve(rootDir, "apps/blog/src"),
         "@admin": path.resolve(rootDir, "apps/admin/src"),
-        "@dimenzie": path.resolve(rootDir, "apps/dimenzie/src"),
+        "@subdomeny": path.resolve(rootDir, "apps/subdomeny/src"),
         "@operators": path.resolve(rootDir, "apps/operators/src"),
         "@settings": path.resolve(rootDir, "apps/settings/src"),
         "@apps": path.resolve(rootDir, "apps"),

@@ -13,7 +13,8 @@
       "@operators/*": ["./apps/operators/src/*"],
       "@admin/*": ["./apps/admin/src/*"],
       "@settings/*": ["./apps/settings/src/*"],
-      "@blog/*": ["./apps/blog/src/*"]
+      "@blog/*": ["./apps/blog/src/*"],
+      "@subdomeny/*": ["./apps/subdomeny/src/*"]
     }
   },
   "exclude": ["node_modules", "**/dist"]

@@ -21,6 +21,54 @@ export const SystemLogModal = ({
     (typeof import.meta !== "undefined" && import.meta.env?.VITE_GIT_COMMIT_HASH) ||
     "v20.95-master";
 
+const [gitLogs, setGitLogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && !customLogs) {
+      setIsLoading(true);
+      fetch("[suspicious link removed]")
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          if (Array.isArray(data)) {
+            const formattedLogs = data.map((item, idx) => {
+              const rawMsg = item.commit?.message || "";
+              const msgLines = String(rawMsg).split("\n").filter((line) => line.trim() !== "");
+              const commitTitle = msgLines || "Git Update";
+              const commitBody = msgLines.slice(1).join(" ").trim() || "Commit evidovaný vo zbernici GitHub.";
+              const commitDate = item.commit?.author?.date
+                ? new Date(item.commit.author.date).toLocaleDateString("sk-SK", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                : "DNEŠNÝ PUSH";
+
+              return {
+                id: item.sha ? item.sha.substring(0, 7) : `LOG-${idx}`,
+                tag: idx === 0 ? "LATEST_PUSH" : "GIT_COMMIT",
+                title: commitTitle,
+                summary: commitBody.substring(0, 140) + (commitBody.length > 140 ? "..." : ""),
+                desc: `Commit SHA: ${item.sha} | Autor: ${item.commit?.author?.name || "Architekt"}`,
+                date: commitDate,
+                color: idx === 0 ? "#39FF14" : "#00f3ff",
+              };
+            });
+            setGitLogs(formattedLogs);
+          }
+        })
+        .catch((err) => {
+          console.warn("⚠️ [NEXUS GIT API] Volanie zlyhalo, aktivujem fallback changelog:", err);
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [isOpen, customLogs]);
+
+  const displayLogs = customLogs || (gitLogs.length > 0 ? gitLogs : defaultChangelog);
+
   // 🎯 STAV PRE ROZKLIKNUTÚ KARTIČKU (EXPANDABLE CARD ID)
   const [expandedLogId, setExpandedLogId] = useState(null);
 
@@ -104,8 +152,7 @@ export const SystemLogModal = ({
     },
   ];
 
-  // 🛡️ OŠETRENIE: POUŽIJEME VYŽIADANÉ LOGY A OBMEDZÍME ICH NA MAXIMÁLNE 30 NAJNOVŠÍCH ZÁZNAMOV
-  const displayLogs = (customLogs || defaultChangelog).slice(0, 30);
+  
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono">

@@ -8,7 +8,7 @@
     "shared"
   ],
   "scripts": {
-    "clean": "node -e \"const fs = require('fs'); ['apps/agency/dist', 'apps/main-web/dist', 'apps/shop/dist', 'apps/blog/dist', 'apps/operators/dist', 'apps/settings/dist', 'apps/admin/dist'].forEach(d => fs.existsSync(d) && fs.rmSync(d, { recursive: true, force: true })); console.log('🧹 [V20 CLEANUP]: Staré buildy (dist) boli kompletne vymazané!');\"",
+    "clean": "node -e \"const fs = require('fs'); ['apps/agency/dist', 'apps/main-web/dist', 'apps/shop/dist', 'apps/blog/dist', 'apps/operators/dist', 'apps/settings/dist', 'apps/admin/dist', 'apps/subdomeny/dist'].forEach(d => fs.existsSync(d) && fs.rmSync(d, { recursive: true, force: true })); console.log('🧹 [V20 CLEANUP]: Staré buildy (dist) boli kompletne vymazané!');\"",
     "prebuild": "npm run clean",
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspace=apps/main-web -- --open",

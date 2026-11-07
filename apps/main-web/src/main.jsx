@@ -14,7 +14,7 @@ import { BrowserRouter } from "react-router-dom";
 
 // ⚡ 1. DIAGNOSTICKÁ SONDA ŠTARTU
 console.log(
-  `%c[📡 OS GENESIS MAIN]: Inicializujem React 18 Root Engine na porte 3000...`,
+  `%c[📡 OS GENESIS MAIN]: Inicializujem React 18 Root Engine na porte 5171...`,
   "background: #050a0e; color: #00F3FF; font-weight: bold; border: 1px solid #00F3FF; padding: 3px;",
 );
 
