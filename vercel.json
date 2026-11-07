@@ -39,13 +39,14 @@
       "has": [{ "type": "host", "value": "settings.projekt-nexus.sk" }],
       "destination": "/settings/:path*"
     },
-    { "source": "/agency/(.*)", "destination": "/agency/index.html" },
-    { "source": "/shop/(.*)", "destination": "/shop/index.html" },
-    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
-    { "source": "/blog/(.*)", "destination": "/blog/index.html" },
-    { "source": "/operators/(.*)", "destination": "/operators/index.html" },
-    { "source": "/settings/(.*)", "destination": "/settings/index.html" },
-    { "source": "/uplink/(.*)", "destination": "/uplink/index.html" },
+    { "source": "/agency/:path*", "destination": "/agency/index.html" },
+    { "source": "/shop/:path*", "destination": "/shop/index.html" },
+    { "source": "/admin/:path*", "destination": "/admin/index.html" },
+    { "source": "/blog/:path*", "destination": "/blog/index.html" },
+    { "source": "/operators/:path*", "destination": "/operators/index.html" },
+    { "source": "/settings/:path*", "destination": "/settings/index.html" },
+    { "source": "/uplink/:path*", "destination": "/uplink/index.html" },
+    { "source": "/login", "destination": "/uplink/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
