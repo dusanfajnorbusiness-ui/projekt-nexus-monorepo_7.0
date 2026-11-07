@@ -107,9 +107,9 @@ export const createViteConfig = (appDir, port = 5173) => {
                 return "vendor-icons";
               }
               return "vendor-libs";
-            }
-            if (id.includes("shared/src")) {
-              return "vendor-shared";
+            
+            // Kód zo shared/src spája Vite automaticky bez ručného chunkovania, aby nevznikali cyklické TDZ chyby 'Cannot access m before initialization'
+            
             }
           },
         },
