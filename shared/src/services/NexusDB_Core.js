@@ -1,8 +1,8 @@
-import { EXODUS_CONFIG } from "./NexusDB_Config";
-import { NexusDB_Blog } from "./NexusDB_Blog";
-import { NexusDB_Shop } from "./NexusDB_Shop";
-import { NexusDB_Users } from "./NexusDB_Users";
-import { SupabaseProvider, supabase } from "./NexusDB_Supabase";
+import { NexusDB_Blog } from "@shared/services/NexusDB_Blog.js";
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config.js";
+import { NexusDB_Shop } from "@shared/services/NexusDB_Shop.js";
+import { supabase, SupabaseProvider } from "@shared/services/NexusDB_Supabase.js";
+import { NexusDB_Users } from "@shared/services/NexusDB_Users.js";
 
 const FirebaseProvider = {
   ...NexusDB_Blog,

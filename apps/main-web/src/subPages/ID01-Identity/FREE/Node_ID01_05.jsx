@@ -17,12 +17,15 @@ import {
   BadgeAlert,
   HelpCircle,
 } from "lucide-react";
-import { TierBadge } from "@shared/components/TierBadge";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode";
-import { GlobalNodeVideo } from "@main-web/components/GlobalNodeVideo";
-import { GlobalNodePodcast } from "@main-web/components/GlobalNodePodcast";
-import MetaTags from "@shared/components/MetaTags";
+// =====================================================================
+// 🟢 1. PRODUKČNÉ IMPORTY
+// =====================================================================
+import { TierBadge } from "@shared/components/TierBadge.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode.jsx";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { DMLTooltip } from "@shared/components/DMLTooltip.jsx";
 
 // =====================================================================
 // 👑 HLAVNÝ KOMPONENT UZLA ID01_NODE_05 (SKAFANDER)
@@ -569,86 +572,7 @@ export default function Node_ID01_05() {
     },
   };
 
-  // =====================================================================
-  // 🔌 INTERAKTÍVNY TOOLTIP INJEKTOR (DMLTooltip)
-  // =====================================================================
-  const DMLTooltip = ({ slug, label }) => {
-    const termData = termsData[slug];
-    if (!termData) return <span>{label || slug}</span>;
-
-    const catStyle = categoryStyles[termData.category] || {
-      name: "unknown",
-      hex: "#A855F7",
-      text: "text-purple-500",
-      border: "border-purple-500/20",
-      bg: "bg-purple-500/5",
-      hoverBorder: "hover:border-purple-400",
-      glow: "",
-    };
-    const isCurrentlyActive = activeTooltip === slug;
-
-    const handleInteraction = (e) => {
-      e.stopPropagation();
-      triggerSound("click");
-      if (isCurrentlyActive) {
-        setActiveTooltip(null);
-      } else {
-        setActiveTooltip(slug);
-      }
-    };
-
-    return (
-      <span className="relative inline-block z-35">
-        <span
-          onClick={handleInteraction}
-          onTouchStart={handleInteraction}
-          className={`cursor-pointer border-b-2 ${catStyle.border} ${catStyle.text} font-black hover:bg-white/5 transition-all duration-200 px-1 rounded-sm relative`}
-          style={{
-            textShadow:
-              termData.category === 3 || termData.category === 13
-                ? `0 0 8px ${catStyle.hex}`
-                : "none",
-          }}
-        >
-          {label || termData.term}
-        </span>
-        {isCurrentlyActive && (
-          <>
-            <div
-              className="fixed inset-0 z-40 bg-transparent"
-              onClick={() => setActiveTooltip(null)}
-            />
-            <div
-              className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 p-4 bg-[#050A0E] border-2 ${catStyle.border} ${catStyle.glow} rounded-lg z-50 shadow-2xl`}
-            >
-              <div className="flex justify-between items-start border-b border-gray-800 pb-2 mb-2 text-[10px] font-mono">
-                <span
-                  className={`font-black uppercase tracking-widest ${catStyle.text}`}
-                >
-                  {catStyle.name}
-                </span>
-                <span className="text-gray-500 font-bold">
-                  TIER {termData.category}
-                </span>
-              </div>
-              <h4 className="text-sm font-black text-white uppercase mb-1 tracking-tight">
-                {termData.term}
-              </h4>
-              <p className="text-gray-400 font-mono text-[10px] leading-relaxed mb-2 pb-2 border-b border-gray-900/60">
-                <span className="text-gray-500 block font-bold mb-0.5">
-                  Preklad do DML v6.0:
-                </span>
-                <strong className="text-white">{termData.translation}</strong>
-              </p>
-              <p className="text-gray-300 font-mono text-[11px] leading-normal">
-                {termData.tooltip}
-              </p>
-            </div>
-          </>
-        )}
-      </span>
-    );
-  };
+  
 
   return (
     <div

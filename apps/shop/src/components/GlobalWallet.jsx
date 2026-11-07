@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Wallet, X, ShieldCheck } from "lucide-react";
-import GlobalShopHistory from "./GlobalShopHistory";
+import GlobalShopHistory from "@shop/components/GlobalShopHistory.jsx";
+import { ShieldCheck, Wallet, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 // ============================================================================

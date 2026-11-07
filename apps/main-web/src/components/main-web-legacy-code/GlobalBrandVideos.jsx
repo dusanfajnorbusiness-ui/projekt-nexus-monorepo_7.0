@@ -14,9 +14,9 @@ import {
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY
 // ============================================================================
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { supabase } from "@main-web/services/NexusDB_Supabase";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
 
 export const GlobalBrandVideos = ({ moduleId = "nexus_main_brand" }) => {
   // 👑 AUTONÓMNA DETEKCIA ARCHITEKTA CEZ LOCAL STORAGE

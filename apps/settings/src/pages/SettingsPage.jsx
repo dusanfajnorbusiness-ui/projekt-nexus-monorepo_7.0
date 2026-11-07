@@ -1,109 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  Save,
-  Activity,
-  User,
-  ShieldCheck,
-  Database,
-  FileText,
-  Settings,
-  Key,
-  HeartPulse,
-  Lock,
-  Wallet,
-  Share2,
-  Users,
-  Bell,
-  Eye,
-  Star,
-  Menu,
-  X,
-  CheckCircle2,
-  Download,
-  Clock,
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify,
-  List,
-  ListOrdered,
-  CornerDownLeft,
-  Quote,
-  Code,
-  ShieldAlert,
-  EyeOff,
-  Table,
-  Image as ImageIcon,
-  Link,
-  Film,
-  Heading,
-  Type,
-  Palette,
-  Eraser,
-  Calendar,
-  Maximize2,
-  Minimize2,
-  Trash2,
-  ArrowUpCircle,
-  ArrowDownCircle,
-  Ban,
-  Crown,
-  PlusCircle,
-  Shield,
-  Phone,
-  Globe,
-  AlertTriangle,
-  Send,
-  Youtube,
-  Instagram,
-  MessageCircle,
-  Music2,
-  Music,
-  QrCode,
-  Info,
-  Github,
-  Smartphone,
-  Linkedin,
-  Twitch,
-  Gamepad2,
-  Facebook,
-  Chrome,
-  Twitter,
-  Mail,
-  Terminal,
-  AtSign,
-  Heart,
-  LogIn,
-} from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import SettingsHeaderComponent from "@settings/components/SettingsHeaderComponent.jsx";
+import { GlobalProfil } from "@shared/components/GlobalProfil.jsx";
+// ⚡ EXODUS FIX: Zmazané všetky importy 'firebase/firestore' !
 
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { checkPermission, PERMISSIONS_MATRIX } from "@shared/data/permissionsRegistry.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import GlobalShopHistory from "@shop/components/GlobalShopHistory.jsx";
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (VO SVOJOM VS CODE ODKOMENTUJ ORIGINÁLY) ⚠️
 // ============================================================================
-import {
-  onAuthStateChanged,
-  getAuth,
-  updatePassword,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-} from "firebase/auth";
-
-// ⚡ EXODUS FIX: Zmazané všetky importy 'firebase/firestore' !
-
-import { getTierColor } from "@shared/data/nexusConfig";
-import {
-  PERMISSIONS_MATRIX,
-  checkPermission,
-} from "@shared/data/permissionsRegistry";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { GlobalProfil } from "@shared/components/GlobalProfil";
-import GlobalShopHistory from "@shop/components/GlobalShopHistory";
-import { supabase } from "@shared/services/NexusDB_Supabase";
-import { NexusDB } from "@shared/services/NexusDB_Core";
+import { EmailAuthProvider, getAuth, onAuthStateChanged, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { Activity, AlertTriangle, AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowDownCircle, ArrowUpCircle, AtSign, Ban, Bell, Bold, Calendar, CheckCircle2, Chrome, Clock, Code, CornerDownLeft, Crown, Database, Download, Eraser, Eye, EyeOff, Facebook, FileText, Film, Gamepad2, Github, Globe, Heading, Heart, HeartPulse, Image as ImageIcon, Info, Instagram, Italic, Key, Link, Linkedin, List, ListOrdered, Lock, LogIn, Mail, Maximize2, Menu, MessageCircle, Minimize2, Music, Music2, Palette, Phone, PlusCircle, QrCode, Quote, Save, Send, Settings, Share2, Shield, ShieldAlert, ShieldCheck, Smartphone, Star, Strikethrough, Table, Terminal, Trash2, Twitch, Twitter, Type, Underline, User, Users, Wallet, X, Youtube } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 // ============================================================================
 // 🌟 POMOCNÝ KOMPONENT PRE TOOLTIPY (ALIGN CENTER FIX & OVERFLOW PREVENT)
@@ -217,21 +128,34 @@ const DEFAULT_FORM_DATA = {
 /**
  * 🟢 NEXUS CORE SETUP (V6.4 - Očistený Kód bez zdvojených divov)
  */
-export default function SettingsPage({ userState, setUserState }) {
+export default function SettingsPage({
+  setActiveTab: setActiveTabProp,
+  userState,
+  setUserState,
+  themeColor,
+  setThemeColor,
+  onThemeChange,
+}) {
+   const userTier =
+    userState?.isGuest || userState?.tier === "QUEST" || !userState?.email
+      ? "QUEST"
+      : userState?.tier || "FREE";
   const params = useParams();
   const navigate = useNavigate();
   const urlSection = params["*"];
+
+  // 🎯 Kánonická Fialová pre Settings / Nexus Core (#8A2BE2) 1:1 podľa Operators
+  useEffect(() => {
+    const triggerTheme = onThemeChange || setThemeColor;
+    if (triggerTheme) {
+      triggerTheme("#8A2BE2"); // Settings / Nexus Core Purple
+    }
+  }, [onThemeChange, setThemeColor]);
 
   // 🚀 FORCED SCROLL-TO-TOP (Reset osi Y pri načítaní stránky)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
-
-  const [userTier, setUserTier] = useState(
-    userState?.isGuest || userState?.tier === "QUEST" || !userState?.email
-      ? "QUEST"
-      : userState?.tier || "FREE",
-  );
 
   // Ak prídeme na čisté /settings, hodí nás to na "registration"
   const [activeTab, setActiveTab] = useState(urlSection || "registration");
@@ -1146,62 +1070,63 @@ export default function SettingsPage({ userState, setUserState }) {
         />
       )}
 
-      {/* <MetaTags
-        title="CORE SETUP: Nastavenie profilu a Klientska zóna | NEXUS OS"
-        description="Klientska zóna a riadiaci panel operátora Projektu Nexus. Správa osobného účtu, nastavenie profilu (Dossier), notifikácií a ochrana súkromných dát v Sieti."
-        image="https://projekt-nexus.sk/img-nexus/pages/SettingsPage.jpg"
-        color="#8A2BE2"
-        url="https://projekt-nexus.sk/settings"
-        ogTitle="CORE SETUP: Tvoje dáta sú v chaose. Prevezmi kontrolu nad Avatarom"
-        ogDescription="Matrix ťa sleduje, no ty strácaš kontrolu. Vstúp do riadiaceho panela. Modifikuj svoj sémantický odtlačok, nastav si ochranné štíty a optimalizuj svoju prítomnosť v Sieti."
-        twitterTitle="CORE SETUP: Tvoje dáta sú v chaose. Prevezmi kontrolu nad Avatarom"
-        twitterDescription="Matrix ťa sleduje, no ty strácaš kontrolu. Vstúp do riadiaceho panela, nastav si ochranné štíty a optimalizuj svoj profil v Sieti."
-      /> */}
-      {/* 🚀 HLAVIČKA NASTAVENÍ (CORE) */}
-      <header className="mb-8 md:mb-12 border-b border-white/5 pb-8 md:pb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10 animate-in slide-in-from-top-4 duration-700 w-full">
-        {/* ĽAVÁ STRANA: Zjednotený Vizuál */}
-        <div className="w-full md:w-auto text-left">
-          {/* ⚡ Zjednotený Subtitle pre Verziu */}
-          <div className="flex items-center gap-3 mb-4">
-            <div
-              className="p-2 rounded-lg border transition-colors duration-500"
-              style={{
-                backgroundColor: `#8A2BE210`,
-                borderColor: `#8A2BE230`,
-              }}
-            >
-              <Terminal size={16} style={{ color: "#8A2BE2" }} />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 italic">
-              CORE_SETUP_TERMINAL // V6.4
-            </span>
+      {/* 💜 UNIFIKOVANÝ 1:1 OPERATORS-STYLE HEADER PRE SETTINGS */}
+      <SettingsHeaderComponent
+        themeColor={themeColor || "#8A2BE2"}
+        onThemeChange={onThemeChange}
+      />
+
+
+      {/* 🚀 HLAVIČKA NASTAVENÍ (1:1 OPERATORS UI SHAPE & LAYOUT) */}
+      <header className="mb-8 md:mb-12 border-b border-white/10 pb-6 md:pb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 relative z-10 w-full">
+        {/* ĽAVÁ STRANA: POPIS UZLA A TITUL */}
+        <div className="space-y-3 max-w-2xl text-left">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
+            style={{
+              borderColor: `${themeColor || "#8A2BE2"}40`,
+              backgroundColor: `${themeColor || "#8A2BE2"}10`,
+              color: themeColor || "#8A2BE2",
+            }}
+          >
+            <Terminal size={14} className="animate-pulse" />
+            CORE_SETUP_TERMINAL // V20.95
           </div>
 
-          {/* ⚡ Hlavný H1 Nadpis: Ikona + NEXUS CORE */}
-          <h1
-            className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic flex items-center gap-3 md:gap-5 transition-colors duration-500"
-            style={{ textShadow: `0 0 30px #8A2BE240` }}
-          >
+          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white leading-none flex items-center gap-3">
             <Settings
-              className="w-10 h-10 md:w-14 md:h-14"
-              style={{ color: "#8A2BE2" }}
+              className="w-8 h-8 md:w-12 md:h-12"
+              style={{ color: themeColor || "#8A2BE2" }}
             />
-            <span className="text-white">Nexus</span>
-            <span style={{ color: "#8A2BE2" }}>Core</span>
+            NEXUS{" "}
+            <span
+              style={{
+                color: themeColor || "#8A2BE2",
+                filter: `drop-shadow(0 0 15px ${themeColor || "#8A2BE2"}80)`,
+              }}
+            >
+              CORE
+            </span>
           </h1>
-          <p className="text-gray-500 font-mono text-[10px] mt-2 uppercase tracking-[0.5em]">
-            Profil Operátora & Systémové Práva
+
+          <p className="text-sm text-zinc-400 font-sans leading-relaxed">
+            Profil Operátora & Systémové Práva OS Genesis. Konfigurácia systémových nastavení, Auth Matrix preverovanie a synchronizácia dát v reálnom čase.
           </p>
         </div>
-        {/* PRAVÁ STRANA: Tvoje exekutívne tlačidlá (Nedotknuté) */}
-        <div className="flex items-center gap-4 w-full md:w-auto flex-wrap justify-center md:justify-end">
+
+        {/* PRAVÁ STRANA: EXEKUTÍVNE TLAČIDLO SYNC MATRIX */}
+        <div className="flex items-center gap-4 w-full lg:w-auto flex-wrap justify-center lg:justify-end relative">
           <button
+            type="button"
             onClick={handleSave}
-            disabled={isGuestEntity || activeTab === "auth_matrix"}
-            className="relative group flex-1 md:flex-none flex items-center justify-center gap-3 bg-white/5 hover:bg-white text-white hover:text-black border border-white/10 px-8 py-4 rounded-2xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-xl font-black uppercase tracking-widest text-[11px] disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isGuestEntity || activeTab === "auth_matrix" || isSaving}
+            className="relative group flex-1 lg:flex-none flex items-center justify-center gap-3 bg-white/5 hover:bg-white text-white hover:text-black border border-white/10 px-8 py-4 rounded-2xl transition-all shadow-lg font-black uppercase tracking-widest text-[11px] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            style={{
+              boxShadow: `0 0 20px ${themeColor || "#8A2BE2"}25`,
+            }}
           >
             {isSaving ? (
-              <Activity size={18} className="animate-spin" />
+              <Activity size={18} className="animate-spin text-purple-400" />
             ) : (
               <Save
                 size={18}
@@ -1213,15 +1138,19 @@ export default function SettingsPage({ userState, setUserState }) {
               : saveStatus === "ERROR"
                 ? "Failed"
                 : "Sync Matrix"}
-            <TooltipHover
-              text="Trvalo uložiť všetky lokálne zmeny do Cloud Matrixu."
-              dimColor={tierColor}
-              position="bottom"
-              align="right"
-            />
+
+            {TooltipHover && (
+              <TooltipHover
+                text="Trvalo uložiť všetky lokálne zmeny do Cloud Matrixu."
+                dimColor={tierColor || themeColor || "#8A2BE2"}
+                position="bottom"
+                align="right"
+              />
+            )}
           </button>
         </div>
       </header>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full relative mb-16">
         {/* ⚡ OPRAVA 1: Zmazaná podmienka isSidebarOpen. 
             Teraz je panel na mobile skrytý (hidden) a na desktope viditeľný (lg:block lg:col-span-3) */}

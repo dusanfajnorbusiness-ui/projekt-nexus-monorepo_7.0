@@ -1,50 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  Users,
-  User,
-  Shield,
-  Activity,
-  X,
-  AlertTriangle,
-  ShieldAlert,
-  Trash2,
-  ArrowUpCircle,
-  ArrowDownCircle,
-  Ban,
-  Crown,
-  FileText,
-  Search,
-  SlidersHorizontal,
-  Grid,
-  LayoutGrid,
-  List,
-  Filter,
-  Wifi,
-  Clock,
-  Trophy,
-  BookOpen,
-  Terminal,
-  Calendar,
-} from "lucide-react";
-
+import { getAvatarColor, getPresenceStatus } from "@blog/utils/Blog-PresenceEngine.js";
+import MetaTags from "@shared/components/MetaTags.jsx";
 // ⚡ EXODUS FIX: Zmazané priame volania "firebase/firestore"
 
 // ============================================================================
 // ⚠️ LOKÁLNE IMPORTY PRE VÁŠ PROJEKT (ODKOMENTUJTE V LOKÁLNOM KÓDE) ⚠️
 // ============================================================================
 
-import { getTierColor } from "@shared/data/nexusConfig";
-import { checkPermission } from "@operators/data/permissionsRegistry";
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
 // import { GlobalProfil } from "@operators/components/GlobalProfil";
-import GlobalEventRewards from "@operators/components/shop/GlobalEventRewards";
-import {
-  getAvatarColor,
-  getPresenceStatus,
-} from "@operators/utils/Blog-PresenceEngine";
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core"; // ⚡ PRIDANÝ MOST
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
-import { MetaTags } from "@operators/components/MetaTags";
+import GlobalEventRewards from "@shop/components/GlobalEventRewards.jsx";
+import { Activity, ArrowDownCircle, ArrowUpCircle, Ban, Calendar, Crown, FileText, Filter, Grid, LayoutGrid, List, Search, SlidersHorizontal, Terminal, Trash2, Trophy, User, Users, Wifi } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+// ⚡ PRIDANÝ MOST
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { OperatorsHeader } from "@operators/components/OperatorsHeader.jsx";
 
 // ============================================================================
 // ⚡ PROTOKOL VERZIOVANIA (CORE-VER-001)
@@ -259,7 +231,21 @@ const NetworkStatusTacho = ({ count = 0, color, label }) => {
   );
 };
 
-export default function OperatorsPage() {
+export default function OperatorsPage( {
+  setActiveTab,
+    userState,
+    themeColor,
+    setThemeColor,
+    onThemeChange,
+  }) {
+  
+    useEffect(() => {
+      const triggerTheme = onThemeChange || setThemeColor;
+      if (triggerTheme) {
+        triggerTheme("#FFAA00"); // Operators / Level 48 Control Panel
+      }
+    }, [onThemeChange, setThemeColor]);
+  
   // ==========================================================================
   // 1. INICIALIZÁCIA ROUTER HOOKOV
   // ==========================================================================
@@ -658,77 +644,77 @@ export default function OperatorsPage() {
         twitterTitle="SIEŤ ENTÍT: Si sám uprostred spiacich NPC? Nájdi svoj Kmeň."
         twitterDescription="Obklopujú ťa ľudia bez vízie? Odomkni Sieť Entít, nájdi podobne zmýšľajúcich operátorov a pripoj sa k našej exkluzívnej IT komunite."
       />
-      {/* 🚀 HLAVIČKA OPERATORS */}
-      <header className="mb-8 md:mb-12 border-b border-white/5 pb-8 md:pb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10 animate-in slide-in-from-top-4 duration-700">
-        <div className="text-left">
-          {/* ⚡ Zjednotený Subtitle pre Verziu */}
-          <div className="flex items-center gap-3 mb-4">
-            <div
-              className="p-2 rounded-lg border transition-colors duration-500"
+      <OperatorsHeader
+        themeColor={themeColor || "#FFAA00"}
+        dimensionName="OPERATOR CONTROL PANEL // CORE MATRIX"
+        subTitle="ENTITY NETWORK // V20.95 ARCHITECT"
+        onThemeChange={onThemeChange}
+      />
+
+      {/* 2. HERO MANIFEST POPIS & HUD TACHOMETRE SIETE */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-6">
+        <header className="mb-8 md:mb-12 border-b border-white/10 pb-6 md:pb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          {/* L'AVÁ STRANA: POPIS UZLA A TITUL */}
+          <div className="space-y-3 max-w-2xl">
+            <div 
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
               style={{
-                backgroundColor: `#00FFFF10`,
-                borderColor: `#00FFFF30`,
+                borderColor: `${themeColor || "#FFAA00"}40`,
+                backgroundColor: `${themeColor || "#FFAA00"}10`,
+                color: themeColor || "#FFAA00"
               }}
             >
-              <Terminal size={16} style={{ color: "#00FFFF" }} />
+              <Terminal size={14} className="animate-pulse" />
+              ENTITY_NETWORK // V20.95
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 italic">
-              ENTITY_NETWORK // V4.9
-            </span>
+            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white leading-none flex items-center gap-3">
+              <Users className="w-8 h-8 md:w-12 md:h-12 text-[#FFAA00]" />
+              NEXUS <span className="text-[#FFAA00]" style={{ filter: "drop-shadow(0 0 15px rgba(255,170,0,0.5))" }}>OPERATORS</span>
+            </h1>
+            <p className="text-sm text-zinc-400 font-sans leading-relaxed">
+              Sieť operátorov a databáza entít OS Genesis. Registrácia, Auth Matrix preverovanie a sledovanie sieťovej aktivity v reálnom čase.
+            </p>
           </div>
 
-          {/* ⚡ Hlavný H1 Nadpis: Ikona + NEXUS OPERATORS */}
-          <h1
-            id="nexus-operators-filter"
-            className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic flex items-center gap-3 md:gap-5 transition-colors duration-500"
-            style={{ textShadow: `0 0 30px #00FFFF40` }}
-          >
-            <Users
-              className="w-10 h-10 md:w-14 md:h-14"
-              style={{ color: "#00FFFF" }}
-            />
-            <span className="text-white">Nexus</span>
-            <span style={{ color: "#00FFFF" }}>Operators</span>
-          </h1>
-        </div>
+          {/* PRAVÁ STRANA: HUD TACHOMETRE SIETE A CELKOVÁ KAPACITA (ZACHOVANÉ 1:1) */}
+          <div className="flex items-center gap-3 md:gap-5 bg-black/40 p-2 pr-5 md:pr-6 rounded-2xl border border-white/10 shadow-inner">
+            {/* 3x Tachometer */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <NetworkStatusTacho
+                count={networkStats?.online || 0}
+                color="#39FF14"
+                label="Online"
+              />
+              <NetworkStatusTacho
+                count={networkStats?.sleep || 0}
+                color="#FFD700"
+                label="Sleep"
+              />
+              <NetworkStatusTacho
+                count={networkStats?.offline || 0}
+                color="#6b7280"
+                label="Offline"
+              />
+            </div>
 
-        {/* ⚡ HUD TACHOMETRE SIETE A CELKOVÁ KAPACITA (Vpravo) */}
-        <div className="flex items-center gap-3 md:gap-5 bg-black/40 p-2 pr-5 md:pr-6 rounded-full border border-white/5 shadow-inner">
-          {/* 3x Tachometer */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <NetworkStatusTacho
-              count={networkStats?.online || 0}
-              color="#39FF14"
-              label="Online"
-            />
-            <NetworkStatusTacho
-              count={networkStats?.sleep || 0}
-              color="#FFD700"
-              label="Sleep"
-            />
-            <NetworkStatusTacho
-              count={networkStats?.offline || 0}
-              color="#6b7280"
-              label="Offline"
-            />
-          </div>
-
-          {/* ⚡ 4. Parameter: Celkový počet entít (Čistý textový ukazovateľ) */}
-          <div className="hidden sm:flex flex-col items-end border-l border-white/10 pl-3 md:pl-5">
-            <span className="text-[7px] md:text-[8px] font-mono text-white/40 uppercase tracking-widest mb-1">
-              Celková Kapacita
-            </span>
-            <div className="flex items-center gap-2">
-              <Users size={14} className="text-[#00FFFF]" />
-              <span className="text-sm md:text-base font-black text-white tracking-widest">
-                {networkStats?.total
-                  ? networkStats.total.toLocaleString("sk-SK")
-                  : 0}
+            {/* 4. Parameter: Celková Kapacita */}
+            <div className="hidden sm:flex flex-col items-end border-l border-white/10 pl-3 md:pl-5">
+              <span className="text-[7px] md:text-[8px] font-mono text-white/40 uppercase tracking-widest mb-1">
+                Celková Kapacita
               </span>
+              <div className="flex items-center gap-2">
+                <Users size={14} className="text-[#FFAA00]" />
+                <span className="text-sm md:text-base font-black text-white tracking-widest">
+                  {networkStats?.total
+                    ? networkStats.total.toLocaleString("sk-SK")
+                    : 0}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      </div>
+
       {/* 🚀 PANEL NÁSTROJOV (ZJEDNOTENÝ MONOLIT V20) */}
       <div className="flex flex-col gap-4 mb-8 bg-black/60 p-4 md:p-5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-md w-full relative z-30">
         {/* HORNÝ RIADOK: PREPÍNAČ POHĽADU A FULL-TEXT SEARCH */}

@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { checkPermission } from "@blog/data/permissionsRegistry";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
 
 // ⚡ JEDINÝ IMPORT DÁT: Náš nový abstraktný most
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
 
 const CORE_VERSION = "H-BlogEngine V30.0-EXODUS-CLEAN";
 

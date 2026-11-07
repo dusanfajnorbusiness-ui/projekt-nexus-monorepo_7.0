@@ -1,52 +1,73 @@
+// ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
+import { CoreChronometer } from "@shared/components/CoreChronometer.jsx";
+import { BrainCircuit, Cpu, Database, FileText, Shield, Terminal, Zap } from "lucide-react";
 import React from "react";
-import {
-  Shield,
-  Terminal,
-  Cpu,
-  Database,
-  Zap,
-  BrainCircuit,
-} from "lucide-react";
+
+// ============================================================================
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS03 MASTER DATASET V20.95)
+// Súbor: @shared/components/GlobalFooter.jsx
+// Status: 100% GROUNDED // FULL THEME COLOR SYNC & CORE UPTIME & SYSTEM LOG
+// ============================================================================
 
 export const GlobalFooter = ({
-  userTier,
+  userTier = "QUEST",
   themeColor = "#39FF14",
   activeTab = "home",
   onNavigate,
+  onOpenSystemLog,
+  uptime,
 }) => {
   const currentYear = new Date().getFullYear();
+  // Defenzívne ošetrenie hodnoty Tieru
+  const displayTier = (() => {
+    if (userTier && userTier !== "QUEST") return String(userTier).toUpperCase();
+    if (typeof window !== "undefined") {
+      try {
+        const active = localStorage.getItem("nexus_active_identity");
+        if (active) {
+          const parsed = JSON.parse(active);
+          if (parsed?.tier) return String(parsed.tier).toUpperCase();
+        }
+      } catch (e) {}
+    }
+    return String(userTier || "QUEST").toUpperCase();
+  })();
 
   return (
-    <footer className="relative mt-auto border-t border-white/5 bg-[#020408]/80 backdrop-blur-xl overflow-hidden font-mono">
-      {/* Dynamický glow efekt podfarbený farbou dimenzie */}
+    <footer className="relative mt-auto border-t border-white/5 bg-[#020408]/90 backdrop-blur-xl overflow-hidden font-mono transition-colors duration-500">
+      {/* 🎨 Dynamický glow efekt podfarbený farbou dimenzie */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-50 transition-colors duration-1000"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-60 transition-all duration-700 pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(to right, transparent, ${themeColor}, transparent)`,
+          boxShadow: `0 0 15px ${themeColor}`,
         }}
       />
       <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-32 blur-[100px] opacity-10 pointer-events-none transition-colors duration-1000"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-32 blur-[120px] opacity-15 pointer-events-none transition-all duration-700"
         style={{ backgroundColor: themeColor }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 py-10 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-          {/* Left Side: Branding */}
+      <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+          
+          {/* 🛑 LEFT SIDE: BRANDING */}
           <div className="flex flex-col items-center md:items-start gap-2">
             <div className="flex items-center gap-3">
               <div
-                className="p-1.5 rounded-lg border border-white/10 transition-colors duration-1000 shadow-inner"
+                className="p-1.5 rounded-lg border transition-all duration-500 shadow-inner"
                 style={{
                   backgroundColor: `${themeColor}15`,
+                  borderColor: `${themeColor}40`,
                   color: themeColor,
+                  boxShadow: `0 0 10px ${themeColor}20`,
                 }}
               >
                 <Shield size={16} />
               </div>
-              <span className="font-black tracking-widest uppercase italic text-white text-sm transition-colors duration-1000">
+              <span className="font-black tracking-widest uppercase italic text-white text-sm transition-colors duration-500">
                 Nexus{" "}
-                <span style={{ color: themeColor }} className="not-italic">
+                <span style={{ color: themeColor }} className="not-italic transition-colors duration-500">
                   OS
                 </span>
               </span>
@@ -55,7 +76,7 @@ export const GlobalFooter = ({
               CyberTech Architect{" "}
               <span
                 style={{ color: themeColor }}
-                className="font-black text-[12px]"
+                className="font-black text-[12px] transition-colors duration-500"
               >
                 ×
               </span>{" "}
@@ -63,38 +84,93 @@ export const GlobalFooter = ({
             </div>
           </div>
 
-          {/* Center: Status Dashboard */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 border border-white/5 bg-white/[0.02] px-6 py-3 rounded-2xl shadow-lg">
-            <div className="flex items-center gap-3">
+          {/* ⚡ CENTER: STATUS DASHBOARD (CELÝ VO FARBE DIMENZIE + CHRONOMETER & LOG) */}
+          <div 
+            className="flex flex-wrap items-center justify-center gap-3 md:gap-4 border px-5 py-2.5 rounded-2xl shadow-lg backdrop-blur-md transition-all duration-500"
+            style={{
+              borderColor: `${themeColor}35`,
+              backgroundColor: `${themeColor}05`,
+              boxShadow: `0 0 20px ${themeColor}10`,
+            }}
+          >
+            {/* SECTOR */}
+            <div className="flex items-center gap-2">
               <div
-                className="w-2 h-2 rounded-full animate-pulse transition-colors duration-1000"
+                className="w-2 h-2 rounded-full animate-pulse transition-all duration-500"
                 style={{
                   backgroundColor: themeColor,
                   boxShadow: `0 0 10px ${themeColor}`,
                 }}
               />
-              <span className="text-[9px] font-black uppercase tracking-widest text-white/50 flex items-center gap-2">
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
                 Sector:{" "}
                 <span
                   style={{ color: themeColor }}
-                  className="transition-colors duration-1000"
+                  className="transition-colors duration-500"
                 >
                   {activeTab}
                 </span>
               </span>
             </div>
+
             <div className="hidden sm:block w-px h-4 bg-white/10" />
+
+            {/* TIER (VYRIEŠENÁ CHYBNÁ HODNOTA) */}
             <div className="flex items-center gap-2">
-              <Terminal size={12} className="text-white/30" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-white/50">
-                Tier: {userTier}
+              <Terminal size={12} style={{ color: themeColor }} className="opacity-70 transition-colors duration-500" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
+                Tier:{" "}
+                <span style={{ color: themeColor }} className="font-extrabold transition-colors duration-500">
+                  {displayTier}
+                </span>
               </span>
             </div>
+
+            <div className="hidden sm:block w-px h-4 bg-white/10" />
+
+            {/* ⏱️ CORE UPTIME (ZABUDOVANÝ CHRONOMETER VO FARBE DIMENZIE) */}
+            <div className="flex items-center gap-2 shrink-0 relative group">
+              <div 
+                className="p-1 rounded-lg border transition-all cursor-pointer"
+                style={{
+                  backgroundColor: "#080E14",
+                  borderColor: `${themeColor}40`,
+                  color: themeColor,
+                }}
+              >
+                <CoreChronometer themeColor={themeColor} uptime={uptime} />
+              </div>
+            </div>
+
+
+
+            <div className="hidden sm:block w-px h-4 bg-white/10" />
+
+            {/* 📜 SYSTEM LOG BUTTON (ZABUDOVANÉ TLAČIDLO VO FARBE DIMENZIE) */}
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof onOpenSystemLog === "function") {
+                  onOpenSystemLog();
+                } else if (typeof onNavigate === "function") {
+                  onNavigate("system-log");
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all text-[9px] font-black uppercase tracking-widest hover:scale-[1.03]"
+              style={{
+                backgroundColor: `${themeColor}15`,
+                borderColor: `${themeColor}50`,
+                color: themeColor,
+                boxShadow: `0 0 12px ${themeColor}15`,
+              }}
+            >
+              <FileText size={12} style={{ color: themeColor }} /> System Log
+            </button>
           </div>
 
-          {/* Right Side: Copyright & Tech */}
-          <div className="flex flex-col items-center md:items-end gap-3 text-[9px] text-white/30 uppercase tracking-widest">
-            <div className="flex items-center gap-4 mb-1">
+          {/* 🔴 RIGHT SIDE: COPYRIGHT & TECH */}
+          <div className="flex flex-col items-center md:items-end gap-2.5 text-[9px] text-white/30 uppercase tracking-widest">
+            <div className="flex items-center gap-4 mb-0.5">
               <Cpu
                 size={14}
                 className="opacity-40 hover:opacity-100 transition-opacity"
@@ -107,7 +183,7 @@ export const GlobalFooter = ({
               />
               <BrainCircuit
                 size={14}
-                className="opacity-60 hover:opacity-100 transition-opacity"
+                className="opacity-80 hover:opacity-100 transition-opacity"
                 style={{ color: themeColor }}
                 title="AI Integration"
               />
@@ -117,29 +193,46 @@ export const GlobalFooter = ({
                 title="Energy Output"
               />
             </div>
-            {/* ⚖️ VOP & SÚKROMIE (Pre Google/Meta Botov a čistý Routing) */}
-            <div className="flex items-center gap-3 text-[8px] font-black tracking-widest text-white/30 mb-1">
+
+            {/* ⚖️ VOP & SÚKROMIE */}
+            <div className="flex items-center gap-3 text-[8px] font-black tracking-widest text-white/40">
               <a
                 href="/vop"
-                className="hover:text-[#00FFFF] transition-colors uppercase cursor-pointer"
+                onClick={(e) => {
+                  if (typeof onNavigate === "function") {
+                    e.preventDefault();
+                    onNavigate("vop");
+                  }
+                }}
+                className="hover:text-white transition-colors uppercase cursor-pointer"
               >
                 VOP
               </a>
               <span className="w-1 h-1 rounded-full bg-white/20"></span>
               <a
                 href="/privacy"
-                className="hover:text-[#00FFFF] transition-colors uppercase cursor-pointer"
+                onClick={(e) => {
+                  if (typeof onNavigate === "function") {
+                    e.preventDefault();
+                    onNavigate("privacy");
+                  }
+                }}
+                className="hover:text-white transition-colors uppercase cursor-pointer"
               >
                 Súkromie
               </a>
             </div>
+
             <p>© {currentYear} NEXUS PROTOCOL. All Rights Reserved.</p>
             <p className="text-[7px] text-white/20 font-black tracking-[0.4em] uppercase">
               Co-Engineered by Sergeant [CORE]
             </p>
           </div>
+
         </div>
       </div>
     </footer>
   );
 };
+
+export default GlobalFooter;

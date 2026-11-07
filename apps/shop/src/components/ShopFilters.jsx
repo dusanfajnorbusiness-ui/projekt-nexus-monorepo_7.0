@@ -1,41 +1,8 @@
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { getFiltersConfig } from "@shop/data/ShopFilters.js";
 /* eslint-disable no-undef */
-import React, { useState, useMemo } from "react";
-import {
-  Search,
-  Grid3X3,
-  Grid,
-  List,
-  RefreshCw,
-  Cpu,
-  Globe,
-  Smartphone,
-  Laptop,
-  Video,
-  Volume2,
-  Image,
-  FileText,
-  ShoppingCart,
-  Crown,
-  Zap,
-  Activity,
-  Terminal,
-  DollarSign,
-  PlayCircle,
-  Film,
-  Mic,
-  Radio,
-  Music,
-  Bot,
-  Shield,
-  BookOpen,
-  TrendingUp,
-  X,
-  HelpCircle,
-  Layers,
-} from "lucide-react";
-
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { SHOP_FILTERS_CONFIG, getFiltersConfig } from "../data/ShopFilters";
+import { Activity, BookOpen, Bot, Cpu, Crown, DollarSign, FileText, Film, Globe, Grid, Grid3X3, HelpCircle, Image, Laptop, Layers, List, Mic, Music, PlayCircle, Radio, RefreshCw, Search, Shield, ShoppingCart, Smartphone, Terminal, TrendingUp, Video, Volume2, X, Zap } from "lucide-react";
+import { useMemo, useState } from "react";
 
 // Icon Resolver Map for dynamic rendering
 const ICON_MAP = {

@@ -17,12 +17,12 @@ import {
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (NAPOJENÉ NA TVOJ MODULÁRNY SYSTÉM)
 // ============================================================================
-import { getTierColor } from "@shared/data/nexusConfig";
-import { checkPermission } from "@shared/data/permissionsRegistry";
-import { DIMENSION_DESCRIPTIONS } from "@shared/data/DimensionDescriptions";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import BlogPostCard from "./BlogPostCard";
-import { RecursiveThread } from "../pages/BlogPage";
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import BlogPostCard from "@blog/components/BlogPostCard.jsx";
+import { RecursiveThread } from "@blog/pages/BlogPage.jsx";
 
 const CATEGORY_COLORS = {
   system: "#FF003C",

@@ -1,6 +1,6 @@
 import React from "react";
 import { Cpu, Lock, Database } from "lucide-react";
-import { id02OmegaMap as ID02_Map } from "@main-web/data/ID02_OmegaMap";
+import { id02OmegaMap as ID02_Map } from "@main-web/data/ID02_OmegaMap.js";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -9,19 +9,19 @@ import { id02OmegaMap as ID02_Map } from "@main-web/data/ID02_OmegaMap";
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "ID02_Workflow" (Offline Preview) umiestnený pod tým.
 
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
 
 // ============================================================================
 // --- ONLINE UZLY (ID02) - THE WORKFLOW [100 NODES READY] ---
 // ============================================================================
 
 // 📂 SEKCIA A: ZÁKLADNÉ PILIERE ZAMESTNANIA (Vstupná Brána)
-import Node_ID02_01 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_01";
-import Node_ID02_02 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_02";
-import Node_ID02_03 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_03";
-import Node_ID02_04 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_04";
-import Node_ID02_05 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_05";
-import Node_ID02_06 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_06";
+import Node_ID02_01 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_01.jsx";
+import Node_ID02_02 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_02.jsx";
+import Node_ID02_03 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_03.jsx";
+import Node_ID02_04 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_04.jsx";
+import Node_ID02_05 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_05.jsx";
+import Node_ID02_06 from "@main-web/subPages/ID02-Workflow/FREE/Node_ID02_06.jsx";
 // import Node_ID02_07 from "@main-web/subPages/ID02-Workflow/PRO/Node_ID02_07";
 // import Node_ID02_08 from "@main-web/subPages/ID02-Workflow/PRO/Node_ID02_08";
 // import Node_ID02_09 from "@main-web/subPages/ID02-Workflow/OMEGA/Node_ID02_09";

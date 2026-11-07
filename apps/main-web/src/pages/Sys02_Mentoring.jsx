@@ -1,17 +1,10 @@
+import { GlobalComponents } from "@shared/components/GlobalComponents.jsx";
+import { GlobalFooter } from "@shared/components/GlobalFooter.jsx";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { Activity, ArrowLeft, Clock, ShieldAlert, Terminal, Users } from "lucide-react";
 import React from "react";
-import {
-  Users,
-  Terminal,
-  Activity,
-  ArrowLeft,
-  Clock,
-  ShieldAlert,
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { GlobalComponents } from "@main-web/components/GlobalComponents";
-import { GlobalHamburgerMenu } from "@main-web/components/GlobalHamburgerMenu";
-import { GlobalFooter } from "@main-web/components/GlobalFooter";
-import { SoundFX } from "@shared/utils/SoundEngine";
 
 const CORE_VERSION = "SYS02-VIDEO_MENTORING V20.0-STANDBY";
 const DIM_COLOR = "#E91E63";

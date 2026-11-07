@@ -1,11 +1,57 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
+    "main-web": { "root": "apps/main-web", "framework": "vite" },
     "agency": { "root": "apps/agency", "framework": "vite" },
-    "main-web": { "root": "apps/main-web", "framework": "vite" }
+    "uplink": { "root": "apps/uplink", "framework": "vite" },
+    "admin": { "root": "apps/admin", "framework": "vite" },
+    "blog": { "root": "apps/blog", "framework": "vite" },
+    "operators": { "root": "apps/operators", "framework": "vite" },
+    "shop": { "root": "apps/shop", "framework": "vite" },
+    "settings": { "root": "apps/settings", "framework": "vite" }
   },
   "rewrites": [
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "uplink.projekt-nexus.sk" }],
+      "destination": "uplink"
+    },
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "agency.projekt-nexus.sk" }],
+      "destination": "agency"
+    },
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "shop.projekt-nexus.sk" }],
+      "destination": "shop"
+    },
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "admin.projekt-nexus.sk" }],
+      "destination": "admin"
+    },
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "blog.projekt-nexus.sk" }],
+      "destination": "blog"
+    },
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "operators.projekt-nexus.sk" }],
+      "destination": "operators"
+    },
+    {
+      "source": "/:(path*)",
+      "has": [{ "type": "host", "value": "settings.projekt-nexus.sk" }],
+      "destination": "settings"
+    },
     { "source": "/agency/(.*)", "destination": "agency" },
+    { "source": "/shop/(.*)", "destination": "shop" },
+    { "source": "/admin/(.*)", "destination": "admin" },
+    { "source": "/blog/(.*)", "destination": "blog" },
+    { "source": "/operators/(.*)", "destination": "operators" },
+    { "source": "/settings/(.*)", "destination": "settings" },
     { "source": "/(.*)", "destination": "main-web" }
   ]
 }

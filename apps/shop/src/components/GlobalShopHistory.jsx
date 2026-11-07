@@ -1,37 +1,10 @@
-import React, { useState, useEffect } from "react";
-import {
-  History,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw,
-  Filter,
-  Trash2,
-  Activity,
-  ArrowDownRight,
-  ArrowUpRight,
-  Tag,
-  Crown,
-  Unlock,
-  LayoutGrid,
-  Cpu,
-  ShoppingBag,
-  Video,
-  Headphones,
-  Image as ImageIcon,
-  FileText,
-  Zap,
-  Ticket,
-  Layers,
-  ShieldCheck,
-  Wallet,
-} from "lucide-react";
-
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
 // ============================================================================
-import { NexusDB } from "@shared/services/NexusDB_Core";
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { Activity, AlertCircle, ArrowDownRight, ArrowUpRight, CheckCircle2, Clock, Cpu, Crown, FileText, Filter, Headphones, History, Image as ImageIcon, Layers, LayoutGrid, RefreshCw, ShieldCheck, ShoppingBag, Tag, Ticket, Trash2, Unlock, Video, Wallet, Zap } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 export const GlobalShopHistory = ({
   userEmail,

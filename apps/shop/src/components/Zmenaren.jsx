@@ -1,17 +1,10 @@
-import React, { useState } from "react";
-import {
-  Copy,
-  ExternalLink,
-  AlertTriangle,
-  CheckCircle2,
-  Terminal,
-  RefreshCw,
-} from "lucide-react";
-
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
 // ============================================================================
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { AlertTriangle, CheckCircle2, Copy, ExternalLink, RefreshCw, Terminal } from "lucide-react";
+import React, { useState } from "react";
+
 // import MetaTags from "../MetaTags";
 
 // ============================================================================

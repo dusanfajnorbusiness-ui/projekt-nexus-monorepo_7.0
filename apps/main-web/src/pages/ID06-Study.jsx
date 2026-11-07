@@ -1,6 +1,3 @@
-import React from "react";
-import { Cpu, Lock, Database } from "lucide-react";
-import { id06OmegaMap as ID06_Map } from "@main-web/data/ID06_OmegaMap";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -9,9 +6,10 @@ import { id06OmegaMap as ID06_Map } from "@main-web/data/ID06_OmegaMap";
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "OfflineDimensionPreview" umiestnený pod tým.
 
-import { GlobalComponents } from "@main-web/components/GlobalComponents";
-import { GlobalHamburgerMenu } from "@main-web/components/GlobalHamburgerMenu";
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
+import { id06OmegaMap as ID06_Map } from "@main-web/data/ID06_OmegaMap.js";
+import { Cpu, Database, Lock } from "lucide-react";
+
 /*
 // ============================================================================
 // --- ONLINE UZLY (ID06) - DATA-ABSORBER [100 NODES READY] ---

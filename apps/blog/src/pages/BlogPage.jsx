@@ -1,41 +1,27 @@
-// 🛰️ EXODUS-READY: 11. 5. 2026 | MODUL: ID14-BLOG
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
-import {
-  Menu,
-  X,
-  Cpu,
-  Activity,
-  Terminal,
-  MessageSquare,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-
+import { BlogTopicMap } from "@blog/components/Blog-TopicMap.jsx";
+import { BlogCommunityPanel } from "@blog/components/BlogCommunityPanel.jsx";
+import BlogComposer from "@blog/components/BlogComposer.jsx";
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE) ⚠️
 // ============================================================================
-
-import { useBlogEngine } from "../hooks/Blog-Engine";
-import { BlogComposer } from "@blog/components/blog/BlogComposer";
-import { BlogToolbar } from "@blog/components/blog/BlogToolbar";
-import { BlogTopicMap } from "@blog/components/blog/Blog-TopicMap";
-import { BlogCommunityPanel } from "@blog/components/blog/BlogCommunityPanel";
-import { BlogPostCard } from "@blog/components/blog/BlogPostCard";
-import RepresentativeHeader from "@blog/components/RepresentativeHeader";
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core";
-import { getTierColor } from "@shared/data/nexusConfig";
+import { BlogHeader } from "@blog/components/BlogHeader.jsx";
+import { BlogPostCard } from "@blog/components/BlogPostCard.jsx";
+import { BlogToolbar } from "@blog/components/BlogToolbar.jsx";
+import RepresentativeHeader from "@blog/components/RepresentativeHeader.jsx";
+import { useBlogEngine } from "@blog/hooks/Blog-Engine.js";
+import { NexusRadarEngine } from "@main-web/components/NexusRadarEngine.jsx";
 // import { GlobalProfil } from "@blog/components/GlobalProfil";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import MetaTags from "@blog/components/MetaTags";
-import { NexusRadarEngine } from "@blog/components/NexusRadarEngine";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+// 🛰️ EXODUS-READY: 11. 5. 2026 | MODUL: ID14-BLOG
+import { Activity, ChevronLeft, ChevronRight, MessageSquare, Terminal, X } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useThemeSync } from "@shared/hooks/useThemeSync.js";
 
 const CORE_VERSION = "P-BlogPage V12.1-EXODUS";
+
 
 export const RecursiveThread = ({ parentId, engine, userState, level }) => {
   // ⚡ Ak letí Radar (Deep Link), zrušíme limit 5 a otvoríme všetky! Inak ho necháme pre úsporu RAM.
@@ -210,7 +196,13 @@ const ThreadCluster = ({ rootPost, engine, userState }) => {
 // ============================================================================
 // 🏛️ HLAVNÝ KOMPONENT
 // ============================================================================
-export default function ID14_Blog({ userState }) {
+export default function BlogPage({
+  setActiveTab,
+  userState,
+  getTierColor,
+  themeColor,
+  onThemeChange
+}) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeView, setActiveView] = useState("MAP"); // "MAP" alebo "THREAD"
   const [expandedThreads, setExpandedThreads] = useState({});
@@ -261,7 +253,10 @@ export default function ID14_Blog({ userState }) {
   }, []);
 
   const engine = useBlogEngine(userState);
-  const activeColor = getTierColor(userState?.tier);
+  
+
+  const safeGetTierColor = typeof getTierColor === "function" ? getTierColor : () => "#E91E63";
+  const activeColor = safeGetTierColor(userState?.tier || "FREE");
 
   // 📡 SYSTÉMOVÝ SIGNÁL PRI ŠTARTE
   // useEffect(() => {
@@ -645,56 +640,41 @@ export default function ID14_Blog({ userState }) {
         twitterTitle="NEXUS BLOG: Pripoj sa do Siete a defragmentuj svoju myseľ"
         twitterDescription="Bežné sociálne siete ti pália RAM a kradnú pozornosť. Vstúp do nášho fóra. Žiadny toxický šum, len čistá prežitá pravda."
       />
-      {/* 🔴 GLOBÁLNA HLAVIČKA BLOGU */}
-      <header
-        className="sticky top-0 z-40 border-b bg-[#050505]/90 backdrop-blur-md p-4 md:p-6 flex justify-between items-center shadow-lg transition-colors duration-500"
-        style={{
-          "--theme-color": activeColor,
-          borderBottomColor: `${activeColor}30`,
-        }}
-      >
-        <div
-          className="group cursor-pointer"
-          onClick={() => {
-            if (typeof SoundFX !== "undefined" && SoundFX.click)
-              SoundFX.click();
-            setActiveView("MAP");
-          }}
-        >
-          {/* ⚡ Zjednotený Subtitle */}
-          <div className="flex items-center gap-3 mb-2 md:mb-3">
-            <div
-              className="p-1.5 md:p-2 rounded-lg border transition-colors duration-500"
-              style={{
-                backgroundColor: `${activeColor}10`,
-                borderColor: `${activeColor}30`,
-              }}
-            >
-              <Terminal
-                size={14}
-                className="md:w-4 md:h-4"
-                style={{ color: activeColor }}
-              />
-            </div>
-            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em] text-white/40 italic">
-              DEFRAGMENTED_MOTHERBOARD // V12.1
-            </span>
-          </div>
+      {/* 🔴 GLOBÁLNA HLAVIČKA BLOGU (1:1 AGENCY STANDARDS) */}
+      <BlogHeader
+        userState={userState}
+        getTierColor={safeGetTierColor}
+        onTopicMapClick={() => setActiveView("MAP")}
+        onThemeChange={onThemeChange}
+      />
 
-          {/* ⚡ Hlavný H1 Nadpis: Ikona + NEXUS BLOG */}
-          <h1
-            className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic flex items-center gap-3 md:gap-5 transition-colors duration-500"
-            style={{ textShadow: `0 0 30px ${activeColor}40` }}
-          >
-            <MessageSquare
-              className="w-8 h-8 md:w-14 md:h-14 transition-transform group-hover:scale-110"
-              style={{ color: activeColor }}
-            />
-            <span className="text-white">Nexus</span>
-            <span style={{ color: activeColor }}>Blog</span>
-          </h1>
+        <header className="max-w-[1500px] mx-auto px-3 md:px-6 pt-6 pb-2 space-y-4 text-center md:text-left border-b border-white/10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 max-w-3xl">
+            <div 
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border bg-[#E91E63]/10 text-[#E91E63] border-[#E91E63]/40"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#E91E63] animate-ping" />
+              NEXUS BLOG // OPEN COMMUNICATION NETWORK
+            </div>
+            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white leading-none">
+              DEFRAGMENTÁCIA{" "}
+              <span 
+                className="text-[#E91E63]"
+                style={{ filter: "drop-shadow(0 0 15px rgba(233,30,99,0.5))" }}
+              >
+                MYSLI
+              </span>{" "}
+              & IT KOMUNITA
+            </h1>
+            <p className="text-sm text-zinc-400 font-sans leading-relaxed">
+              Verejná komunikačná sieť a diskusné fórum Projektu Nexus. Žiadny toxický šum sociálnych sietí – len IT komunita, sebarozvoj, produktivita a čistá prežitá pravda V20.
+            </p>
+          </div>
         </div>
       </header>
+
+      <NexusRadarEngine defaultColor={activeColor || "#E91E63"} />
       {/* 🔴 HLAVNÉ ROZLOŽENIE MATRIXU (Grid Layout) */}
       <main className="max-w-[1500px] mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 md:gap-6">
         {/* LÁVÝ SEKTOR: Composer, Toolbar a Dátový Tok */}

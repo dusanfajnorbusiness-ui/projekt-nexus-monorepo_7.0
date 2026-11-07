@@ -5,8 +5,8 @@ import { Hash, AlignLeft, X, PenTool } from "lucide-react";
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (NAPOJENÉ NA TVOJ MODULÁRNY SYSTÉM)
 // VO SVOJOM VS CODE ODKOMENTUJ TIETO RIADKY A ZMAŽ MOCK BLOK NIŽŠIE
 // ============================================================================
-import { DIMENSION_DESCRIPTIONS } from "@blog/data/DimensionDescriptions";
-import { getTierColor } from "@shared/data/nexusConfig";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { getTierColor } from "@shared/data/nexusConfig.js";
 
 // ============================================================================
 // 🛑 MOCK PRE CANVAS NÁHĽAD (ZMAZAŤ V LOKÁLNOM PROJEKTE) 🛑

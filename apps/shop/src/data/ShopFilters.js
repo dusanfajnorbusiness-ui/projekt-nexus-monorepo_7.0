@@ -42,12 +42,7 @@ export const SHOP_FILTERS_CONFIG = {
         iconName: "Zap",
         url: "/shop/shop/matrix_fx",
       },
-      {
-        key: "SERVICES",
-        label: "IT SLUŽBY",
-        iconName: "Briefcase",
-        url: "/shop/shop/services",
-      },
+      
       {
         key: "ZMENAREN",
         label: "ZMENÁREŇ",

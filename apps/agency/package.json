@@ -3,11 +3,13 @@
   "private": true,
   "version": "20.95.0",
   "type": "module",
+  
   "scripts": {
     "dev": "vite",
     "clean": "node -e \"const fs=require('fs'); fs.existsSync('dist') && fs.rmSync('dist', {recursive:true, force:true});\"",
     "snap": "node -e \"const fs=require('fs'); if(fs.existsSync('./scripts/prerender-seo.mjs')) require('./scripts/prerender-seo.mjs'); else console.log('⚠️ [SEO SNAPSHOT]: prerender skript nenájdený, presakujem.');\"",
     "build": "npm run clean && vite build",
+   
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

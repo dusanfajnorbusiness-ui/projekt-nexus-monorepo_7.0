@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Activity, Layers, Hash, Globe, Box, Cpu } from "lucide-react";
-import { DIMENSION_DESCRIPTIONS } from "@shared/data/DimensionDescriptions";
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
 
 export const BlogCommunityPanel = ({ engine, setActiveView }) => {
   const activeColor = "#E91E63";

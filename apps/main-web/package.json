@@ -3,10 +3,12 @@
   "private": true,
   "version": "20.95.0",
   "type": "module",
+  
   "scripts": {
-    "dev": "vite --port 3000 --open",
+    
     "clean": "node -e \"const fs=require('fs'); fs.existsSync('dist') && fs.rmSync('dist', {recursive:true, force:true});\"",
-    "build": "npm run clean && vite build",
+    "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview"
   },
   "dependencies": {

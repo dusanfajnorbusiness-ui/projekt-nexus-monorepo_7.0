@@ -1,4 +1,5 @@
-﻿/* eslint-disable no-undef */
+﻿
+/* eslint-disable no-undef */
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AGENCY HEADER COMPONENT V20.95)
@@ -8,10 +9,20 @@
 // ============================================================================
 
 import React from "react";
-import { Shield, Terminal, ExternalLink, Cpu } from "lucide-react";
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { useThemeSync } from "@shared/hooks/useThemeSync.js";
+import { Cpu, ExternalLink, Shield, Terminal } from "lucide-react";
 
-export const AgencyHeader = () => {
+export const AgencyHeader = ({
+  themeColor,
+  dimensionName = "NEXUS AGENCY // DIGITAL INFRASTRUCTURE",
+  subTitle = "18 MASTER SERVICES // ZERO STANDBY FALLBACK",
+  onThemeChange,
+}) => {
+  // Kánonická farba pre Agency / OS Genesis Mainframe je Kybernetický Cyan (#00f3ff)
+  const AGENCY_CYAN = "#00f3ff";
+  const activeColor = themeColor || AGENCY_CYAN;
+
   return (
     <header className="w-full bg-[#03070A]/90 border-b border-[#00f3ff]/30 backdrop-blur-2xl sticky top-0 z-40 font-mono text-white py-3 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -27,6 +38,9 @@ export const AgencyHeader = () => {
                 V20.95
               </span>
             </h1>
+            <p className="text-[10px] md:text-xs font-semibold tracking-wider uppercase text-[#00f3ff]">
+              {dimensionName} <span className="text-zinc-500">|</span> <span className="text-zinc-400">{subTitle}</span>
+            </p>
             <p className="text-[10px] text-gray-400 hidden sm:block">
               OS GENESIS // DIGITAL INFRASTRUCTURE ARCHITECT
             </p>

@@ -1,35 +1,17 @@
+// ============================================================================
+// ⚠️ LOKÁLNE IMPORTY PRE VÁŠ PROJEKT (ODKOMENTUJTE V LOKÁLNOM KÓDE) ⚠️
+// ============================================================================
+
+import { APP_ID, dbCore } from "@shared/data/nexusConfig.js";
+import fallbackData from "@shared/data/nexusFallback.json";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
 /**
  * 🛰️ NEXUS OS: DATABASE ABSTRACTION LAYER (THE BRIDGE)
  * PROTOKOL: EXODUS | VERZIA: 1.2.1-AUTOHEAL
  * ARCHITEKT: [Váš Nick]
  */
 
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  setDoc, // ⚡ PRIDANÉ PRE AUTO-HEAL
-  doc,
-  query,
-  orderBy,
-  limit,
-  serverTimestamp,
-  deleteDoc,
-  onSnapshot,
-  arrayUnion,
-  arrayRemove,
-  increment,
-  where,
-} from "firebase/firestore";
-
-// ============================================================================
-// ⚠️ LOKÁLNE IMPORTY PRE VÁŠ PROJEKT (ODKOMENTUJTE V LOKÁLNOM KÓDE) ⚠️
-// ============================================================================
-
-import { dbCore, APP_ID } from "../../../src/data/nexusConfig";
-import fallbackData from "../data/nexusFallback.json";
-import { checkPermission } from "../../../src/data/permissionsRegistry";
+import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDocs, increment, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 
 // ============================================================================
 // 🛑 MOCK PRE CANVAS NÁHĽAD (ZMAŽTE V LOKÁLNOM PROJEKTE) 🛑

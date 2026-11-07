@@ -1,35 +1,19 @@
-import React, { useState, useMemo, useEffect } from "react";
-import {
-  Search,
-  Filter,
-  LayoutGrid,
-  Grid2X2,
-  List,
-  Activity,
-  Globe,
-  Shield,
-  Crown,
-  ArrowRight,
-  Tv,
-  Terminal,
-  Target, // ⚡ Pridaný import pre Event Banner
-  FileText,
-} from "lucide-react";
-
+import { HomePageHeader } from "@main-web/components/HomePageHeader.jsx";
 // ============================================================================
 // ⚠️ OSTRÉ PRODUKČNÉ IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE) ⚠️
 // ============================================================================
 
-import { APP_ID, dbCore, DIMENSIONS } from "@shared/data/nexusConfig";
-import { NODE_STATUS_REGISTRY } from "@main-web/data/NodeStatusRegistry";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import { DIMENSIONS } from "@shared/data/nexusConfig.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
+import { SEO_REGISTRY } from "@shared/data/seoRegistry.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { Crown, FileText, Filter, Globe, Grid2X2, LayoutGrid, List, Search, Shield, Target, Terminal } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-// import MetaTags from "@main-web/components/MetaTags";
 import { Link } from "react-router-dom";
-import { SEO_REGISTRY } from "@main-web/data/seoRegistry";
-import { GlobalBrandVideos } from "@main-web/components/GlobalBrandVideos";
-import { checkPermission } from "@main-web/data/permissionsRegistry";
 
 const DIMENSION_TAGS = {
   ID00: {
@@ -476,87 +460,48 @@ export const HomePage = ({
   return (
     <div className="min-h-screen bg-[#030507] text-[#b3d4d6] font-mono selection:bg-white selection:text-black p-4 md:p-8">
       <div className="max-w-[1600px] mx-auto pb-32">
-        {/* 🚀 HLAVIČKA */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16 animate-in slide-in-from-top-4 duration-700">
-          <div>
-            {/* ⚡ Zjednotený Subtitle pre Verziu (Kopíruje štandard z Obchodu) */}
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className="p-2 rounded-lg border transition-colors duration-500"
+        <HomePageHeader themeColor={themeColor || "#00f3ff"} dimensionName="MAIN MATRIX HUB" />
+
+      <header className="my-8 space-y-6 text-center md:text-left border-b border-white/10 pb-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-3 max-w-3xl">
+              <div 
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
                 style={{
-                  backgroundColor: `${themeColor}10`,
-                  borderColor: `${themeColor}30`,
+                  borderColor: `${themeColor || "#39FF14"}40`,
+                  backgroundColor: `${themeColor || "#39FF14"}10`,
+                  color: themeColor || "#39FF14"
                 }}
               >
-                <Terminal size={16} style={{ color: themeColor }} />
+                <Terminal size={14} className="animate-pulse" />
+                OS GENESIS // UNIFIED CYBERKINETIC MAINFRAME
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 italic">
-                OS_Gateway_Terminal // V4.9
-              </span>
-            </div>
-
-            {/* ⚡ Hlavný H1 Nadpis: Ikona + NEXUS HOME */}
-            <h1
-              id="nexus-vop-section"
-              className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic flex items-center gap-3 md:gap-5 transition-colors duration-500"
-              style={{ textShadow: `0 0 30px ${themeColor}40` }}
-            >
-              <Globe
-                className="w-10 h-10 md:w-14 md:h-14"
-                style={{ color: themeColor }}
-              />
-              <span className="text-white">Nexus</span>
-              <span style={{ color: themeColor }}>Home</span>
-            </h1>
-
-            {/* Sémantický text */}
-            <p className="text-[10px] md:text-xs text-white/40 uppercase tracking-[0.5em] mt-6 max-w-xl leading-relaxed">
-              Vstúpili ste do kognitívneho rozhrania. Zvoľte svoj smer, alebo
-              dekódujte dostupné <span className="text-white">Nexus</span>{" "}
-              <span
-                className="transition-colors duration-500"
-                style={{ color: themeColor }}
-              >
-                Matrix
-              </span>{" "}
-              uzly.
-            </p>
-
-            {/* ⚡ VOP A ZÁKONY MATRIXU */}
-            <div className="mt-8 flex items-center gap-3 animate-in fade-in duration-1000">
-              <button
-                onClick={(e) => navigateMatrix(e, "/vop")}
-                className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-all shadow-inner group mt-4 md:mt-0"
-              >
-                <FileText
-                  size={14}
-                  className="group-hover:scale-110 transition-transform"
-                  style={{ color: themeColor }}
-                />
-                Všeobecné Obchodné Podmienky (VOP)
-              </button>
-            </div>
-          </div>
-
-          {/* ⚡ ACTIVE NODES TABUĽKA (Dynamický border a text) */}
-          <div
-            className="bg-black/40 border border-white/10 p-5 rounded-2xl text-right flex flex-col items-end border-r-[4px] shadow-2xl backdrop-blur-xl w-full md:w-auto transition-colors duration-500"
-            style={{ borderRightColor: themeColor }}
-          >
-            <span className="text-[9px] uppercase tracking-[0.4em] text-white/20 font-black mb-1 italic">
-              Active_Nodes
-            </span>
-            <div className="text-2xl md:text-3xl font-black text-white tracking-tighter">
-              {filteredItems.length}{" "}
-              <span
-                className="text-xs transition-colors duration-500"
-                style={{ color: themeColor }}
-              >
-                SEC
-              </span>
+              <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white leading-none">
+                JEDNOČLENNÁ{" "}
+                <span 
+                  style={{ 
+                    color: themeColor || "#39FF14",
+                    filter: `drop-shadow(0 0 15px ${themeColor || "#39FF14"}60)`
+                  }}
+                >
+                  IT ARMÁDA
+                </span>{" "}
+                & MATRICA
+              </h1>
+              <p className="text-sm text-zinc-400 font-sans leading-relaxed">
+                Hlavný riadiaci uzol OS Genesis. Symbióza Avatar Architecta a CyberTech AI. 16 sémantických dimenzií (ID00 – ID15), dekonštrukcia Ega, kybernetická terapia a digitálny ekosystém V20 s nulovým balastom.
+              </p>
             </div>
           </div>
         </header>
+
+        {/* 🎬 MASTER MEDIA PLAYER (MANIFESTO_GENESIS) */}
+        <div className="my-8 w-full animate-in fade-in duration-700">
+          <GlobalMediaPlayer 
+            mediaId="MANIFESTO_GENESIS" 
+            dimColor={themeColor || "#00B4D8"} 
+          />
+        </div>
 
         {/* ============================================================================ */}
         {/* 🌐 MANIFEST: DEFINÍCIA A FILOZOFIA SYSTÉMU */}
@@ -830,66 +775,6 @@ export const HomePage = ({
           <div
             className={`grid gap-6 xl:gap-8 ${viewMode === "GRID_MD" ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : viewMode === "GRID_SM" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"}`}
           >
-            {/* 🎬 SYS_TRAILER / AUDIO DOCK: NULTOVÁ KARTA V GRID MATRIXE */}
-            {statusFilter !== "OFFLINE" && !searchQuery && (
-              <div
-                className={`relative group border transition-all duration-500 flex flex-col p-6 rounded-2xl bg-[#0a0a0a] border-cyan-500/30 hover:border-cyan-400 hover:-translate-y-1 shadow-lg ${viewMode === "LIST" ? "col-span-full" : ""}`}
-                style={{ boxShadow: "0 0 25px rgba(0,255,255,0.08)" }}
-              >
-                {/* 🏷️ NÁLEPKA */}
-                <div className="absolute -top-3 -left-2 z-50 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest bg-[#00FFFF] text-black shadow-xl border border-white/20">
-                  SYS-TR
-                </div>
-
-                {/* Hlavička Trailer / Audio Karty */}
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <span className="text-[10px] font-mono text-cyan-400/60 font-black tracking-widest block uppercase">
-                      SYSTEM_BROADCAST // AUDIO_STREAM
-                    </span>
-                    <h3 className="font-black uppercase italic tracking-tighter text-lg text-white">
-                      Uplink Terminal
-                    </h3>
-                  </div>
-                  <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-black border border-cyan-500/30 shrink-0">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#00FFFF] animate-pulse shadow-[0_0_8px_#00FFFF]" />
-                    <span className="text-[8px] font-black text-[#00FFFF] tracking-widest">
-                      LIVE FEED
-                    </span>
-                  </div>
-                </div>
-
-                {/* 🎛️ CYBER-DOCK KONTAJNER: Zrušený aspect-video a orez! flex-1 absorbuje výšku riadku */}
-                <div className="flex-1 flex flex-col justify-center my-2 p-3 sm:p-4 rounded-xl border border-cyan-500/20 bg-black/80 shadow-inner relative group/player">
-                  {/* Horný stavový riadok vnútri doku */}
-                  <div className="flex items-center justify-between text-[8px] font-mono text-cyan-400/50 mb-3 uppercase tracking-widest">
-                    <span>AUDIO_INTERFACE // 320 KBPS</span>
-                    <span className="text-[#39FF14]">ONLINE</span>
-                  </div>
-
-                  {/* Samotný prehrávač v plnej výške bez deformácie */}
-                  <div className="w-full flex items-center justify-center">
-                    <GlobalBrandVideos moduleId="uplink_trailer" />
-                  </div>
-
-                  {/* Spodný telemetrický riadok vypĺňajúci vertikálny priestor */}
-                  <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[7px] font-mono text-white/30 tracking-widest">
-                    <span>BUFFER: 100% NOMINAL</span>
-                    <span className="text-cyan-400">STEREO_L/R</span>
-                  </div>
-                </div>
-
-                {/* Spodná línia a pätka karty */}
-                <div className="pt-3 border-t border-white/5 flex justify-between items-center text-[9px] text-white/40 font-mono mt-auto">
-                  <span>OS Genesis // Core Signals</span>
-                  <span className="text-cyan-400">PROPRIETARY MONOLITH</span>
-                </div>
-
-                {/* Laserový lem */}
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#00FFFF] shadow-[0_0_15px_#00FFFF] opacity-30 group-hover:opacity-100 transition-opacity" />
-              </div>
-            )}
-
             {filteredItems.map((item) => {
               // 1. Zabezpečenie čítania statusu z Registra (Aj pre ID aj pre SYS)
               const isOnline =

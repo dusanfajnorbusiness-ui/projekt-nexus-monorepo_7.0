@@ -1,7 +1,3 @@
-import React from "react";
-import { Cpu, Lock, Database } from "lucide-react";
-// Import Omega Mapy z tvojej lokálnej databázy
-import { id03OmegaMap as ID03_Map } from "@main-web/data/ID03_OmegaMap";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -10,19 +6,23 @@ import { id03OmegaMap as ID03_Map } from "@main-web/data/ID03_OmegaMap";
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "ID03_CashEngine" (Offline Preview) umiestnený pod tým.
 
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
-
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
+// Import Omega Mapy z tvojej lokálnej databázy
+import { id03OmegaMap as ID03_Map } from "@main-web/data/ID03_OmegaMap.js";
 // ============================================================================
 // --- ONLINE UZLY (ID03) - CASH-ENGINE [100 NODES READY] ---
 // ============================================================================
 
 // 📂 SEKCIA A: ZÁKLADNÉ PILIERE FINANCIÍ (Vstupná Brána)
-import Node_ID03_01 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_01";
-import Node_ID03_02 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_02";
-import Node_ID03_03 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_03";
-import Node_ID03_04 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_04";
-import Node_ID03_05 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_05";
-import Node_ID03_06 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_06";
+import Node_ID03_01 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_01.jsx";
+import Node_ID03_02 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_02.jsx";
+import Node_ID03_03 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_03.jsx";
+import Node_ID03_04 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_04.jsx";
+import Node_ID03_05 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_05.jsx";
+import Node_ID03_06 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_06.jsx";
+import { Cpu, Database, Lock } from "lucide-react";
+import React from "react";
+
 // import Node_ID03_07 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_07";
 // import Node_ID03_08 from "@main-web/subPages/ID03-Finance/PRO/Node_ID03_08";
 // import Node_ID03_09 from "@main-web/subPages/ID03-Finance/OMEGA/Node_ID03_09";

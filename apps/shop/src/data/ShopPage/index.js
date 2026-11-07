@@ -7,7 +7,7 @@
 import { MEMBERSHIP_DATA } from "./Membership";
 import { PACKS_DATA } from "./Packs";
 import { MATRIX_FX_DATA, MATRIX_FX_PHASES } from "./MatrixFX";
-import { SERVICES_DATA } from "./Services";
+
 
 export const TIER_COLORS = {
   FREE: "#00f3ff",
@@ -45,14 +45,14 @@ export {
   MEMBERSHIP_DATA,
   PACKS_DATA,
   MATRIX_FX_DATA,
-  SERVICES_DATA,
+
 };
 
 export const SHOP_CAMPAIGN_DATA = {
   ...MEMBERSHIP_DATA,
   ...PACKS_DATA,
   ...MATRIX_FX_DATA,
-  ...SERVICES_DATA,
+
 };
 
 export const shopCampaignData = SHOP_CAMPAIGN_DATA;

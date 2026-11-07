@@ -13,7 +13,7 @@ import {
   PlayCircle,
 } from "lucide-react";
 // Zabezpeč, aby táto cesta k videoRegistry bola správna pre tvoj projekt:
-import { videoRegistry } from "@main-web/data/videoRegistry";
+import { videoRegistry } from "@main-web/data/videoRegistry.js";
 
 const GlobalNodePodcast = ({ themeColor = "#00FFFF", nodeId }) => {
   const [activeFormat, setActiveFormat] = useState("deep_dive");

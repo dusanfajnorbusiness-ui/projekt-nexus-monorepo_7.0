@@ -1,6 +1,4 @@
 ﻿/* eslint-disable no-undef */
-
-// ⚡⚡⚡ ZAČIATOK OPRAVA (UTF-8 & V20 B2B FILTERS REGISTER) ⚡⚡⚡
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AGENCY FILTERS DATA REGISTER V20.95)
 // Súbor: apps/agency/src/data/AgencyFiltersData.js

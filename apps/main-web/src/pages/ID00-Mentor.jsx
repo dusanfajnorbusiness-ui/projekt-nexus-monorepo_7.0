@@ -1,6 +1,4 @@
-import React from "react";
-import { Cpu, Lock, Database } from "lucide-react";
-import { id00OmegaMap as ID00_Map } from "@main-web/data/ID00_OmegaMap";
+import { id00OmegaMap as ID00_Map } from "@main-web/data/ID00_OmegaMap.js";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -9,19 +7,18 @@ import { id00OmegaMap as ID00_Map } from "@main-web/data/ID00_OmegaMap";
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "OfflineDimensionPreview" umiestnený pod tým.
 
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
-import MetaTags from "@main-web/components/MetaTags";
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
 // ============================================================================
 // --- ONLINE UZLY (ID00) - MENTOR HUB [100 NODES READY] ---
 // ============================================================================
 
 // 📂 SEKCIA A
-import Node_ID00_01 from "@main-web/subPages/ID00-Mentor/FREE/Node_ID00_01";
-import Node_ID00_02 from "@main-web/subPages/ID00-Mentor/FREE/Node_ID00_02";
-import Node_ID00_03 from "@main-web/subPages/ID00-Mentor/FREE/Node_ID00_03";
-import Node_ID00_04 from "@main-web/subPages/ID00-Mentor/PRO/Node_ID00_04";
-import Node_ID00_05 from "@main-web/subPages/ID00-Mentor/PRO/Node_ID00_05";
-import Node_ID00_06 from "@main-web/subPages/ID00-Mentor/PRO/Node_ID00_06";
+import Node_ID00_01 from "@main-web/subPages/ID00-Mentor/FREE/Node_ID00_01.jsx";
+import Node_ID00_02 from "@main-web/subPages/ID00-Mentor/FREE/Node_ID00_02.jsx";
+import Node_ID00_03 from "@main-web/subPages/ID00-Mentor/FREE/Node_ID00_03.jsx";
+import Node_ID00_04 from "@main-web/subPages/ID00-Mentor/PRO/Node_ID00_04.jsx";
+import Node_ID00_05 from "@main-web/subPages/ID00-Mentor/PRO/Node_ID00_05.jsx";
+import Node_ID00_06 from "@main-web/subPages/ID00-Mentor/PRO/Node_ID00_06.jsx";
 // import Node_ID00_07 from "@main-web/subPages/ID00-Mentor/OMEGA/Node_ID00_07";
 // import Node_ID00_08 from "@main-web/subPages/ID00-Mentor/OMEGA/Node_ID00_08";
 // import Node_ID00_09 from "@main-web/subPages/ID00-Mentor/OMEGA/Node_ID00_09";

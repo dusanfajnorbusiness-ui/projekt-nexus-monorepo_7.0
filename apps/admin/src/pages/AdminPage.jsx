@@ -1,49 +1,21 @@
-import React, { useState, useEffect } from "react";
-import {
-  ShieldAlert,
-  Database,
-  Users,
-  Settings,
-  Activity,
-  Terminal,
-  ArrowLeft,
-  Server,
-  Lock,
-  Layout,
-  Cpu,
-  Trophy,
-  RotateCcw,
-  CheckCircle2,
-  AlertTriangle,
-  Eye,
-  Table,
-  Trash2,
-  Copy,
-  Check,
-  Globe,
-  Download,
-  FileCode,
-  Sparkles,
-  ExternalLink,
-  Search,
-} from "lucide-react";
-import { Helmet } from "react-helmet-async";
-
+import AdminHeaderComponent from "@admin/components/AdminHeaderComponent.jsx";
+// 📦 DÁTOVÉ REGISTRE PRE AUTONÓMNY URL MATRIX SCANNER
+import { SEO_REGISTRY } from "@shared/data/seoRegistry.js";
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (PRODUKČNÝ STACK NEXUS OS)
 // ============================================================================
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core";
-import { SoundFX } from "@shared/utils/SoundEngine";
-
-// 📦 DÁTOVÉ REGISTRE PRE AUTONÓMNY URL MATRIX SCANNER
-import { SEO_REGISTRY } from "@admin/data/seoRegistry";
-import { SHOP_AUDIO_DATA } from "@admin/data/ShopAudioMedia";
-import { SHOP_DOCUMENTS_DATA } from "@admin/data/ShopDocumentsMedia";
-import { SHOP_APPS_DATA } from "@admin/data/ShopAppsMedia";
-import AVATARS_BOTS_DATA from "@admin/data/ShopImageMedia/Avatars-Bots";
-import { SERVICES_DATA } from "@admin/data/ShopPage/Services";
-import { PACKS_DATA } from "@admin/data/ShopPage/Packs";
-import { MATRIX_FX_DATA } from "@admin/data/ShopPage/MatrixFX";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { SHOP_APPS_DATA } from "@shop/data/ShopAppsMedia.js";
+import { SHOP_AUDIO_DATA } from "@shop/data/ShopAudioMedia.js";
+import { SHOP_DOCUMENTS_DATA } from "@shop/data/ShopDocumentsMedia.js";
+import AVATARS_BOTS_DATA from "@shop/data/ShopImageMedia/Avatars-Bots.js";
+import { MATRIX_FX_DATA } from "@shop/data/ShopPage/MatrixFX.js";
+import { PACKS_DATA } from "@shop/data/ShopPage/Packs.js";
+import { SERVICES_DATA } from "@shop/data/ShopPage/legacy-code-shopPage/Services.js";
+import { Activity, AlertTriangle, ArrowLeft, Check, CheckCircle2, Copy, Database, Download, ExternalLink, FileCode, Globe, Layout, RotateCcw, Search, Server, ShieldAlert, Table, Terminal, Trash2, Trophy, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 // ============================================================================
 // ⚡ IMMORTAL NEXUS LOG ANALYZER (Prežije F5 aj Hot-Reload cez SessionStorage)
@@ -611,10 +583,52 @@ const NexusUrlScanner = () => {
 // ============================================================================
 // 👑 HLAVNÝ KOMPONENT: ADMIN PAGE
 // ============================================================================
-export default function AdminPage() {
+export default function AdminPage({
+  setActiveTab: setActiveTabProp,
+  userState,
+  setUserState,
+  themeColor,
+  setThemeColor,
+  onThemeChange,
+}) {
   const [users, setUsers] = useState([]);
-  const [activeTab, setActiveTab] = useState("DASHBOARD");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+   const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("NEXUS_ADMIN_ACTIVE_TAB");
+      if (saved) return saved;
+    }
+    return "DASHBOARD";
+  });
+
+  // Handler pre zmenu záložky s okamžitým zápisom do localStorage
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    try {
+      localStorage.setItem("NEXUS_ADMIN_ACTIVE_TAB", newTab);
+    } catch (e) {
+      console.warn("⚠️ [NEXUS_STORAGE_WARN]: Zápis activeTab zlyhal", e);
+    }
+  };
+
+  // Reaktívny strážca zápisu pri akejkoľvek zmene
+  useEffect(() => {
+    if (activeTab) {
+      try {
+        localStorage.setItem("NEXUS_ADMIN_ACTIVE_TAB", activeTab);
+      } catch (e) {
+        console.warn("⚠️ [NEXUS_STORAGE_WARN]: Sync zlyhal", e);
+      }
+    }
+  }, [activeTab]);
+
+  // 🎯 Kánonická Červená pre Admin ACC (#FF003C) 1:1 podľa Operators a Settings
+  useEffect(() => {
+    const triggerTheme = onThemeChange || setThemeColor;
+    if (triggerTheme) {
+      triggerTheme("#FF003C");
+    }
+  }, [onThemeChange, setThemeColor]);
 
   // 🚀 FORCED SCROLL-TO-TOP (Reset osi Y pri načítaní stránky)
   useEffect(() => {
@@ -727,113 +741,42 @@ export default function AdminPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#030507] text-white font-mono flex text-left selection:bg-[#FF003C] selection:text-white">
+return (
+    <div className="min-h-screen bg-[#030507] text-white font-mono flex flex-col text-left selection:bg-[#FF003C] selection:text-white w-full overflow-x-hidden">
       <Helmet>
         <title>ROOT ACCESS | Admin Panel Architekta</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      {/* 🛸 SIDEBAR */}
-      <aside
-        className={
-          "bg-black/80 border-r border-white/5 transition-all duration-500 overflow-hidden shrink-0 " +
-          (isSidebarOpen ? "w-80" : "w-0")
-        }
-      >
-        <div className="p-8 h-full flex flex-col">
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-2 bg-[#FF003C] rounded-lg">
-              <ShieldAlert size={20} className="text-black" />
-            </div>
-            <div className="leading-none">
-              <h1 className="text-xl font-black uppercase italic tracking-tighter">
-                Architect <span className="text-[#FF003C] not-italic">ACC</span>
-              </h1>
-              <p className="text-[7px] text-white/30 uppercase tracking-[0.4em] mt-1">
-                Control Center
-              </p>
-            </div>
-          </div>
+      {/* 👑 1. TOP NAV BAR S INTEGROVANOU NAVIGÁCIOU ZÁLOŽIEK */}
+      <AdminHeaderComponent
+        activeTab={activeTab}
+        setActiveTab={handleTabChange}
+        themeColor={themeColor || "#FF003C"}
+        onThemeChange={onThemeChange}
+      />
 
-          {/* ⚡ NAVIGÁCIA ZÁLOŽIEK */}
-          <nav className="space-y-2 flex-1">
-            {[
-              { id: "DASHBOARD", icon: Layout, label: "Dashboard" },
-              { id: "URL_SCANNER", icon: Globe, label: "URL Matrix Scanner" },
-              { id: "LOGS", icon: Terminal, label: "System Logs & Diag" },
-              { id: "USERS", icon: Users, label: "Operator Control" },
-              { id: "DATABASE", icon: Database, label: "DB Management" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={
-                  "w-full flex items-center gap-4 p-5 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest cursor-pointer " +
-                  (activeTab === tab.id
-                    ? "bg-[#FF003C]/10 border-[#FF003C]/30 text-white shadow-[0_0_20px_rgba(255,0,60,0.1)]"
-                    : "bg-transparent border-transparent text-white/30 hover:bg-white/5")
-                }
-              >
-                <tab.icon
-                  size={18}
-                  className={activeTab === tab.id ? "text-[#FF003C]" : ""}
-                />
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-
-          {/* ⚡ STATUS PÄTIČKA SIDEBARU */}
-          <div className="mt-auto pt-8 border-t border-white/5">
-            <div className="bg-white/5 p-5 rounded-2xl border border-white/5 flex items-center justify-between">
-              <div>
-                <p className="text-[8px] text-white/30 uppercase tracking-widest">
-                  Matrix Status
-                </p>
-                <div className="text-[10px] font-black uppercase text-[#39FF14] mt-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-[#39FF14] rounded-full animate-pulse" />{" "}
-                  Online
-                </div>
-              </div>
-              <button
-                onClick={() =>
-                  (window.location.href = "https://" + "projekt-nexus.sk")
-                }
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/40 cursor-pointer"
-                title="Späť na Nexus Web"
-              >
-                <ArrowLeft size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* 🖥️ HLAVNÁ PLOCHA */}
-      <main className="flex-1 h-screen overflow-y-auto custom-scrollbar p-6 md:p-12 relative min-w-0">
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="fixed top-6 left-6 z-[100] p-2 bg-black border border-white/10 rounded-lg text-white/40 hover:text-white transition-all shadow-2xl cursor-pointer"
-        >
-          <Layout size={16} />
-        </button>
-
-        {/* ⚡ SPOLOČNÁ HLAVIČKA PANELU */}
-        <header className="mb-12 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 animate-in fade-in slide-in-from-top-4 duration-700">
+      {/* 🖥️ 2. HLAVNÝ OBSAHOVÝ CONTAINER (BEZ SIDEBARU) */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 lg:p-10 relative">
+        {/* ⚡ 3. SÉMANTICKÝ IN-PAGE HEADER TAG STRÁNKY */}
+        <header className="mb-8 md:mb-12 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 md:gap-8 animate-in fade-in slide-in-from-top-4 duration-700">
           <div>
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-3">
               <div className="h-px w-8 bg-[#FF003C]" />
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF003C]">
-                Subdomain_Active
+                Subdomain_Active // LEVEL 48
               </span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none">
-              Management{" "}
-              <span className="text-[#FF003C] not-italic">Matrix</span>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter italic leading-none">
+              Management <span className="text-[#FF003C] not-italic">Matrix</span>
             </h2>
+            <p className="text-xs text-zinc-400 mt-2 max-w-xl">
+              Centrálna správcovská konzola OS Genesis pre monitoring trás, systémových logov a databázových entít.
+            </p>
           </div>
-          <div className="flex gap-4">
+
+          {/* HUD KARTY TELEMETRIE */}
+          <div className="flex gap-4 flex-wrap sm:flex-nowrap w-full sm:w-auto">
             <AdminCard
               icon={Users}
               title="Aktívne Entity"
@@ -875,15 +818,15 @@ export default function AdminPage() {
                   <div className="p-4 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-between">
                     <div>
                       <div className="text-sm font-black text-white">
-                        {users[0].name || users[0].email}
+                        {users.name || users.email}
                       </div>
                       <div className="text-[10px] text-zinc-400 font-mono">
-                        {users[0].email}
+                        {users.email}
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-base font-black text-[#39FF14]">
-                        {users[0].monthly_earned_oc || 0} OC
+                        {users.monthly_earned_oc || 0} OC
                       </div>
                       <div className="text-[9px] text-zinc-500 uppercase">
                         Mesačný zisk
@@ -903,23 +846,22 @@ export default function AdminPage() {
 
             {/* PRAVÝ BLOK: SKRÁTENÁ TELEMETRIA A RÝCHLY ODKAZ NA SCANNER */}
             <div className="xl:col-span-6 space-y-6">
-              <div className="p-6 bg-[#050A0E] border border-[#00f3ff]/30 rounded-[2rem] shadow-2xl space-y-4">
+              <div className="p-6 bg-[#050A0E] border border-[#FF003C]/30 rounded-[2rem] shadow-2xl space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-2">
-                    <Globe size={14} className="text-[#00f3ff]" /> Rýchly
+                    <Globe size={14} className="text-[#FF003C]" /> Rýchly
                     prístup k URL Scanneru
                   </h3>
                   <button
                     onClick={() => setActiveTab("URL_SCANNER")}
-                    className="text-[9px] px-3 py-1 bg-[#00f3ff]/10 hover:bg-[#00f3ff] text-[#00f3ff] hover:text-black border border-[#00f3ff]/40 rounded-xl font-bold transition-all cursor-pointer"
+                    className="text-[9px] px-3 py-1 bg-[#FF003C]/10 hover:bg-[#FF003C] text-[#FF003C] hover:text-black border border-[#FF003C]/40 rounded-xl font-bold transition-all cursor-pointer"
                   >
                     Otvoriť Plný Sken ↗
                   </button>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
                   Autonómny generátor sitemap a indexov všetkých 6 súrodencov.
-                  Umožňuje jedným klikom vyexportovať kompletný Markdown zoznam
-                  do schránky alebo súboru.
+                  Umožňuje jedným klikom vyexportovať kompletný Markdown zoznam.
                 </p>
               </div>
 
@@ -943,7 +885,7 @@ export default function AdminPage() {
                 </div>
                 <button
                   onClick={() => setActiveTab("LOGS")}
-                  className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-black uppercase text-zinc-300 transition-all cursor-pointer"
+                  className="w-full py-3 bg-white/5 hover:bg-[#FF003C]/10 hover:text-[#FF003C] border border-white/10 hover:border-[#FF003C]/30 rounded-xl text-xs font-black uppercase text-zinc-300 transition-all cursor-pointer"
                 >
                   Prejsť do riadiaceho centra logov ➔
                 </button>
@@ -953,7 +895,7 @@ export default function AdminPage() {
         )}
 
         {/* 3. ⚡ SYSTEM LOGS & DIAGNOSTIKA */}
-        {activeTab === "LOGS" && (
+        {activeTab === "LOGS" &&  (
           <div className="bg-[#050A0E] border border-white/10 p-6 md:p-8 rounded-[2rem] shadow-2xl space-y-6 animate-in fade-in duration-500">
             <div className="border-b border-white/10 pb-4">
               <h3 className="text-lg font-black uppercase tracking-wider text-white flex items-center gap-2">
@@ -961,8 +903,7 @@ export default function AdminPage() {
                 Analyzer & Hot Paths
               </h3>
               <p className="text-xs text-zinc-400 mt-1">
-                Sledovanie konzolových volaní, dátového prenosu a pamäťovej
-                záťaže rozhrania v reálnom čase.
+                Sledovanie konzolových volaní, dátového prenosu a pamäťovej záťaže rozhrania v reálnom čase.
               </p>
             </div>
 
@@ -1066,25 +1007,24 @@ export default function AdminPage() {
 
         {/* 4. 👥 OPERATOR CONTROL (USERS) */}
         {activeTab === "USERS" && (
-          <div className="bg-[#050A0E] border border-white/10 p-6 md:p-8 rounded-[2rem] shadow-2xl space-y-6 animate-in fade-in duration-500">
-            <div className="border-b border-white/10 pb-4 flex justify-between items-center">
+          <div className="bg-[#050A0E] border border-white/10 p-6 md:p-8 rounded-[2rem] shadow-2xl space-y-6 animate-in fade-in duration-500 w-full overflow-hidden">
+            <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h3 className="text-lg font-black uppercase tracking-wider text-white flex items-center gap-2">
                   <Users size={18} className="text-[#00f3ff]" /> Operator
                   Database Matrix
                 </h3>
                 <p className="text-xs text-zinc-400 mt-1">
-                  Kompletný zoznam registrovaných entít a ich stavu bodov v
-                  systéme.
+                  Kompletný zoznam registrovaných entít a ich stavu bodov v systéme.
                 </p>
               </div>
-              <span className="text-xs font-black px-3 py-1 bg-white/5 border border-white/10 rounded-xl text-zinc-300">
+              <span className="text-xs font-black px-3 py-1 bg-white/5 border border-white/10 rounded-xl text-zinc-300 shrink-0">
                 {users.length} Používateľov
               </span>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
-              <table className="w-full text-left text-xs font-mono">
+            <div className="w-full overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left text-xs font-mono min-w-[600px]">
                 <thead>
                   <tr className="border-b border-white/10 text-zinc-500 text-[10px] uppercase">
                     <th className="p-3">Poradie</th>
@@ -1169,9 +1109,9 @@ export default function AdminPage() {
 
       {/* 🎨 INTERNÝ ŠTÝL PRE CYBER-SCROLLBAR */}
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.1); }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,0,60,0.4); }
       `}</style>
     </div>
   );

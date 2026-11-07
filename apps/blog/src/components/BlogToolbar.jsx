@@ -23,10 +23,10 @@ import {
 // ============================================================================
 // ⚠️ LOKÁLNE IMPORTY (NAPOJENÉ NA TVOJ MODULÁRNY SYSTÉM)
 // ============================================================================
-import { getTierColor } from "@shared/data/nexusConfig";
-import { DIMENSION_DESCRIPTIONS } from "@shared/data/DimensionDescriptions";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { NexusDB } from "@shared/services/NexusDB_Core";
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
 
 const CORE_VERSION = "BT-BlogToolbar V20.1-CATEGORIES-FIX";
 

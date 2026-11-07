@@ -1,4 +1,6 @@
-﻿/* eslint-disable no-undef */
+﻿import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { ArrowUpRight, Clock, Zap } from "lucide-react";
+/* eslint-disable no-undef */
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AGENCY SERVICE CARD V20.95)
@@ -8,8 +10,6 @@
 // ============================================================================
 
 import React from "react";
-import { ArrowUpRight, Zap, Clock } from "lucide-react";
-import { SoundFX } from "@shared/utils/SoundEngine";
 
 // 🎨 PRÍSNA MATICA FARIEB PODĽA TIER ZÁKONA V20
 const GET_TIER_CONFIG = (tierCode = "", tier = "") => {

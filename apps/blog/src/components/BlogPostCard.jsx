@@ -19,15 +19,15 @@ import {
 } from "lucide-react";
 
 // --- ⚠️ START: MATRIX IMPORTY (ODKOMENTUJ VO SVOJOM LOKÁLNOM PROJEKTE) ⚠️ ---
-import { getTierColor, dbCore, APP_ID } from "@shared/data/nexusConfig";
-import { DIMENSION_DESCRIPTIONS } from "@shared/data/DimensionDescriptions";
-import { checkPermission } from "@shared/data/permissionsRegistry";
+import { getTierColor, dbCore, APP_ID } from "@shared/data/nexusConfig.js";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
 import {
   getPresenceStatus,
   getAvatarColor,
-} from "@shared/utils/Blog-PresenceEngine";
-import { parseNexusFormat } from "@shared/utils/nexusParser";
-import { SoundFX } from "@shared/utils/SoundEngine";
+} from "@blog/utils/Blog-PresenceEngine";
+import { parseNexusFormat } from "@shared/utils/nexusParser.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
 import { doc, updateDoc } from "firebase/firestore";
 // --- ⚠️ KONIEC: MATRIX IMPORTY ⚠️ ---
 

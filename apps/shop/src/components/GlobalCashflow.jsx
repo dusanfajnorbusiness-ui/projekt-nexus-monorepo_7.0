@@ -1,42 +1,9 @@
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { SHOP_CAMPAIGN_DATA } from "@shop/data/ShopPage.js";
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  Activity,
-  TrendingUp,
-  DollarSign,
-  Cpu,
-  Server,
-  Zap,
-  Globe,
-  CheckCircle2,
-  AlertTriangle,
-  ShieldCheck,
-  RefreshCw,
-  BarChart3,
-  Sliders,
-  ArrowUpRight,
-  ArrowDownRight,
-  Layers,
-  Crown,
-  Wallet,
-  FileText,
-  Video,
-  Volume2,
-  Sparkles,
-  Terminal,
-  Filter,
-  HelpCircle,
-  Copy,
-  ExternalLink,
-  Info,
-  Check,
-  Briefcase,
-  Database,
-} from "lucide-react";
-
-import { SHOP_CAMPAIGN_DATA } from "../data/ShopPage";
-import { supabase } from "@shared/services/NexusDB_Supabase";
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { Activity, BarChart3, Briefcase, CheckCircle2, Crown, Database, FileText, Globe, Layers, Server, Sliders, Sparkles, Terminal, TrendingUp, Video, Wallet, Zap } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 // ============================================================================
 // 👑 NEXUS OS: AUTONÓMNY KIYOSAKI CASHFLOW MAINFRAME V8.0

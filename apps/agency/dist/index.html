@@ -1,26 +1,77 @@
 <!doctype html>
-<html lang="sk" class="dark">
+<html lang="sk">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon-C3GEjgkv.svg" />
-    <link rel="alternate icon" href="/assets/favicon-Dqul0pvJ.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NEXUS AGENCY | DIGITAL INFRASTRUCTURE</title>
-    <meta
-      name="description"
-      content="NEXUS AGENCY — Digitálna Infraštruktúra & Front-End Chirurgia kódov."
-    />
+    <!-- Google tag (gtag.js) - Nexus Telemetry -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=AW-17638452139"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "AW-17638452139");
+    </script>
 
-    <!-- GOOGLE FONTS: JETBRAINS MONO & INTER -->
-    <link rel="preconnect" href="[suspicious link removed]" />
-    <link rel="preconnect" href="[suspicious link removed]" crossorigin />
-    <link href="[suspicious link removed]" rel="stylesheet" />
-    <script type="module" crossorigin src="/assets/index-DeuVxYIo.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-mRM9r6I3.css">
-  </head>
+    <meta charset="utf-8" />
+    <!-- 🛑 OMEGA FIX: Absolútna cesta pre SPA Routing (Chráni pred čiernou obrazovkou) -->
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 🛡️ GLOBÁLNA FAVICONA PRE CELÝ NEXUS OS (Cache Busting v2) -->
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon-C3GEjgkv.svg?v=2" />
+    <link rel="alternate icon" href="/assets/favicon-Dqul0pvJ.ico?v=2" />
+
+    <!-- 🔮 ZÁKLADNÝ FALLBACK TITLE (Kým nenabootuje React a Helmet) -->
+    <title>[ NEXUS AGENCY | DIGITAL INFRASTRUCTURE ]: Digitálna Infraštruktúra & B2B IT Exekúcia | Jedno-členná IT Armáda</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <script type="module" crossorigin src="/assets/index-CCP-pNCO.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-libs-DYLXRpC5.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-WWTVLUxT.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-shared-Bf7d8ArW.js">
+    <link rel="stylesheet" crossorigin href="/assets/vendor-shared-C9w0lYAh.css">
+  
+    <link rel="canonical" href="https://agency.projekt-nexus.sk" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://agency.projekt-nexus.sk" />
+    <meta property="og:title" content="[ NEXUS AGENCY | DIGITAL INFRASTRUCTURE ]: Digitálna Infraštruktúra & B2B IT Exekúcia | Jedno-členná IT Armáda" />
+    <meta property="og:description" content="Komerčný Work UI Space a taktická základňa Jedno-člennej IT armády. Front-end chirurgia, UI/UX audity webov, dátová organizácia a vývoj softvéru na mieru." />
+    <meta property="og:image" content="https://ljyvsolsgliephsfkfgx.supabase.co/storage/v1/object/public/shop/images/nexusAgency_BrandManifesto/nexus_agency_thumb_16x9.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="[ NEXUS AGENCY | DIGITAL INFRASTRUCTURE ]: Digitálna Infraštruktúra & B2B IT Exekúcia | Jedno-členná IT Armáda" />
+    <meta name="twitter:description" content="Komerčný Work UI Space a taktická základňa Jedno-člennej IT armády. Front-end chirurgia, UI/UX audity webov, dátová organizácia a vývoj softvéru na mieru." />
+    <meta name="twitter:image" content="https://ljyvsolsgliephsfkfgx.supabase.co/storage/v1/object/public/shop/images/nexusAgency_BrandManifesto/nexus_agency_thumb_16x9.png" />
+    
+</head>
   <body
-    class="bg-[#020406] text-white selection:bg-[#00f3ff] selection:text-black font-mono antialiased overflow-x-hidden"
+    style="
+      background-color: #03080a;
+      color: #b3d4d6;
+      font-family: &quot;JetBrains Mono&quot;, monospace;
+      margin: 0;
+    "
   >
+    <noscript
+      >Pre spustenie systému Nexus potrebujete aktivovať JavaScript.</noscript
+    >
+
+    <!-- CENTRÁLNY SOCKET PRE REACT -->
     <div id="root"></div>
+    <script>
+      console.log(
+        "%c[SYSTEM]: CHASSIS_STABILIZED // READY_FOR_JSX_INJECTION",
+        "color: #39FF14; font-weight: bold;",
+      );
+    </script>
   </body>
 </html>

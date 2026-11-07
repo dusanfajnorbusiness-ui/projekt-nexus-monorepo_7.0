@@ -1,38 +1,4 @@
-/* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Volume2,
-  Eye,
-  Download,
-  Lock,
-  Unlock,
-  Zap,
-  Ticket,
-  PlayCircle,
-  PauseCircle,
-  X,
-  Copy,
-  Check,
-  Sparkles,
-  HelpCircle,
-  Shield,
-  Radio,
-  Folder,
-  Layers,
-  ChevronDown,
-  ChevronUp,
-  ChevronRight,
-  Activity,
-  Search,
-  Grid3X3,
-  Grid,
-  List,
-  RefreshCw,
-  FileText,
-  Terminal,
-} from "lucide-react";
-
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AUDIOS MEDIA ENGINE V20.99)
 // File: src/components/ShopAudioMedia.jsx
@@ -40,27 +6,23 @@ import {
 // Core Version: BC-CHIRURG V20.99_FULL_MASTER_V5
 // ============================================================================
 
-import { SoundFX } from "@shared/utils/SoundEngine";
-import {
-  SHOP_AUDIO_DATA,
-  AUDIO_CATEGORY_MAP,
-  TIER_COLOR_MAP,
-  getTierColor,
-  getDimensionColor,
-} from "../data/ShopAudioMedia";
-import { ZOMBIE_ARE_BACK_DATA } from "../data/ShopAudioMedia/Zombie-Are-Back";
-import { BALENE_DIGITALNE_DATA } from "../data/ShopAudioMedia/Audio_Balene-Digitalne";
-import { SHOP_TOOLTIPS, getTooltip } from "../data/TooltipsShop";
-import { MetaTags } from "../MetaTags";
-import { VyhodyClenstva } from "./Vyhody-Clenstva";
-import { ShopFilters } from "./ShopFilters";
-import { GlobalPaywallModal } from "./GlobalPaywallModal";
-import { ShopHeaderComponent } from "./ShopHeaderComponent";
-import { getVipTicketsStatus } from "./ShopVIP_Ticket";
-import { NexusDB } from "@shared/services/NexusDB_Core";
-import { supabase } from "@shared/services/NexusDB_Supabase";
-import { ShopPripravujeme } from "./ShopPripravujeme";
-import ModalPreFilterDrawer from "./ModalPreFilterDrawer";
+import { MetaTags } from "@shared/components/MetaTags.jsx";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPaywallModal } from "@shop/components/GlobalPaywallModal.jsx";
+import ModalPreFilterDrawer from "@shop/components/ModalPreFilterDrawer.jsx";
+import { ShopFilters } from "@shop/components/ShopFilters.jsx";
+import { ShopHeaderComponent } from "@shop/components/ShopHeaderComponent.jsx";
+import { ShopPripravujeme } from "@shop/components/ShopPripravujeme.jsx";
+import { getVipTicketsStatus } from "@shop/components/ShopVIP_Ticket.jsx";
+import { VyhodyClenstva } from "@shop/components/Vyhody-Clenstva.jsx";
+import { getDimensionColor, getTierColor, SHOP_AUDIO_DATA } from "@shop/data/ShopAudioMedia.js";
+import { BALENE_DIGITALNE_DATA } from "@shop/data/ShopAudioMedia/Audio_Balene-Digitalne.js";
+/* eslint-disable no-undef */
+import { Activity, Check, Copy, Eye, FileText, HelpCircle, Layers, PlayCircle, Radio, Shield, Sparkles, Terminal, X, Zap } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const ShopAudioMedia = () => {
   const navigate = useNavigate();
@@ -267,108 +229,26 @@ export const ShopAudioMedia = () => {
     [],
   );
 
-  useEffect(() => {
-    const parts = location.pathname.split("/").filter(Boolean);
-    const cleanSegments = parts.filter((p) => p !== "shop");
-
-    let activeCat = "ALL";
-    let activeTr = "ALL";
-    let activeAudioId = null;
-
-    if (
-      Array.isArray(cleanSegments) &&
-      cleanSegments.length >= 1 &&
-      String(cleanSegments[0] || "").toLowerCase() === "audios"
-    ) {
-      // 1. Primárny filter (Kategória)
-      if (cleanSegments[1]) {
-        activeCat = cleanSegments[1];
-      }
-
-      // 2. Sekundárny segment (TIER alebo Priamy ID Produktu)
-      if (cleanSegments[2]) {
-        const seg2Lower = String(cleanSegments[2]).toLowerCase();
-        if (KNOWN_TIERS.includes(seg2Lower)) {
-          let normTr = seg2Lower.toUpperCase();
-          if (normTr === "ZDARMA") normTr = "FREE";
-          if (normTr === "PRO") normTr = "PROMIUM";
-          if (normTr === "OMEGA") normTr = "OMEGAMIUM";
-          if (normTr === "MASTER") normTr = "MASTERMIUM";
-          activeTr = normTr;
-          if (cleanSegments[3]) {
-            activeAudioId = cleanSegments[3];
-          }
-        } else {
-          // cleanSegments je kanonické ID Produktu
-          activeAudioId = cleanSegments[2];
-        }
-      }
-    }
-
-    // Fallback z URL search parametrov
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get("cat")) activeCat = searchParams.get("cat");
-    if (searchParams.get("tier")) activeTr = searchParams.get("tier");
-    if (searchParams.get("audio")) activeAudioId = searchParams.get("audio");
-
-    setActiveSubcat(activeCat.toUpperCase() === "ALL" ? "ALL" : activeCat);
-    setActiveTier(activeTr.toUpperCase());
-
-    if (activeAudioId) {
-      const found = SHOP_AUDIO_DATA.find(
-        (a) =>
-          a.id.toLowerCase() === activeAudioId.toLowerCase() ||
-          a.nodeKey?.toLowerCase() === activeAudioId.toLowerCase(),
-      );
-      if (found) setSelectedDocId(found.id);
-    } else {
-      setSelectedDocId(null);
-    }
-  }, [location.pathname, location.search, KNOWN_TIERS]);
-
-  // Handlery pre zmenu kategórie, TIERu a kanonický detail produktu
+// ⚡ HANDLERY PRE PREPÍNANIE KATEGÓRIÍ, TIERU A DETAILU (100% STATE CONTROL)
   const handleSubcatChange = (newSubcat) => {
-    triggerClick();
+    if (typeof triggerClick === "function") triggerClick();
     const cleanSub = String(newSubcat || "all").toLowerCase();
-    const cleanTier = String(activeTier || "all").toLowerCase();
-    if (cleanTier !== "all") {
-      navigate(`/shop/audios/${cleanSub}/${cleanTier}`);
-    } else {
-      navigate(`/shop/audios/${cleanSub}`);
-    }
+    setActiveSubcat(cleanSub.toUpperCase() === "ALL" ? "ALL" : cleanSub);
   };
 
   const handleTierChange = (newTier) => {
-    triggerClick();
-    const cleanSub = String(activeSubcat || "all").toLowerCase();
-    const cleanTier = String(newTier || "all").toLowerCase();
-    navigate(`/shop/audios/${cleanSub}/${cleanTier}`);
+    if (typeof triggerClick === "function") triggerClick();
+    setActiveTier(String(newTier || "all").toUpperCase());
   };
 
-  const handleOpenDetail = (itemOrId) => {
-    triggerClick();
-    const item =
-      typeof itemOrId === "object"
-        ? itemOrId
-        : SHOP_AUDIO_DATA.find((a) => a.id === itemOrId);
-    if (!item) return;
-
-    setSelectedDocId(item.id);
-    const cat = String(item.subCategory || activeSubcat || "all").toLowerCase();
-    // 👑 Kanonická 1-to-1 URL adresa pre produkt
-    navigate(`/shop/audios/${cat}/${item.id}`);
+  const handleOpenDetail = (docId) => {
+    if (typeof triggerClick === "function") triggerClick();
+    setSelectedDocId(docId);
   };
 
   const handleCloseDetail = () => {
-    triggerClick();
+    if (typeof triggerClick === "function") triggerClick();
     setSelectedDocId(null);
-    const cleanSub = String(activeSubcat || "all").toLowerCase();
-    const cleanTier = String(activeTier || "all").toLowerCase();
-    if (cleanTier !== "all") {
-      navigate(`/shop/audios/${cleanSub}/${cleanTier}`);
-    } else {
-      navigate(`/shop/audios/${cleanSub}`);
-    }
   };
 
   // --------------------------------------------------------------------------
@@ -570,6 +450,8 @@ export const ShopAudioMedia = () => {
 
     return false;
   };
+
+  
 
   // --------------------------------------------------------------------------
   // 4. STRICT 3-FAREBNÁ MATICA OPRÁVNENÍ
@@ -1054,44 +936,55 @@ export const ShopAudioMedia = () => {
       doc.supabaseMp4Url ||
       doc.videoUrl ||
       doc.cleanDeliverable?.downloadUrl ||
+      doc.audioUrl ||
+      doc.fileUrl ||
       "";
 
     // 🟢 VETVA A: FREE PRODUKTY -> ČISTÝ NATÍVNY MP4 PREHRÁVAČ ZO SUPABASE CDN (BEZ VODOZNAKOV)
-    if (isFree && cleanMp4Url) {
+    if (isFree) {
       return (
         <div className="p-5 bg-black/90 border border-[#39FF14]/50 rounded-2xl space-y-3 shadow-[0_0_25px_rgba(57,255,20,0.15)] animate-in fade-in duration-300 font-mono">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="text-xs font-black text-[#39FF14] uppercase tracking-widest flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#39FF14] animate-ping" />
-              [ 🟢 SUPABASE PUBLIC CDN // CLEAN MP4 STREAM ]
+              [ 🟢 FREE PUBLIC ACCESS // UNLOCKED STREAM ]
             </div>
             <span className="text-[9px] px-2.5 py-0.5 rounded bg-[#39FF14]/15 text-[#39FF14] border border-[#39FF14]/40 uppercase font-black tracking-wider">
               100% BEZ REKLÁM & VODOZNAKOV
             </span>
           </div>
 
-          {/* ⚡ NATÍVNY HTML5 PREHRÁVAČ S PLNÝMI OVLÁDACÍMI PRVKAMI */}
           <div className="aspect-video w-full rounded-xl overflow-hidden border border-[#39FF14]/30 bg-black relative shadow-2xl">
-            <video
-              key={cleanMp4Url}
-              src={cleanMp4Url}
-              poster={doc.imageUrl || doc.image}
-              controls
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-contain bg-black"
-            >
-              Váš prehliadač nepodporuje prehrávanie HTML5 MP4 videa.
-            </video>
+            {cleanMp4Url ? (
+              <video
+                key={cleanMp4Url}
+                src={cleanMp4Url}
+                poster={doc.imageUrl || doc.image}
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-contain bg-black relative z-10"
+              >
+                Váš prehliadač nepodporuje prehrávanie HTML5 MP4 videa.
+              </video>
+            ) : (
+              <iframe
+                src={`https://www.youtube.com/embed/${ytId}`}
+                title="Free Video Stream"
+                className="w-full h-full relative z-10"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
           </div>
 
           <div className="text-[10px] text-zinc-400 flex flex-col sm:flex-row sm:items-center justify-between gap-1 pt-1 border-t border-white/5">
             <span className="text-zinc-300 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#39FF14]" />⚡
-              SUPABASE PUBLIC CDN STREAM | ČISTÝ KOMERČNÝ MASTER
+              FREE VEREJNÝ STREAM | VOĽNE PRÍSTUPNÝ OBSAH
             </span>
             <span className="text-[#39FF14]/80 font-bold">
-              Kontejner: MP4 (H.264 / AAC 320 kbps)
+              {cleanMp4Url ? "Kontejner: MP4 CDN" : "Stream: YouTube Player"}
             </span>
           </div>
         </div>
@@ -1099,8 +992,8 @@ export const ShopAudioMedia = () => {
     }
 
     // 🟡 VETVA B: FREEMIUM, PROMIUM, OMEGAMIUM & MASTERMIUM -> YOUTUBE TEASER PREVIEW
-    const ytId = doc.youtubeId || "mF0v6VBQlbw";
-    const tierColor = getTierColor(doc.tier || "PROMIUM");
+    const ytId = String(doc.youtubeId || doc.ytId || "mF0v6VBQlbw").trim();
+    const tierColor = typeof getTierColor === "function" ? getTierColor(doc.tier || "PROMIUM") : "#BF00FF";
 
     return (
       <div
@@ -1131,13 +1024,13 @@ export const ShopAudioMedia = () => {
           </span>
         </div>
 
-        {/* ⚡ YOUTUBE IFRAME EMBED PRE PLATENÝ OBSAH */}
-        <div className="aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-black relative">
+        {/* 🎬 MP4 / AUDIO YOUTUBE STANDBY PLAYER BLOCK */}
+        <div className="aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-black relative shadow-2xl">
           <iframe
-            src={`https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&enablejsapi=1`}
-            title={doc.title || "YouTube Promo Teaser"}
-            className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            src={`https://www.youtube.com/embed/${ytId}`}
+            title="Audio / Video Prehľad"
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
         </div>
@@ -1198,13 +1091,8 @@ export const ShopAudioMedia = () => {
         />
       )}
 
-      {/* 1. 👑 JEDNOTNÁ MASTER HLAVIČKA A WALLET NAVIGÁCIA */}
-      <ShopHeaderComponent
-        activeTab="audios"
-        onShowTooltip={handleShowTooltip}
-        onUpdateTooltipPos={handleUpdateTooltipPos}
-        onHideTooltip={handleHideTooltip}
-      />
+      {/* 👑 SHOP HEADER WITH VIP WALLET */}
+      {/*Zmazané dualne zobrazenie*/}
 
       {/* 2. 👑 VÝHODY ČLENSTVA (SPOILER ACCORDION) */}
       <VyhodyClenstva

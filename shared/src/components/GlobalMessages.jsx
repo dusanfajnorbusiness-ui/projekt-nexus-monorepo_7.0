@@ -1,28 +1,7 @@
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  Mail,
-  X,
-  Trash2,
-  Archive,
-  Reply,
-  ChevronLeft,
-  ChevronRight,
-  Send,
-  Inbox,
-  AlertCircle,
-  Terminal,
-  RefreshCw,
-  User,
-  ShieldAlert,
-  CheckCircle2,
-  Search,
-  PenTool,
-  CheckSquare,
-  Square,
-  Filter,
-  Save,
-} from "lucide-react";
-
+import { GlobalComponents } from "@shared//components/GlobalComponents.jsx";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { parseNexusFormat } from "@shared/utils/nexusParser.js";
 // ⚡ EXODUS FIX: Úplne odstránené priame Firebase/Firestore importy!
 // Modul teraz komunikuje výlučne s abstraktným mostom NexusDB.
 
@@ -30,11 +9,9 @@ import {
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
 // ============================================================================
 
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { parseNexusFormat } from "../utils/nexusParser";
-import { NexusDB } from "@shared/services/NexusDB_Core";
-import { GlobalHamburgerMenu } from "./GlobalHamburgerMenu";
-import { GlobalComponents } from "./GlobalComponents";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { AlertCircle, Archive, CheckCircle2, CheckSquare, ChevronLeft, ChevronRight, Filter, Inbox, Mail, PenTool, RefreshCw, Reply, Save, Search, Send, ShieldAlert, Square, Terminal, Trash2, User, X } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
 
 // ============================================================================
 // ⚠️ MOCK PRE CANVAS NÁHĽAD (ZMAZAŤ V LOKÁLNOM PROJEKTE) ⚠️

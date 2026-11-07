@@ -1,23 +1,21 @@
-import React from "react";
-import { Cpu, Lock, Database } from "lucide-react";
-import { ID01_Map } from "@main-web/data/ID01_OmegaMap";
+import { ID01_Map } from "@main-web/data/ID01_OmegaMap.js";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
 // ============================================================================
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
 
 // ============================================================================
 // --- ONLINE UZLY (ID01) - IDENTITY CORE [104 NODES READY] ---
 // ============================================================================
 
 // 📂 SEKCIA A
-import Node_ID01_01 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_01";
-import Node_ID01_02 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_02";
-import Node_ID01_03 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_03";
-import Node_ID01_04 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_04";
-import Node_ID01_05 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_05";
-import Node_ID01_06 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_06";
+import Node_ID01_01 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_01.jsx";
+import Node_ID01_02 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_02.jsx";
+import Node_ID01_03 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_03.jsx";
+import Node_ID01_04 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_04.jsx";
+import Node_ID01_05 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_05.jsx";
+import Node_ID01_06 from "@main-web/subPages/ID01-Identity/FREE/Node_ID01_06.jsx";
 // import Node_ID01_07 from "@main-web/subPages/ID01-Identity/PRO/Node_ID01_07";
 // import Node_ID01_08 from "@main-web/subPages/ID01-Identity/PRO/Node_ID01_08";
 // import Node_ID01_09 from "@main-web/subPages/ID01-Identity/OMEGA/Node_ID01_09";

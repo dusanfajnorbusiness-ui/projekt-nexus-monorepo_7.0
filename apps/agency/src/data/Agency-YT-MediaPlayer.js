@@ -1,6 +1,4 @@
 ﻿/* eslint-disable no-undef */
-
-// ⚡⚡⚡ ZAČIATOK OPRAVA (UTF-8 & FULL MEDIA MATRIX V20.95) ⚡⚡⚡
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (GLOBAL YT MEDIA PLAYER DATA V20.95)
 // Súbor: apps/agency/src/data/Agency-YT-MediaPlayer.js

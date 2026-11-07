@@ -1,42 +1,19 @@
-import React, { useState, useEffect } from "react";
-import {
-  User,
-  Wallet,
-  Share2,
-  Mail,
-  Phone,
-  Facebook,
-  Chrome,
-  Globe,
-  HeartPulse,
-  Database,
-  Maximize2,
-  Minimize2,
-  X,
-  Ban,
-  Activity,
-  AlertTriangle,
-  Crown,
-  Edit3,
-  Youtube,
-  Instagram,
-  MessageCircle,
-  Music2,
-} from "lucide-react";
-
 // ============================================================================
 // ⚠️ LOKÁLNE IMPORTY (ZAKOMENTOVANÉ PRE STABILITU CANVAS NÁHĽADU) ⚠️
 // ============================================================================
 
-import { parseNexusFormat } from "../utils/nexusParser";
-import GlobalShopHistory from "@shop/components/GlobalShopHistory";
+import { parseNexusFormat } from "@shared/utils/nexusParser.js";
+import GlobalShopHistory from "@shop/components/GlobalShopHistory.jsx";
+import { Activity, AlertTriangle, Ban, Chrome, Crown, Database, Edit3, Facebook, Globe, HeartPulse, Instagram, Mail, Maximize2, MessageCircle, Minimize2, Music2, Phone, Share2, User, Wallet, X, Youtube } from "lucide-react";
+import React, { useEffect, useState } from "react";
+
 // import { trackPresence } from "../utils/Blog-PresenceEngine"; // 🛑 ZAKOMENTOVANÉ: Chýbajúci modul
 const trackPresence = () => {}; // Defenzívny mock pre V20 stav bez chýb
-import { getTierColor } from "@shared/data/nexusConfig";
+import { getTierColor } from "@shared/data/nexusConfig.js";
 
 // ⚡ INJEKCIA: Globálne navigačné a scrollovacie moduly
-import { GlobalHamburgerMenu } from "./GlobalHamburgerMenu";
-import { GlobalComponents } from "./GlobalComponents";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
+import { GlobalComponents } from "@shared/components/GlobalComponents.jsx";
 
 // ============================================================================
 // 🌟 POMOCNÝ KOMPONENT: TOOLTIP (ČISTÉ CENTROVANIE)
@@ -69,6 +46,41 @@ const TooltipHover = ({ text, dimColor = "#39FF14", position = "top" }) => {
       />
     </div>
   );
+};
+
+const getPresenceStatus = (statusInput) => {
+  if (!statusInput) return "OFFLINE";
+  if (typeof statusInput === "string") return statusInput;
+  if (typeof statusInput === "boolean") return statusInput ? "ONLINE" : "OFFLINE";
+  return statusInput?.is_online || statusInput?.status === "online" ? "ONLINE" : "OFFLINE";
+};
+
+const getAvatarColor = (identifier) => {
+  if (!identifier) return "from-purple-600 to-indigo-600";
+  const str = typeof identifier === "object" 
+    ? String(identifier.role || identifier.email || identifier.id || "nexus") 
+    : String(identifier);
+    
+  const colors = [
+    "from-purple-600 to-indigo-600",
+    "from-cyan-500 to-blue-600",
+    "from-emerald-500 to-teal-600",
+    "from-amber-500 to-orange-600",
+    "from-rose-500 to-pink-600",
+    "from-fuchsia-600 to-purple-600"
+  ];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+};
+
+const getRoleColor = (role) => {
+  const r = String(role || "").toUpperCase();
+  if (r.includes("ARCHITECT") || r.includes("ADMIN")) return "border-purple-500 text-purple-400 bg-purple-950/50";
+  if (r.includes("PRO") || r.includes("VIP")) return "border-cyan-500 text-cyan-400 bg-cyan-950/50";
+  return "border-emerald-500 text-emerald-400 bg-emerald-950/50";
 };
 
 export const GlobalProfil = ({

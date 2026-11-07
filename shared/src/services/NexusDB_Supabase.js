@@ -1,5 +1,6 @@
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config.js";
 import { createClient } from "@supabase/supabase-js";
-import { EXODUS_CONFIG } from "./NexusDB_Config";
+
 // 🛡️ INJEKCIA FIREWALLU PRE SUPABASE
 // import { pingEngine } from "../utils/NexusPingEngine"; // 🛑 ZAKOMENTOVANÉ: Modul leží v @settings/utils
 const pingEngine = { ping: () => {}, log: () => {} }; // Defenzívny V20 mock pre nulové runtime chyby

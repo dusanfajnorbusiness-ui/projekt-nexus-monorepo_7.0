@@ -1,12 +1,11 @@
-import React from "react";
-import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
-
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY
 // ============================================================================
 // ⚡ Uprav si cestu a názov podľa tvojho nexusConfig.js
-import { SEO_REGISTRY } from "../data/seoRegistry";
+import { SEO_REGISTRY } from "@shared/data/seoRegistry.js";
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 
 export const MetaTags = ({
   title,

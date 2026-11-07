@@ -1,37 +1,39 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  ChevronLeft,
-  Activity,
-  Terminal,
-  LayoutList,
-  Search,
-  LayoutGrid,
-  Grid2X2,
-  List,
-  Lock,
-  Unlock,
-  ChevronRight,
-  Compass,
-  ShieldCheck,
-  Briefcase,
-  TrendingUp,
-} from "lucide-react";
+import { GlobalOfflineNode } from "@main-web/components/GlobalOfflineNode.jsx";
+import nodeStats from "@main-web/data/nodeStats.json";
+// import MetaTags from "./MetaTags";
+import { GlobalComponents } from "@shared/components/GlobalComponents.jsx";
+import { GlobalFooter } from "@shared/components/GlobalFooter.jsx";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
 
 // ============================================================================
 // ⚠️ IMPORTY (ZAKOMENTOVANÉ PRE STABILITU CANVAS NÁHĽADU) ⚠️
 // ARCHITEKT: PRED NASADENÍM ODKOMENTUJ TIETO ORIGINÁLY A ZMAŽ MOCK BLOK:
 // ============================================================================
 
-import { NODE_STATUS_REGISTRY } from "@main-web/data/NodeStatusRegistry";
-import { GlobalOfflineNode } from "./GlobalOfflineNode";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import nodeStats from "@main-web/data/nodeStats.json";
-// import MetaTags from "./MetaTags";
-import { GlobalComponents } from "./GlobalComponents";
-import { GlobalFooter } from "./GlobalFooter";
-import { GlobalHamburgerMenu } from "./GlobalHamburgerMenu";
-import GlobalPaywallModal from "./shop/GlobalPaywallModal";
+import { NODE_STATUS_REGISTRY } from "@shared/data/NodeStatusRegistry.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import GlobalPaywallModal from "@shop/components/GlobalPaywallModal.jsx";
+import {
+  Activity,
+  Briefcase,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Grid2X2,
+  LayoutGrid,
+  LayoutList,
+  List,
+  Lock,
+  Search,
+  ShieldCheck,
+  Terminal,
+  TrendingUp,
+  Unlock,
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+
 
 // 🛡️ LOKÁLNA MATICA TIERov
 const TIER_VALUES = {
@@ -762,8 +764,13 @@ export const GlobalDimensionHub = ({
                 >
                   {nodesToRender.map((node) => {
                     const isOnline =
-                      NODE_STATUS_REGISTRY &&
-                      NODE_STATUS_REGISTRY[node.id] === "ONLINE";
+                      (typeof NODE_STATUS_REGISTRY !== "undefined" &&
+                        NODE_STATUS_REGISTRY[node.id] === "ONLINE") ||
+                      (typeof NODE_STATUS_REGISTRY !== "undefined" &&
+                        NODE_STATUS_REGISTRY[node.status] === "ONLINE") ||
+                      node?.status === "ONLINE" ||
+                      node?.isOnline === true;
+
                     const hasAccess = checkAccess(node.tier, node.id);
                     const tColor = getTierColor(node.tier);
                     const isList = viewMode === "LIST";

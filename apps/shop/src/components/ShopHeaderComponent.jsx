@@ -1,211 +1,235 @@
+import { getTooltip } from "@shared/data/TooltipsShop.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { ShopVIP_Ticket } from "@shop/components/ShopVIP_Ticket.jsx";
+import { Cpu, ExternalLink, FileText, Image as ImageIcon, Music, ShoppingBag, Video } from "lucide-react";
+/* eslint-disable no-undef */
+
+// ============================================================================
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (SHOP HEADER COMPONENT V20.95)
+// Súbor: apps/shop/src/components/ShopHeaderComponent.jsx
+// Status: 100% GROUNDED // CYBER-BRUTALISM SHOP HEADER & 6 SIBLINGS NAV
+// Author: Dušan Fajnor @nexus-core2Mb (CyberTech Architect)
+// ============================================================================
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  ShoppingCart,
-  Video,
-  Volume2,
-  Image,
-  FileText,
-  Cpu,
-} from "lucide-react";
-import { getTooltip } from "../data/TooltipsShop";
-import { ShopVIP_Ticket } from "./ShopVIP_Ticket";
+
+export const SHOP_NAV_TABS = [
+  {
+    id: "shop",
+    label: "NEXUS SHOP",
+    icon: ShoppingBag,
+    color: "#FFD700",
+    signal: "bg-amber-400 animate-pulse",
+    tooltipKey: "SHOP_MAIN",
+    desc: "Hlavný komerčný obchod, Členstvá, OC Kredity a Matrix FX",
+    activeBorder: "border-[#FFD700]",
+    activeBg: "bg-[#FFD700]/15",
+    glow: "shadow-[0_0_15px_rgba(255,215,0,0.3)]",
+  },
+  {
+    id: "videos",
+    label: "VIDEO MEDIA",
+    icon: Video,
+    color: "#9D00FF",
+    signal: "bg-purple-500",
+    tooltipKey: "SHOP_VIDEO",
+    desc: "Dynamické videá, Shorts, Reels a 4K slučky",
+    activeBorder: "border-[#9D00FF]",
+    activeBg: "bg-[#9D00FF]/15",
+    glow: "shadow-[0_0_15px_rgba(157,0,255,0.3)]",
+  },
+  {
+    id: "audios",
+    label: "AUDIO MEDIA",
+    icon: Music,
+    color: "#FF0055",
+    signal: "bg-rose-500",
+    tooltipKey: "SHOP_AUDIO",
+    desc: "Hudobný katalóg, Soundtracks a SFX efekty",
+    activeBorder: "border-[#FF0055]",
+    activeBg: "bg-[#FF0055]/15",
+    glow: "shadow-[0_0_15px_rgba(255,0,85,0.3)]",
+  },
+  {
+    id: "images",
+    label: "IMAGE MEDIA",
+    icon: ImageIcon,
+    color: "#FF9900",
+    signal: "bg-orange-400",
+    tooltipKey: "SHOP_IMAGE",
+    desc: "Avatary, Wallpapery a vizuálne aktíva",
+    activeBorder: "border-[#FF9900]",
+    activeBg: "bg-[#FF9900]/15",
+    glow: "shadow-[0_0_15px_rgba(255,153,0,0.3)]",
+  },
+  {
+    id: "documents",
+    label: "DOCUMENTS",
+    icon: FileText,
+    color: "#00F3FF",
+    signal: "bg-cyan-400",
+    tooltipKey: "SHOP_DOCUMENTS",
+    desc: "E-booky, PDF príručky a študijné materiály",
+    activeBorder: "border-[#00F3FF]",
+    activeBg: "bg-[#00F3FF]/15",
+    glow: "shadow-[0_0_15px_rgba(0,243,255,0.3)]",
+  },
+  {
+    id: "apps",
+    label: "APPS MEDIA",
+    icon: Cpu,
+    color: "#00FF66",
+    signal: "bg-emerald-400",
+    tooltipKey: "SHOP_APPS",
+    desc: "SaaS aplikácie, APK a PC nástroje",
+    activeBorder: "border-[#00FF66]",
+    activeBg: "bg-[#00FF66]/15",
+    glow: "shadow-[0_0_15px_rgba(0,255,102,0.3)]",
+  },
+];
 
 export const ShopHeaderComponent = ({
   activeTab = "shop",
-  onTabChange,
-  userBalance = 0,
-  userEmail = "",
+  handleTabClick,
+  themeColor = "#FFD700", // Kybernetická Zlatá pre Shop Mainframe a 6 Súrodencov
+  onThemeChange,
+  tabConfig = SHOP_NAV_TABS, // 👈 IMPLICITNÝ FALLBACK PRE SÚRODENCOV
   userTier = "FREE",
+  userBalance = 0,
+  userEmail = "Hosť",
   getTierColor = () => "#FFD700",
-  handleShowTooltip,
+  showFn = () => {},
+  posFn = () => {},
+  hideFn = () => {},
   onShowTooltip,
-  handleUpdateTooltipPos,
   onUpdateTooltipPos,
-  handleHideTooltip,
   onHideTooltip,
 }) => {
-  const navigate = useNavigate();
+  const tooltipShow = showFn || onShowTooltip;
+  const tooltipPos = posFn || onUpdateTooltipPos;
+  const tooltipHide = hideFn || onHideTooltip;
 
-  const showFn = handleShowTooltip || onShowTooltip;
-  const posFn = handleUpdateTooltipPos || onUpdateTooltipPos;
-  const hideFn = handleHideTooltip || onHideTooltip;
+  // ⚡ Defenzívny handler zmeny tabu – filtrácia SyntheticEvent objektov
+  const onTabClick = (tab, e) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+    
+    // Ak by prichádzal samotný SyntheticEvent ako 1. argument, extrahujeme ID alebo fallback
+    const isEvent = tab && typeof tab === "object" && (tab._reactName || tab.nativeEvent);
+    const rawId = isEvent ? "shop" : (typeof tab === "object" ? tab?.id : tab);
+    const cleanTab = String(rawId || "shop").toLowerCase().trim();
 
-  const tabConfig = [
-    {
-      id: "shop",
-      label: "NEXUS SHOP",
-      desc: "Členstvá, OC balíky, Matrix FX & Služby",
-      icon: ShoppingCart,
-      color: "#FFD700",
-      path: "/shop",
-      tooltipKey: "TAB_SHOP",
-      glow: "shadow-[0_0_20px_rgba(255,215,0,0.35)]",
-      activeBorder: "border-[#FFD700]",
-      activeBg: "bg-[#FFD700]/15",
-      signal: "bg-[#FFD700] shadow-[0_0_8px_#FFD700]",
-    },
-    {
-      id: "videos",
-      label: "VIDEOS MEDIA",
-      desc: "Video prehľady a sémantické trailery",
-      icon: Video,
-      color: "#FF6600",
-      path: "/shop/videos",
-      tooltipKey: "TAB_VIDEOS",
-      glow: "shadow-[0_0_20px_rgba(255,102,0,0.35)]",
-      activeBorder: "border-[#FF6600]",
-      activeBg: "bg-[#FF6600]/15",
-      signal: "bg-[#FF6600] animate-pulse shadow-[0_0_8px_#FF6600]",
-    },
-    {
-      id: "audios",
-      label: "AUDIOS MEDIA",
-      desc: "Hovorené slovo, mp3 & tónové stimulácie",
-      icon: Volume2,
-      color: "#BF00FF",
-      path: "/shop/audios",
-      tooltipKey: "TAB_AUDIOS",
-      glow: "shadow-[0_0_20px_rgba(191,0,255,0.35)]",
-      activeBorder: "border-[#BF00FF]",
-      activeBg: "bg-[#BF00FF]/15",
-      signal: "bg-[#BF00FF] shadow-[0_0_8px_#BF00FF]",
-    },
-    {
-      id: "images",
-      label: "IMAGES MEDIA",
-      desc: "3D Hybrid Robotic Avatary (ID00-ID20)",
-      icon: Image,
-      color: "#39FF14",
-      path: "/shop/images",
-      tooltipKey: "TAB_IMAGES",
-      glow: "shadow-[0_0_20px_rgba(57,255,20,0.35)]",
-      activeBorder: "border-[#39FF14]",
-      activeBg: "bg-[#39FF14]/15",
-      signal: "bg-[#39FF14] shadow-[0_0_8px_#39FF14]",
-    },
-    {
-      id: "documents",
-      label: "DOCUMENTS MEDIA",
-      desc: "69x PDF/PPTX taktických manuálov",
-      icon: FileText,
-      color: "#00f3ff",
-      path: "/shop/documents",
-      tooltipKey: "TAB_DOCUMENTS",
-      glow: "shadow-[0_0_20px_rgba(0,243,255,0.35)]",
-      activeBorder: "border-[#00f3ff]",
-      activeBg: "bg-[#00f3ff]/15",
-      signal: "bg-[#00f3ff] shadow-[0_0_8px_#00f3ff]",
-    },
-    {
-      id: "apps",
-      label: "APPS MEDIA",
-      desc: "9x SaaS PWA / MOB / DESK terminálov",
-      icon: Cpu,
-      color: "#00E5FF",
-      path: "/shop/apps",
-      tooltipKey: "TAB_APPS",
-      glow: "shadow-[0_0_20px_rgba(0,229,255,0.35)]",
-      activeBorder: "border-[#00E5FF]",
-      activeBg: "bg-[#00E5FF]/15",
-      signal: "bg-[#00E5FF] shadow-[0_0_8px_#00E5FF]",
-    },
-  ];
-
-  const handleTabClick = (tab) => {
-    sessionStorage.setItem("nexus_shop_active_tab", tab.id);
-    if (typeof onTabChange === "function") {
-      onTabChange(tab.id);
+    if (typeof handleTabClick === "function") {
+      handleTabClick(cleanTab);
     } else {
-      navigate(tab.path);
+      sessionStorage.setItem("nexus_shop_active_tab", cleanTab);
+      const targetUrl = cleanTab === "shop" ? "/shop/shop/all" : `/shop/shop/all?tab=${cleanTab}`;
+      if (typeof window !== "undefined") {
+        window.location.href = targetUrl;
+      }
     }
   };
 
+  // ⚡ Defenzívna filtrácia pre Tooltip (ochrana pred vykreslením eventu v JSX)
+  const handleSafeShowTooltip = (tooltipKey, e) => {
+    if (!tooltipKey || typeof tooltipKey === "object") return;
+    tooltipShow(String(tooltipKey), e);
+  };
+
   return (
-    <header className="w-full mb-8 space-y-6 font-mono text-left relative z-20">
-      {/* GLOBÁLNA HLAVIČKA HEADERU */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 md:p-5 bg-[#050A0E]/95 border border-white/10 rounded-2xl backdrop-blur-xl relative z-20 shadow-2xl">
-        <div className="text-left font-mono">
-          <h1 className="text-base md:text-lg font-black tracking-widest uppercase flex items-center gap-2.5 flex-wrap">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#FFD700] animate-pulse shadow-[0_0_8px_#FFD700]" />
-            <span className="text-[#FFD700] drop-shadow-[0_0_12px_rgba(0,243,255,0.5)]">
-              NEXUS SHOP
-            </span>{" "}
-            <span className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-              DIGITAL ASSETS MATRIX
-            </span>
-          </h1>
-          <p className="text-[10px] md:text-[11px] text-zinc-400 mt-1 font-mono">
-            Zjednotené centrum digitálnych aktív a komerčných modulov OS Genesis
-            Edition
-          </p>
+    <header className="w-full bg-[#03070A]/90 border-b border-[#FFD700]/30 backdrop-blur-2xl sticky top-0 z-40 font-mono text-white py-3 px-4 md:px-8 mb-6 shadow-[0_4px_20px_rgba(255,215,0,0.1)]">
+      <div className="max-w-7xl mx-auto space-y-4">
+        {/* 👑 TOP BAR: LOGO, BRAND TITLE & VIP TICKET (1:1 AGENCY SYNC) */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* LOGO & BRAND TITLE */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => SoundFX?.playClick?.()}
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#FFD700]/10 border border-[#FFD700] flex items-center justify-center shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-105">
+              <ShoppingBag className="w-5 h-5 text-[#FFD700]" />
+            </div>
+            <div>
+              <h1 className="text-sm md:text-base font-extrabold tracking-widest text-white uppercase flex items-center gap-2">
+                NEXUS SHOP{" "}
+                <span className="text-[10px] text-[#FFD700] bg-[#FFD700]/10 px-2 py-0.5 rounded-full border border-[#FFD700]/30">
+                  V20.95
+                </span>
+              </h1>
+              <p className="text-[10px] text-gray-400 hidden sm:block uppercase tracking-wide">
+                OS GENESIS // DIGITAL ASSETS MATRIX // 6 SIBLINGS
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: VIP TICKET & ACTIONS */}
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <ShopVIP_Ticket
+              pageKey={activeTab}
+              userTier={userTier}
+              getTierColor={getTierColor}
+              handleShowTooltip={showFn}
+              handleUpdateTooltipPos={posFn}
+              handleHideTooltip={hideFn}
+            />
+          </div>
         </div>
 
-        <ShopVIP_Ticket
-          pageKey={activeTab}
-          userTier={userTier}
-          getTierColor={getTierColor}
-          handleShowTooltip={showFn}
-          handleUpdateTooltipPos={posFn}
-          handleHideTooltip={hideFn}
-        />
-      </div>
+        {/* 🌐 NAVIGÁCIA 6 SÚRODENCOV (DEFENZÍVNE OPRAVENÉ STYLES & PRETEKANIE) */}
+        <div className="p-1.5 bg-black/60 border border-white/10 rounded-xl backdrop-blur-md">
+          <nav className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+            {tabConfig.map((tab, idx) => {
+              const IconComp = tab.icon;
+              const isActive = activeTab === tab.id;
 
-      {/* NAVIGÁCIA 6 SÚRODENCOV S BEZPEČNÝM CONTAINER OBRANOM PROTI PRETEKANIU */}
-      <div className="p-1.5 bg-black/40 border border-white/5 rounded-2xl backdrop-blur-md relative z-20">
-        <nav className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
-          {tabConfig.map((tab, idx) => {
-            const IconComp = tab.icon;
-            const isActive = activeTab === tab.id;
+              const originClass =
+                idx === 0
+                  ? "origin-left"
+                  : idx === tabConfig.length - 1
+                    ? "origin-right"
+                    : "origin-center";
 
-            // Dynamické nastavenie transform originu podľa pozície (prevencia pretekania po hraniciach)
-            const originClass =
-              idx === 0
-                ? "origin-left"
-                : idx === tabConfig.length - 1
-                  ? "origin-right"
-                  : "origin-center";
-
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleTabClick(tab)}
-                onMouseEnter={(e) =>
-                  showFn?.(tab.label, getTooltip(tab.tooltipKey, tab.desc), e)
-                }
-                onMouseMove={posFn}
-                onMouseLeave={hideFn}
-                className={`relative border text-left p-3.5 md:p-4 rounded-xl transition-all duration-300 cursor-pointer ${originClass} ${
-                  isActive
-                    ? `\${tab.activeBorder} \\({tab.activeBg} \\){tab.glow} text-white scale-[1.01] hover:scale-[1.02] -translate-y-0.5 font-extrabold z-10`
-                    : "border-white/10 bg-black/80 text-zinc-400 hover:text-white hover:border-white/30 hover:bg-white/10 hover:-translate-y-0.5 hover:scale-[1.01]"
-                }`}
-              >
-                <div className="flex justify-between items-start mb-2.5">
-                  <IconComp
-                    size={20}
-                    style={{ color: isActive ? tab.color : "#a1a1aa" }}
-                    className="transition-colors shrink-0"
-                  />
-                  {/* SIGNÁLKA V PRÍSLUŠNEJ UNIKÁTNEJ FARBE KARTY */}
-                  <span
-                    className={`h-2 w-2 rounded-full shrink-0 ${tab.signal}`}
-                  />
-                </div>
-
-                <h3
-                  className="text-xs font-black uppercase tracking-wider mb-1 transition-colors truncate"
-                  style={{ color: isActive ? tab.color : "#ffffff" }}
+              return (
+                <button
+                  key={tab.id}
+                  onClick={(e) => onTabClick(tab, e)}
+                  onMouseEnter={(e) => handleSafeShowTooltip(tab.tooltipKey || "SHOP_MAIN", e)}
+                  onMouseMove={(e) => tooltipPos(e)}
+                  onMouseLeave={() => tooltipHide()}
+                  className={`group relative p-3 rounded-xl border font-mono text-left transition-all duration-300 transform hover:-translate-y-0.5 select-none ${originClass} ${
+                    isActive
+                      ? "border-[#FFD700] bg-[#FFD700]/10 shadow-[0_0_20px_rgba(255,215,0,0.2)] text-white font-bold ring-1 ring-white/20"
+                      : "border-white/10 bg-black/40 hover:border-white/30 text-gray-400 hover:text-gray-200"
+                  }`}
                 >
-                  {tab.label}
-                </h3>
-                <p className="text-[9px] text-zinc-400 leading-tight line-clamp-2">
-                  {tab.desc}
-                </p>
-              </button>
-            );
-          })}
-        </nav>
+                  <div className="flex justify-between items-start mb-2">
+                    {IconComp && (
+                      <IconComp
+                        size={18}
+                        style={{ color: isActive ? tab.color : "#a1a1aa" }}
+                        className="transition-colors shrink-0"
+                      />
+                    )}
+                    <span
+                      className={`h-2 w-2 rounded-full shrink-0 ${tab.signal || "bg-gray-500"}`}
+                    />
+                  </div>
+
+                  <h3
+                    className="text-xs font-black uppercase tracking-wider mb-0.5 transition-colors truncate"
+                    style={{ color: isActive ? tab.color : "#ffffff" }}
+                  >
+                    {tab.label}
+                  </h3>
+                  {tab.desc && (
+                    <p className="text-[9px] text-zinc-400 font-normal normal-case truncate leading-tight hidden sm:block">
+                      {tab.desc}
+                    </p>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </div>
     </header>
   );

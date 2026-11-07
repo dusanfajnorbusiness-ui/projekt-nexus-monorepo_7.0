@@ -40,12 +40,12 @@ import {
   Lock,
 } from "lucide-react";
 
-import { getTierColor } from "@shared/data/nexusConfig";
-import { DIMENSION_DESCRIPTIONS } from "@shared/data/DimensionDescriptions";
-import { checkPermission } from "@shared/data/permissionsRegistry";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { parseNexusFormat } from "@shared/utils/nexusParser";
-import { NexusDB } from "@shared/services/NexusDB_Core";
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { DIMENSION_DESCRIPTIONS } from "@main-web/data/DimensionDescriptions.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { parseNexusFormat } from "@shared/utils/nexusParser.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
 
 const CORE_VERSION = "BC-BlogComposer V9.5-FULL-ARCHITECT";
 

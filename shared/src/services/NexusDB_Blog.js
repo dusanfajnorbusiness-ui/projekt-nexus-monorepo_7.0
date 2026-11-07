@@ -1,23 +1,9 @@
-import {
-  collection,
-  doc,
-  onSnapshot,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  setDoc,
-  query,
-  serverTimestamp,
-  arrayRemove,
-  arrayUnion,
-  getDoc,
-  increment,
-} from "firebase/firestore";
-import { dbCore, APP_ID } from "@shared/data/nexusConfig";
-import { EXODUS_CONFIG } from "./NexusDB_Config";
-import fallbackData from "../data/nexusFallback.json";
-import { supabase } from "./NexusDB_Supabase";
-import { NexusPingEngine } from "@settings/utils/NexusPingEngine";
+import { NexusPingEngine } from "@settings/utils/NexusPingEngine.js";
+import { supabase } from "@shared//services/NexusDB_Supabase.js";
+import { APP_ID, dbCore } from "@shared/data/nexusConfig.js";
+import fallbackData from "@shared/data/nexusFallback.json";
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config.js";
+import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, increment, onSnapshot, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 export const NexusDB_Blog = {
   // ==========================================================================

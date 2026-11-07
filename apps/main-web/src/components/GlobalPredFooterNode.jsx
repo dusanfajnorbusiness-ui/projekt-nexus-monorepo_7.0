@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { MessageSquare, Quote, Scan, Activity } from "lucide-react";
 
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core";
-import { DIMENSIONS } from "@shared/data/nexusConfig";
-import { supabase } from "@main-web/services/NexusDB_Supabase"; // ⚡ Import pre priamu celkovú telemetriu a ochranu lajkov
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { DIMENSIONS } from "@shared/data/nexusConfig.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js"; // ⚡ Import pre priamu celkovú telemetriu a ochranu lajkov
 
 const CORE_VERSION =
   "C-GlobalPredFooter V32.8-TELEMETRY (Downward Tooltips & Absolute Time)";

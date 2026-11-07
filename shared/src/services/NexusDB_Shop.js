@@ -1,16 +1,8 @@
+import { APP_ID, dbCore } from "@shared/data/nexusConfig.js";
+import fallbackData from "@shared/data/nexusFallback.json";
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config.js";
 // 🛰️ EXODUS-READY: 11. 5. 2026 | MODUL: NEXUS DB SHOP
-import {
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  increment,
-  onSnapshot,
-  serverTimestamp,
-} from "firebase/firestore";
-import { dbCore, APP_ID } from "@shared/data/nexusConfig";
-import { EXODUS_CONFIG } from "./NexusDB_Config";
-import fallbackData from "../data/nexusFallback.json";
+import { arrayUnion, doc, increment, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 const TIER_RANK = {
   BANNED: 0,

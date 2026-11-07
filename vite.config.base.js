@@ -1,19 +1,49 @@
 /* eslint-disable no-undef */
 import react from "@vitejs/plugin-react";
+
 import path from "path";
 import { defineConfig } from "vite";
+import { exec, execSync } from "child_process";
 
+const getGitCommitHash = () => {
+  try {
+    return execSync("git rev-parse --short HEAD").toString().trim();
+  } catch (err) {
+    console.warn("⚠️ [NEXUS VITE] Git Hash missing, falling back to default build hash.", err?.message);
+    return "v20.95-master";
+  }
+};
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (V20 MASTER VITE BASE CONFIG)
 // Status: 100% GROUNDED // ALL SUBDOMAINS & PAGES RESOLUTION
 // ============================================================================
 
 export const createViteConfig = (appDir, port = 5173) => {
-  const rootDir = path.resolve(__dirname);
+  const rootDir = path.resolve(appDir, "../../");
+  const currentGitHash = getGitCommitHash();
 
   return defineConfig({
-    root: appDir, // 🎯 Garantuje, že Vite okamžite nájde index.html a všetky stránky v src/pages/
-    plugins: [react()],
+    root: appDir,
+    define: {
+      "import.meta.env.VITE_GIT_COMMIT_HASH": JSON.stringify(currentGitHash),
+    },
+    plugins: [
+      react(),
+      {
+        name: "nexus-windows-auto-open",
+        configureServer(server) {
+          server.httpServer?.once("listening", () => {
+            setTimeout(() => {
+              const url = `http://localhost:${port}`;
+              // 🎯 Prinúti Windows OS otvoriť predvolený prehliadač (Chrome/Edge/Brave) okamžite po štarte servera
+              exec(`cmd /c start ${url}`, (err) => {
+                if (err) console.warn("⚠️ [NEXUS AUTO-OPEN WARN]:", err.message);
+              });
+            }, 500);
+          });
+        },
+      },
+    ],
     server: {
       port,
       host: true,
@@ -38,6 +68,29 @@ export const createViteConfig = (appDir, port = 5173) => {
       outDir: path.resolve(appDir, "dist"),
       emptyOutDir: true,
       sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (
+                id.includes("react") ||
+                id.includes("react-dom") ||
+                id.includes("react-router")
+              ) {
+                return "vendor-react";
+              }
+              if (id.includes("lucide-react")) {
+                return "vendor-icons";
+              }
+              return "vendor-libs";
+            }
+            if (id.includes("shared/src")) {
+              return "vendor-shared";
+            }
+          },
+        },
+      },
     },
   });
 };

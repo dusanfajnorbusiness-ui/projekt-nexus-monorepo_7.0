@@ -11,7 +11,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 // Zabezpeč, aby táto cesta k videoRegistry bola správna pre tvoj projekt:
-import { videoRegistry } from "@main-web/data/videoRegistry";
+import { videoRegistry } from "@main-web/data/videoRegistry.js";
 
 const GlobalNodeVideo = ({ themeColor = "#FF003C", nodeId }) => {
   const [activeFormat, setActiveFormat] = useState("explainer");

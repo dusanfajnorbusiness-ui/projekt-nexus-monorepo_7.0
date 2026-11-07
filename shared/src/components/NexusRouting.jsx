@@ -4,7 +4,7 @@ import { Navigate, useLocation } from "react-router-dom";
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY
 // ============================================================================
-import { TIER_VALUES } from "@shared/data/nexusConfig";
+import { TIER_VALUES } from "@shared/data/nexusConfig.js";
 
 // 🧠 POMOCNÁ FUNKCIA: Bezpečné prečítanie identity zo Skafandra
 const getIdentity = () => {

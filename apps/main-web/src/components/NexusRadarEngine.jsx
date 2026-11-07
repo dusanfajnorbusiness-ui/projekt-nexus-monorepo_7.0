@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
 // ============================================================================
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
 
 // ============================================================================
 // ⚠️ MOCK PRE CANVAS NÁHĽAD (ZMAZAŤ V LOKÁLNOM PROJEKTE) ⚠️

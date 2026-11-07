@@ -6,13 +6,13 @@
 // Status: STRICTLY GROUNDED // ROUTE GUARD & UPLINK MODAL FOR QUEST USERS
 // ============================================================================
 
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Lock, ShieldAlert, LogIn, ArrowLeft } from "lucide-react";
 import {
-  isRouteAllowedForQuest,
   isQuestUser,
-} from "../data/permissionsRegistry.js";
+  isRouteAllowedForQuest,
+} from "@shared/data/permissionsRegistry.js";
+import { ArrowLeft, Lock, LogIn, ShieldAlert } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const GlobalQuestAuth = ({ children, activeUser }) => {
   const location = useLocation();

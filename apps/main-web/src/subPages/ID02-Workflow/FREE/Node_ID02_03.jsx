@@ -13,12 +13,15 @@ import {
   Zap,
   HelpCircle,
 } from "lucide-react";
-import { TierBadge } from "@shared/components/TierBadge";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode";
-import { GlobalNodeVideo } from "@main-web/components/GlobalNodeVideo";
-import { GlobalNodePodcast } from "@main-web/components/GlobalNodePodcast";
-import MetaTags from "@shared/components/MetaTags";
+// =====================================================================
+// 🟢 1. PRODUKČNÉ IMPORTY
+// =====================================================================
+import { TierBadge } from "@shared/components/TierBadge.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode.jsx";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { DMLTooltip } from "@shared/components/DMLTooltip.jsx";
 
 // =====================================================================
 // 👑 HLAVNÝ KOMPONENT UZLA ID02_NODE_02 (PREŽITÁ PRAVDA V SYSTÉME)
@@ -577,81 +580,7 @@ export default function Node_ID02_03() {
     },
   };
 
-  // =====================================================================
-  // 🔌 INTERAKTÍVNY TOOLTIP INJEKTOR (DMLTooltip)
-  // =====================================================================
-  const DMLTooltip = ({ slug, label }) => {
-    const termData = termsData[slug];
-    if (!termData) return <span>{label || slug}</span>;
-
-    const catStyle = categoryStyles[termData.category] || {
-      name: "unknown",
-      hex: "#A855F7",
-      text: "text-purple-500",
-      border: "border-purple-500/20",
-      bg: "bg-purple-500/5",
-      hoverBorder: "hover:border-purple-400",
-      glow: "",
-    };
-    const isCurrentlyActive = activeTooltip === slug;
-
-    const handleInteraction = (e) => {
-      e.stopPropagation();
-      triggerSound("click");
-      if (isCurrentlyActive) {
-        setActiveTooltip(null);
-      } else {
-        setActiveTooltip(slug);
-      }
-    };
-
-    return (
-      <span className="relative inline-block z-35">
-        <span
-          onClick={handleInteraction}
-          onTouchStart={handleInteraction}
-          className={`cursor-pointer border-b-2 ${catStyle.border} ${catStyle.text} font-black hover:bg-white/5 transition-all duration-200 px-1 rounded-sm relative`}
-          style={{
-            textShadow:
-              termData.category === 3 || termData.category === 13
-                ? `0 0 8px ${catStyle.hex}`
-                : "none",
-          }}
-        >
-          {label || termData.term}
-        </span>
-        {isCurrentlyActive && (
-          <>
-            <div
-              className="fixed inset-0 z-40 bg-transparent"
-              onClick={() => setActiveTooltip(null)}
-            />
-            <div
-              className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 p-4 bg-[#050A0E] border-2 ${catStyle.border} ${catStyle.glow} rounded-lg z-50 shadow-2xl`}
-            >
-              <div className="flex justify-between items-center mb-2 pb-1 border-b border-gray-800">
-                <span
-                  className={`font-mono font-black uppercase text-xs tracking-widest ${catStyle.text}`}
-                >
-                  {termData.term}
-                </span>
-                <span className="text-[10px] text-gray-500 font-mono uppercase bg-gray-900 px-1.5 py-0.5 rounded">
-                  Tier {termData.category} - {catStyle.name}
-                </span>
-              </div>
-              <p className="mb-2 italic text-gray-400 font-medium text-xs">
-                Preklad: {termData.translation}
-              </p>
-              <p className="text-gray-300 leading-relaxed text-xs font-mono">
-                {termData.tooltip}
-              </p>
-            </div>
-          </>
-        )}
-      </span>
-    );
-  };
-
+ 
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-[#050A0E] text-gray-300" : "bg-[#252D35] text-gray-200"}`}

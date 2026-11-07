@@ -1,4 +1,5 @@
-﻿/* eslint-disable no-undef */
+﻿import App from "@agency/App.jsx";
+/* eslint-disable no-undef */
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AGENCY ENTRY POINT V20)
@@ -10,7 +11,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
 
 // ⚠️ ZDIEĽANÉ GLOBÁLNE ŠTÝLY EKOSYSTÉMU OS GENESIS
 import "@shared/styles/global.css";

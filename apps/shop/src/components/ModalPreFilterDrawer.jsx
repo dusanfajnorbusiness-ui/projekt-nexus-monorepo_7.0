@@ -1,22 +1,20 @@
-import React, { useState, useEffect, useMemo } from "react";
 import {
-  X,
-  Filter,
-  Check,
-  UserCheck,
-  Users,
   Brain,
   Building2,
-  RotateCcw,
-  Sparkles,
+  Check,
   ChevronDown,
   ChevronUp,
+  Filter,
+  RotateCcw,
+  UserCheck,
+  Users,
+  X,
 } from "lucide-react";
+import { useMemo, useState } from "react";
 
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE V PRÍPADE POTREBY)
 // ============================================================================
-// import { SoundFX } from "@shared/utils/SoundEngine";
 
 const CORE_VERSION = "BC-PRE-FILTER-DRAWER V20.1";
 

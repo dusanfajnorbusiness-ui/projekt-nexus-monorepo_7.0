@@ -1,4 +1,6 @@
-﻿/* eslint-disable no-undef */
+﻿// import { NexusAgencyPage } from "@shared/components/GlobalNexusMasterLayout";
+import  NexusAgencyPage  from "@agency/pages/NexusAgencyPage.jsx";
+/* eslint-disable no-undef */
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AGENCY ROUTING APP V20.95)
@@ -8,9 +10,7 @@
 // ============================================================================
 
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-// import { GlobalNexusMasterLayout } from "@shared/components/GlobalNexusMasterLayout";
-import { NexusAgencyPage } from "./pages/NexusAgencyPage";
+import { Route, Routes } from "react-router-dom";
 
 export const App = () => {
   return (

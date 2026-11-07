@@ -13,12 +13,15 @@ import {
   Zap,
   HelpCircle,
 } from "lucide-react";
-import { TierBadge } from "@shared/components/TierBadge";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode";
-import { GlobalNodeVideo } from "@main-web/components/GlobalNodeVideo";
-import { GlobalNodePodcast } from "@main-web/components/GlobalNodePodcast";
-import MetaTags from "@shared/components/MetaTags";
+// =====================================================================
+// 🟢 1. PRODUKČNÉ IMPORTY
+// =====================================================================
+import { TierBadge } from "@shared/components/TierBadge.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode.jsx";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { DMLTooltip } from "@shared/components/DMLTooltip.jsx";
 
 // =====================================================================
 // 👑 HLAVNÝ KOMPONENT UZLA ID04_NODE_05 (BUSINESS UI SPACE)
@@ -638,68 +641,7 @@ export default function Node_ID04_05() {
     },
   };
 
-  const DMLTooltip = ({ slug, label }) => {
-    const termData = termsData[slug.toLowerCase()];
-    if (!termData) return <span>{label || slug}</span>;
 
-    const catStyle = categoryStyles[String(termData.category)] || {
-      text: "text-gray-400",
-      border: "border-gray-800",
-      bg: "bg-gray-900/50",
-      hoverBorder: "hover:border-gray-600",
-      glow: "",
-    };
-
-    const isCurrent = activeTooltip === slug;
-
-    return (
-      <span className="relative inline-block overflow-visible">
-        <span
-          onClick={(e) => {
-            e.stopPropagation();
-            triggerSound("click");
-            setActiveTooltip(isCurrent ? null : slug);
-          }}
-          onTouchEnd={(e) => {
-            e.stopPropagation();
-            triggerSound("click");
-            setActiveTooltip(isCurrent ? null : slug);
-          }}
-          className={`cursor-help border-b-2 border-dotted font-black transition-all duration-150 ${catStyle.text} ${catStyle.border} ${catStyle.hoverBorder} px-0.5 rounded-sm`}
-        >
-          {label || termData.term}
-        </span>
-        {isCurrent && (
-          <>
-            <div
-              className="fixed inset-0 z-40 bg-transparent"
-              onClick={() => setActiveTooltip(null)}
-            />
-            <div
-              className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 p-4 bg-[#050A0E] border-2 ${catStyle.border} ${catStyle.glow} rounded-lg z-50 shadow-2xl`}
-            >
-              <div className="flex justify-between items-center mb-2 pb-1 border-b border-gray-800">
-                <span
-                  className={`font-mono font-black uppercase text-xs tracking-widest ${catStyle.text}`}
-                >
-                  {termData.term}
-                </span>
-                <span className="text-[10px] text-gray-500 font-mono uppercase bg-gray-900 px-1.5 py-0.5 rounded">
-                  Tier {termData.category} - {catStyle.name}
-                </span>
-              </div>
-              <p className="mb-2 italic text-gray-400 font-medium text-xs">
-                Preklad: {termData.translation}
-              </p>
-              <p className="text-gray-300 leading-relaxed text-xs font-mono">
-                {termData.tooltip}
-              </p>
-            </div>
-          </>
-        )}
-      </span>
-    );
-  };
 
   return (
     <div

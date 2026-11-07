@@ -1,30 +1,16 @@
+import { Sys01_05_Filters } from "@main-web/components/Sys01-05_Filters.jsx";
+import { getNormalizedTier } from "@main-web/data/Sys01-05_Filters.js";
+import { GALLERY_CATEGORIES, SYS03_GALLERY_DATA } from "@main-web/data/Sys03_ImgGallery.js";
+import { GlobalComponents } from "@shared/components/GlobalComponents.jsx";
+import { GlobalFooter } from "@shared/components/GlobalFooter.jsx";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPaywallModal } from "@shop/components/GlobalPaywallModal.jsx";
+import { Activity, Copy, Download, Eye, Image as ImageIcon, Lock, Terminal, X } from "lucide-react";
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import {
-  Image as ImageIcon,
-  Copy,
-  Eye,
-  Download,
-  Lock,
-  X,
-  Terminal,
-  Activity,
-} from "lucide-react";
-
-import { GlobalComponents } from "@main-web/components/GlobalComponents";
-import { GlobalHamburgerMenu } from "@main-web/components/GlobalHamburgerMenu";
-import { GlobalFooter } from "@main-web/components/GlobalFooter";
-import { GlobalPaywallModal } from "@main-web/components/shop/GlobalPaywallModal";
-import { getNormalizedTier } from "@main-web/data/Sys01-05_Filters";
-import { Sys01_05_Filters } from "@main-web/components/Sys01-05_Filters";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import {
-  SYS03_GALLERY_DATA,
-  GALLERY_CATEGORIES,
-} from "@main-web/data/Sys03_ImgGallery";
 
 const CORE_VERSION = "SYS03-IMG_GALLERY V20.99-FINAL";
 const DIM_COLOR = "#BF00FF";

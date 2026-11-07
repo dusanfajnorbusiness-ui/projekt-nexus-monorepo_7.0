@@ -1,25 +1,10 @@
-// 🛰️ EXODUS-READY: 11. 5. 2026 | MODUL: USERS & INBOX (V1.6.2)
-import {
-  collection,
-  doc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  query,
-  serverTimestamp,
-  increment,
-  arrayUnion,
-  setDoc,
-  addDoc,
-  getDocs,
-  getDoc,
-} from "firebase/firestore";
-import { dbCore, APP_ID } from "@shared/data/nexusConfig";
-
+import { APP_ID, dbCore } from "@shared/data/nexusConfig.js";
+import fallbackData from "@shared/data/nexusFallback.json";
 // ⚡ EXODUS FIX: Správna cesta k izolovanej konfigurácii (bráni zacykleniu s NexusDB_Core)
-import { EXODUS_CONFIG } from "./NexusDB_Config";
-import fallbackData from "../data/nexusFallback.json";
-import { supabase } from "./NexusDB_Supabase";
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+// 🛰️ EXODUS-READY: 11. 5. 2026 | MODUL: USERS & INBOX (V1.6.2)
+import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, onSnapshot, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 export const NexusDB_Users = {
   // ==========================================================================

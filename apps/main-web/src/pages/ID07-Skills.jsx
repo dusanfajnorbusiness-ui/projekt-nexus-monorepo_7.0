@@ -1,6 +1,3 @@
-import React from "react";
-import { Cpu, Lock, Database } from "lucide-react";
-import { id07OmegaMap as ID07_Map } from "@main-web/data/ID07_OmegaMap";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -8,10 +5,10 @@ import { id07OmegaMap as ID07_Map } from "@main-web/data/ID07_OmegaMap";
 // LOKÁLNE POUŽITIE: Keď budeš chcieť dimenziu spustiť ostro do produkcie,
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "OfflineDimensionPreview" umiestnený pod tým.
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
+import { id07OmegaMap as ID07_Map } from "@main-web/data/ID07_OmegaMap.js";
+import { Cpu, Database, Lock } from "lucide-react";
 
-// import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
-import { GlobalComponents } from "@main-web/components/GlobalComponents";
-import { GlobalHamburgerMenu } from "@main-web/components/GlobalHamburgerMenu";
 // ============================================================================
 // --- ONLINE UZLY (ID07) - SKILLS-TREE [100 NODES READY / PENDING] ---
 // ============================================================================

@@ -1,83 +1,42 @@
-import React, { useState, useEffect } from "react";
-import { Scale, ArrowLeft, ShieldCheck, Download } from "lucide-react";
+/* eslint-disable no-undef */
 
 // ============================================================================
-// ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS03 MASTER DATASET V20.95)
+// Súbor: apps/agency/src/pages/VopPage.jsx
+// Status: 100% VITE RAW MARKDOWN INTEGRATED // ZERO FETCH LAG
+// CORE_VERSION: VOP-PAGE V20.14
 // ============================================================================
-import { parseNexusFormat } from "../utils/nexusParser";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import vopUrl from "../data/vop_nexus.md"; // Tu v CRA dostaneme URL cestu
-// import MetaTags from "../components/MetaTags";
 
-// ============================================================================
-// ⚠️ MOCK PRE CANVAS NÁHĽAD (ZMAZAŤ V LOKÁLNOM PROJEKTE) ⚠️
-// ============================================================================
-// const parseNexusFormat = (t) => <div className="whitespace-pre-wrap">{t}</div>;
-// const SoundFX = { click: () => {} };
-// const vopUrl = "/static/media/vop_nexus.md"; // Simulácia cesty
-// ============================================================================
+import React, { useEffect } from "react";
+import { ArrowLeft, Download, Scale, ShieldCheck } from "lucide-react";
+
+// ⚠️ OSTRÉ LOKÁLNE IMPORTY
+import { parseNexusFormat } from "@shared/utils/nexusParser.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+
+// 🚀 VITE DIRECT RAW MARKDOWN IMPORT (Načíta priamo text súboru ako reťazec)
+import vopContent from "@shared/data/vop_nexus.md?raw";
 
 /**
  * ⚖️ VOP PAGE - PROTOKOL PRÁVNEJ INTEGRITY
- * Fix: Create React App (CRA) vyžaduje fetch pre načítanie obsahu .md súborov.
+ * Vite ?raw suffix importuje čistý reťazec Markdownu. Netreba žiaden fetch()!
  */
 export default function VopPage({ onBack }) {
-  const [content, setContent] = useState(
-    "Inicializujem prenos dát z Matrixu...",
-  );
-
   // 🚀 FORCED SCROLL-TO-TOP (Reset osi Y pri načítaní stránky)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
-  useEffect(() => {
-    const loadMarkdown = async () => {
-      try {
-        // 🛰️ PROTOKOL EXODUS: Sťahujeme text zo súboru pomocou jeho URL adresy
-        const response = await fetch(vopUrl);
-        const text = await response.text();
-
-        // Bezpečnostná poistka: Ak sa vráti HTML (napr. 404 stránka), vyhodíme chybu
-        if (text.trim().startsWith("<!DOCTYPE")) {
-          throw new Error(
-            "Súbor vop_nexus.md nebol nájdený na definovanej ceste.",
-          );
-        }
-
-        setContent(text);
-      } catch (err) {
-        console.error("🔴 [VOP_LOAD_ERROR]:", err.message);
-        setContent(
-          "# ⚠️ KRITICKÁ CHYBA\nNepodarilo sa nadviazať spojenie so sémantickým uzlom VOP.",
-        );
-      }
-    };
-
-    loadMarkdown();
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#03080a] text-white font-mono p-4 md:p-8 animate-in fade-in duration-700">
-      {/* <MetaTags
-        title="Všeobecné obchodné podmienky (VOP) | NEXUS OS"
-        description="Všeobecné obchodné podmienky Projektu Nexus. Právny kódex a licenčné pravidlá operovania v našom digitálnom ekosystéme."
-        image="https://projekt-nexus.sk/img-nexus/nexus-agency/Sidlo-Architekta.jpg"
-        color="#8A2BE2"
-        url="https://projekt-nexus.sk/vop"
-        ogTitle="Všeobecné obchodné podmienky (VOP) | NEXUS OS"
-        ogDescription="Ústava a licenčné podmienky pre operátorov Siete. Právny kódex a pravidlá využívania digitálnych aktív Projektu Nexus."
-        twitterTitle="Všeobecné obchodné podmienky (VOP) | NEXUS OS"
-        twitterDescription="Všeobecné obchodné podmienky Projektu Nexus. Právny kódex pre operátorov v Sieti."
-      /> */}
       <div className="max-w-4xl mx-auto">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8">
           <div>
             <button
               onClick={() => {
-                if (typeof SoundFX !== "undefined" && SoundFX.click)
+                if (typeof SoundFX !== "undefined" && SoundFX.click) {
                   SoundFX.click();
+                }
                 if (typeof onBack === "function") {
                   onBack();
                 } else {
@@ -117,10 +76,10 @@ export default function VopPage({ onBack }) {
           <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#00FFFF] to-transparent opacity-20" />
 
           <article className="prose prose-invert max-w-none text-left leading-relaxed text-sm text-white/70">
-            {/* ⚡ Vykreslenie preloženého Markdownu */}
+            {/* ⚡ Vykreslenie preloženého Markdownu cez parseNexusFormat */}
             <div
               className="nexus-content"
-              dangerouslySetInnerHTML={{ __html: parseNexusFormat(content) }}
+              dangerouslySetInnerHTML={{ __html: parseNexusFormat(vopContent) }}
             />
           </article>
 

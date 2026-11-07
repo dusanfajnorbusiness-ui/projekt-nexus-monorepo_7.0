@@ -1,22 +1,7 @@
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { AlertTriangle, ArrowRight, Award, CheckCircle2, ChevronDown, ChevronUp, Database, HelpCircle, Layers, Lock, ShieldCheck, Sparkles, Unlock, Zap } from "lucide-react";
 /* eslint-disable no-undef */
 import React, { useState } from "react";
-import {
-  ShieldCheck,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
-  Zap,
-  CheckCircle2,
-  HelpCircle,
-  AlertTriangle,
-  Layers,
-  ArrowRight,
-  Award,
-  Lock,
-  Unlock,
-  Database,
-} from "lucide-react";
-import { SoundFX } from "@shared/utils/SoundEngine";
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION

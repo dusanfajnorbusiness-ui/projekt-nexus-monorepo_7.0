@@ -18,7 +18,7 @@ import {
   FORMAT_OPTIONS,
   calculateFilterCounts,
 } from "@main-web/data/Sys01-05_Filters";
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
 
 // ============================================================================
 // 👑 NEXUS OS: UNIFIED FILTERS COMPONENT FOR SYS 01 - SYS 05 V20.100

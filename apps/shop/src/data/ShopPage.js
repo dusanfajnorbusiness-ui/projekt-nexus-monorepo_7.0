@@ -9,7 +9,7 @@ import {
   MEMBERSHIP_DATA,
   PACKS_DATA,
   MATRIX_FX_DATA,
-  SERVICES_DATA,
+ 
   getTierColor,
   TIER_COLORS,
   TIER_TOOLTIPS,
@@ -21,7 +21,7 @@ export {
   MEMBERSHIP_DATA,
   PACKS_DATA,
   MATRIX_FX_DATA,
-  SERVICES_DATA,
+ 
   getTierColor,
   TIER_COLORS,
   TIER_TOOLTIPS,

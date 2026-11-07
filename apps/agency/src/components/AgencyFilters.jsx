@@ -1,3 +1,6 @@
+import { AGENCY_FILTERS_CONFIG } from "@agency/data/AgencyFiltersData.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { Filter, Layers, LayoutGrid, List, RotateCcw, Search } from "lucide-react";
 /* eslint-disable no-undef */
 
 // ============================================================================
@@ -8,16 +11,6 @@
 // ============================================================================
 
 import React, { useMemo } from "react";
-import {
-  Search,
-  RotateCcw,
-  LayoutGrid,
-  List,
-  Layers,
-  Filter,
-} from "lucide-react";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { AGENCY_FILTERS_CONFIG } from "@agency/data/AgencyFiltersData";
 
 // 🎨 MAPA FARIEB TIER PRE SEKUNDÁRNY FILTER
 const TIER_COLOR_MAP = {

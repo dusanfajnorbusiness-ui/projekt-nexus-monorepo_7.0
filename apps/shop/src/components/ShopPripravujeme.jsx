@@ -1,28 +1,7 @@
+import { PRIPRAVUJEME_SECTION_TITLES, PRIPRAVUJEME_THEME_COLORS, SHOP_PRIPRAVUJEME_DATA } from "@shop/data/ShopPripravujeme.js";
+import { Activity, CheckCircle2, ChevronDown, ChevronUp, Clock, Cpu, Info, Layers, Lock, ShieldCheck, Sparkles, Terminal, Video, Volume2, Zap } from "lucide-react";
 /* eslint-disable no-undef */
 import React, { useState } from "react";
-import {
-  ChevronDown,
-  ChevronUp,
-  Cpu,
-  Volume2,
-  Video,
-  Sparkles,
-  Layers,
-  ShieldCheck,
-  Clock,
-  Zap,
-  Lock,
-  Info,
-  Terminal,
-  Activity,
-  CheckCircle2,
-} from "lucide-react";
-
-import {
-  SHOP_PRIPRAVUJEME_DATA,
-  PRIPRAVUJEME_SECTION_TITLES,
-  PRIPRAVUJEME_THEME_COLORS,
-} from "../data/ShopPripravujeme";
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (SHOP PRIPRAVUJEME ACCORDION V20.0)

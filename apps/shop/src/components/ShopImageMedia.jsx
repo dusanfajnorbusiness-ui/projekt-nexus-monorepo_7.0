@@ -1,57 +1,16 @@
+import { MetaTags } from "@shared/components/MetaTags.jsx";
+import { getTooltip, TOOLTIP_CONFIG } from "@shared/data/TooltipsShop.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPaywallModal } from "@shop/components/GlobalPaywallModal.jsx";
+import { ModalPreFilterDrawer } from "@shop/components/ModalPreFilterDrawer.jsx";
+import { ShopFilters } from "@shop/components/ShopFilters.jsx";
+import { ShopHeaderComponent } from "@shop/components/ShopHeaderComponent.jsx";
+import { VyhodyClenstva } from "@shop/components/Vyhody-Clenstva.jsx";
+import { getDimensionColor, getTierColor, SHOP_IMAGE_DATA } from "@shop/data/ShopImageMedia.js";
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Activity, CheckCircle2, Copy, Cpu, Download, Eye, Filter, HelpCircle, Info, PlayCircle, Share2, Shield, Sparkles, Terminal, X, Zap } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Search,
-  Grid3X3,
-  Grid,
-  List,
-  Activity,
-  Folder,
-  Image,
-  Eye,
-  ChevronRight,
-  ChevronLeft,
-  Lock,
-  Unlock,
-  X,
-  Zap,
-  Copy,
-  Share2,
-  Sparkles,
-  Check,
-  Info,
-  Shield,
-  CheckCircle2,
-  Cpu,
-  Terminal,
-  Filter,
-  PlayCircle,
-  Download,
-  HelpCircle,
-} from "lucide-react";
-
-import { SoundFX } from "@shared/utils/SoundEngine";
-import {
-  SHOP_IMAGE_DATA,
-  IMAGE_CATEGORY_MAP,
-  IMAGE_CATEGORY_TOOLTIPS,
-  TIER_COLOR_MAP,
-  TIER_TOOLTIPS,
-  getTierColor,
-  getDimensionColor,
-} from "../../data/ShopImageMedia";
-import { MetaTags } from "../MetaTags";
-import { VyhodyClenstva } from "./Vyhody-Clenstva";
-import { GlobalPaywallModal } from "./GlobalPaywallModal";
-import { ShopHeaderComponent } from "./ShopHeaderComponent";
-import { ShopFilters } from "./ShopFilters";
-import { ModalPreFilterDrawer } from "./ModalPreFilterDrawer";
-import {
-  TOOLTIP_CONFIG,
-  SHOP_TOOLTIPS,
-  getTooltip,
-} from "../data/TooltipsShop";
 
 // ============================================================================
 // 👑 NEXUS OS: SHOPIMAGEMEDIA COMPONENT V20.80 (3S MYSTERY SCANNER & MP4 STANDBY)
@@ -116,38 +75,24 @@ export const ShopImageMedia = () => {
     }
   }, [location.pathname, location.search]);
 
-  // --- 2. HANDLERY PRE ZMENU FILTROV S PROPAGÁCIOU DO URL ---
+ 
   const handleSelectCategory = (catKey) => {
-    triggerClick();
+    if (typeof triggerClick === "function") triggerClick();
     setActiveSubcat(catKey);
-    const currentTier = String(tierFilter || "ALL").toUpperCase();
-    const params = new URLSearchParams();
-    if (catKey !== "ALL") params.set("cat", catKey);
-    if (currentTier !== "ALL") params.set("tier", currentTier);
-    if (preFilterTag) params.set("prefilter", preFilterTag);
-    const newQuery = params.toString() ? `?${params.toString()}` : "";
-    navigate(`/shop/images${newQuery}`);
   };
 
   const handleSelectTier = (tierKey) => {
-    triggerClick();
+    if (typeof triggerClick === "function") triggerClick();
     const cleanTier = String(tierKey || "ALL").toUpperCase();
     setTierFilter(cleanTier);
-    const params = new URLSearchParams();
-    if (activeSubcat !== "ALL") params.set("cat", activeSubcat);
-    if (cleanTier !== "ALL") params.set("tier", cleanTier);
-    if (preFilterTag) params.set("prefilter", preFilterTag);
-    const newQuery = params.toString() ? `?${params.toString()}` : "";
-    navigate(`/shop/images${newQuery}`);
   };
 
   const handleResetAllFilters = () => {
-    triggerClick();
+    if (typeof triggerClick === "function") triggerClick();
     setActiveSubcat("ALL");
     setTierFilter("ALL");
-    setPreFilterTag("");
+    if (typeof setPreFilterTag === "function") setPreFilterTag("");
     setSearchTerm("");
-    navigate("/shop/images");
   };
 
   // --- 3. DYNAMICKÝ VÝPOČET TIER POČÍTADIEL (-MIUM KÁNON) ---
@@ -471,47 +416,13 @@ export const ShopImageMedia = () => {
     }));
   };
 
-  // --- URL DEEP LINKING & ROUTING SYNC ---
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const paramVal = searchParams.get("image") || searchParams.get("avatar");
-    const pathParts = location.pathname.split("/").filter(Boolean);
-    const [root, seg1, seg2, seg3] = pathParts;
-
-    let imgFromUrl = paramVal;
-
-    if (!imgFromUrl && root && root.toLowerCase() === "shop") {
-      if (
-        seg1 &&
-        (seg1.toLowerCase() === "images" || seg1.toLowerCase() === "avatars")
-      ) {
-        if (seg3) {
-          imgFromUrl = seg3;
-        } else if (seg2 && seg2.toLowerCase() !== "avatars") {
-          imgFromUrl = seg2;
-        }
-      }
-    }
-
-    if (imgFromUrl) {
-      const cleanImgId = imgFromUrl.toUpperCase();
-      const found = SHOP_IMAGE_DATA.find(
-        (img) =>
-          img.id.toUpperCase() === cleanImgId ||
-          (img.nodeKey && img.nodeKey.toUpperCase() === cleanImgId),
-      );
-      if (found) {
-        setSelectedDocId(found.id);
-      }
-    } else {
-      setSelectedDocId(null);
-    }
-  }, [location.pathname, location.search]);
-
+  // Selected document resolver (PURE REACT STATE SSOT)
   const selectedDoc = useMemo(() => {
     if (!selectedDocId) return null;
     return SHOP_IMAGE_DATA.find((img) => img.id === selectedDocId) || null;
   }, [selectedDocId]);
+
+  // Zámok scrollovania okna pri otvorenom detaile Avatara
   useEffect(() => {
     if (selectedDoc) {
       document.body.style.overflow = "hidden";
@@ -536,29 +447,25 @@ export const ShopImageMedia = () => {
     }).slice(0, 8);
   }, [searchTerm]);
 
-  const handleSelectAutocomplete = (item) => {
+ const handleSelectAutocomplete = (item) => {
     triggerClick();
     setSearchTerm("");
     setIsAutocompleteOpen(false);
     setSelectedDocId(item.id);
-    navigate(`/shop/images?avatar=${item.id}`);
   };
 
   const handleOpenDetail = (docId) => {
     triggerClick();
     setModalTab("OVERVIEW");
     setSelectedDocId(docId);
-    const item = SHOP_IMAGE_DATA.find((i) => i.id === docId);
-    const cat = item?.subCategory || "avatars";
-    window.history.pushState({}, "", `/shop/images/${cat}/${docId}`);
   };
 
   const handleCloseDetail = () => {
     triggerClick();
     setSelectedDocId(null);
-    navigate("/shop/images");
   };
 
+  // 👑 ZACHOVANÝ KÁNONICKÝ COPY HANDLER PRE PROFILE AVATAR CDN URL (SETTINGS INTEGRÁCIA)
   const handleCopyAvatarUrl = (imageUrl, isFreeOrUnlocked) => {
     if (!isFreeOrUnlocked) {
       triggerError();
@@ -567,7 +474,7 @@ export const ShopImageMedia = () => {
       );
       return;
     }
-    // Kopírujeme priamo originálnu URL (https://.../bot-avatars/ID00_MENTOR-BOT.png)
+    // Kopírujeme priamo originálnu CDN URL obrázka do schránky pre profil v Settings
     triggerSuccess();
     navigator.clipboard.writeText(imageUrl);
     setCopiedLink(true);
@@ -599,15 +506,8 @@ export const ShopImageMedia = () => {
         />
       )}
 
-      {/* 👑 JEDNOTNÁ MASTER HLAVIČKA A PEŇAŽENKA PRE IMAGES */}
-      <ShopHeaderComponent
-        activeTab="images"
-        userBalance={balance}
-        userTier={userTier}
-        onShowTooltip={handleShowTooltip}
-        onUpdateTooltipPos={handleUpdateTooltipPos}
-        onHideTooltip={handleHideTooltip}
-      />
+      {/* 👑 SHOP HEADER WITH VIP WALLET */}
+      {/*Zmazané dualne zobrazenie*/}
 
       {/* 👑 VÝHODY ČLENSTVA SPOILER ACCORDION */}
       <VyhodyClenstva

@@ -1,57 +1,16 @@
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPaywallModal } from "@shop/components/GlobalPaywallModal.jsx";
+import { ModalPreFilterDrawer } from "@shop/components/ModalPreFilterDrawer.jsx";
+import { ShopFilters } from "@shop/components/ShopFilters.jsx";
+import { ShopHeaderComponent } from "@shop/components/ShopHeaderComponent.jsx";
+import { ShopPripravujeme } from "@shop/components/ShopPripravujeme.jsx";
+import { VyhodyClenstva } from "@shop/components/Vyhody-Clenstva.jsx";
+import { getTierColor, SHOP_APPS_DATA } from "@shop/data/ShopAppsMedia.js";
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import { CheckCircle2, Copy, Cpu, Crown, Eye, Globe, HelpCircle, Info, Laptop, Lock, PlayCircle, RefreshCw, Shield, Smartphone, Sparkles, Terminal, X, Zap } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Search,
-  Grid3X3,
-  Grid,
-  List,
-  Activity,
-  Folder,
-  Eye,
-  X,
-  Zap,
-  Copy,
-  Share2,
-  Sparkles,
-  Check,
-  Info,
-  Shield,
-  CheckCircle2,
-  Cpu,
-  Terminal,
-  Laptop,
-  Smartphone,
-  Globe,
-  ExternalLink,
-  Download,
-  PlayCircle,
-  HelpCircle,
-  Crown,
-  Lock,
-  Unlock,
-  ArrowRight,
-  RefreshCw,
-  Layers,
-  Filter,
-} from "lucide-react";
-
-import { SoundFX } from "@shared/utils/SoundEngine";
-import {
-  SHOP_APPS_DATA,
-  APPS_CATEGORY_MAP,
-  APPS_CATEGORY_TOOLTIPS,
-  TIER_COLOR_MAP,
-  getTierColor,
-  getDimensionColor,
-} from "../data/ShopAppsMedia";
-import { GlobalPaywallModal } from "./GlobalPaywallModal";
-import { MetaTags } from "../MetaTags";
-import { VyhodyClenstva } from "./Vyhody-Clenstva";
-import { ShopHeaderComponent } from "./ShopHeaderComponent";
-import { ShopPripravujeme } from "./ShopPripravujeme";
-import { ShopFilters } from "./ShopFilters";
-import { ModalPreFilterDrawer } from "./ModalPreFilterDrawer";
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (SHOP APPS MEDIA V20.8)
@@ -531,13 +490,12 @@ export const ShopAppsMedia = () => {
 
   // Handlers
 
-  const handleResetFilters = () => {
+ const handleResetFilters = () => {
     if (typeof triggerClick === "function") triggerClick();
     setActiveSubcat("ALL");
     setTierFilter("ALL");
     if (typeof setPreFilterTag === "function") setPreFilterTag("");
     setSearchTerm("");
-    navigate("/shop/apps", { replace: true });
   };
 
   const getTierSlug = (tierKey) => {
@@ -555,81 +513,23 @@ export const ShopAppsMedia = () => {
   const handleSelectTier = (tierKey) => {
     triggerClick();
     setTierFilter(tierKey);
-    const cleanCat = String(activeSubcat || "all")
-      .toLowerCase()
-      .replace("kt-04-", "");
-    const cleanTier = getTierSlug(tierKey);
-
-    if (cleanCat !== "all" && cleanTier !== "all") {
-      navigate(`/shop/apps/${cleanCat}/${cleanTier}`);
-    } else if (cleanCat !== "all") {
-      navigate(`/shop/apps/${cleanCat}`);
-    } else if (cleanTier !== "all") {
-      navigate(`/shop/apps/all/${cleanTier}`);
-    } else {
-      navigate("/shop/apps");
-    }
   };
 
   const handleSelectCategory = (catKey) => {
     triggerClick();
     setActiveSubcat(catKey);
-    const cleanCat = String(catKey || "all")
-      .toLowerCase()
-      .replace("kt-04-", "");
-    const cleanTier = getTierSlug(tierFilter);
-
-    if (cleanCat !== "all" && cleanTier !== "all") {
-      navigate(`/shop/apps/${cleanCat}/${cleanTier}`);
-    } else if (cleanCat !== "all") {
-      navigate(`/shop/apps/${cleanCat}`);
-    } else if (cleanTier !== "all") {
-      navigate(`/shop/apps/all/${cleanTier}`);
-    } else {
-      navigate("/shop/apps");
-    }
   };
 
   const handleOpenDetail = (id, e) => {
     if (e && typeof e.stopPropagation === "function") e.stopPropagation();
     if (typeof triggerClick === "function") triggerClick();
     setSelectedDocId(id);
-
-    const item = (SHOP_APPS_DATA || []).find((a) => a.id === id);
-    const plat = String(item?.platform || "web")
-      .toLowerCase()
-      .trim();
-    // 🛡️ V20 STABLE ROUTING: pushState prepíše URL bez nežiaduceho unmountu modalu
-    if (typeof window !== "undefined") {
-      window.history.pushState({}, "", `/shop/apps/${plat}/${id}`);
-    }
   };
 
   const handleCloseDetail = (e) => {
     if (e && typeof e.stopPropagation === "function") e.stopPropagation();
     if (typeof triggerClick === "function") triggerClick();
     setSelectedDocId(null);
-
-    const cleanCat = String(activeSubcat || "all")
-      .toLowerCase()
-      .replace("kt-04-", "")
-      .trim();
-    const cleanTier = String(tierFilter || "all")
-      .toLowerCase()
-      .replace("mium", "")
-      .trim();
-    let newPath = "/shop/apps";
-    if (cleanCat !== "all" && cleanTier !== "all") {
-      newPath = `/shop/apps/${cleanCat}/${cleanTier}`;
-    } else if (cleanCat !== "all") {
-      newPath = `/shop/apps/${cleanCat}`;
-    } else if (cleanTier !== "all") {
-      newPath = `/shop/apps/all/${cleanTier}`;
-    }
-
-    if (typeof window !== "undefined") {
-      window.history.pushState({}, "", newPath);
-    }
   };
 
   const handleOpenPaywall = (appItem) => {
@@ -768,18 +668,7 @@ export const ShopAppsMedia = () => {
       />
 
       {/* 👑 SHOP HEADER WITH VIP WALLET */}
-      <div className="w-full max-w-full min-w-0 relative overflow-hidden rounded-2xl mb-8">
-        <ShopHeaderComponent
-          activeTab="apps"
-          userBalance={userBalance}
-          userEmail={userEmail}
-          userTier={userTier}
-          getTierColor={getTierColor}
-          handleShowTooltip={handleShowTooltip}
-          handleUpdateTooltipPos={handleUpdateTooltipPos}
-          handleHideTooltip={handleHideTooltip}
-        />
-      </div>
+      {/*Zmazané dualne zobrazenie*/}
 
       {/* 🚀 VÝHODY ČLENSTVA ACCORDION */}
       <VyhodyClenstva />

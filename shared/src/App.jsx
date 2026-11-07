@@ -1,4 +1,5 @@
-﻿import NexusAgencyPage from "@agency/pages/NexusAgencyPage";
+﻿import NexusAgencyPage from "@agency/pages/NexusAgencyPage.jsx";
+
 // import { GlobalNexusMasterLayout } from "@shared/components/GlobalNexusMasterLayout";
 
 export default function AgencyApp() {

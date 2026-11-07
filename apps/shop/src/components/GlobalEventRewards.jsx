@@ -16,8 +16,8 @@ import {
   Info,
 } from "lucide-react";
 
-import { SoundFX } from "../../utils/SoundEngine";
-import { supabase } from "../../services/NexusDB_Supabase";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
 
 // ============================================================================
 // ⚡ PROTOKOL VERZIOVANIA (CORE-VER-001)

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ArrowUp, ArrowDown } from "lucide-react";
-
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
 // ============================================================================
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 
 // ============================================================================
 // ⚠️ MOCK PRE CANVAS NÁHĽAD (ZMAZAŤ V LOKÁLNOM PROJEKTE) ⚠️

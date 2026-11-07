@@ -1,6 +1,3 @@
-import { Cpu, Lock, Database } from "lucide-react";
-// Import Omega Mapy z tvojej lokálnej databázy
-import { id05OmegaMap as ID05_Map } from "@main-web/data/ID05_OmegaMap";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -9,19 +6,22 @@ import { id05OmegaMap as ID05_Map } from "@main-web/data/ID05_OmegaMap";
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "ID05_AssetsMatrix" (Offline Preview) umiestnený pod tým.
 
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
-
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
+// Import Omega Mapy z tvojej lokálnej databázy
+import { id05OmegaMap as ID05_Map } from "@main-web/data/ID05_OmegaMap.js";
 // ============================================================================
 // --- ONLINE UZLY (ID05) - ASSETS-MATRIX [100 NODES READY] ---
 // ============================================================================
 
 // 📂 SEKCIA A: ZÁKLADNÉ PILIERE INVESTOVANIA (Vstupná Brána)
-import Node_ID05_01 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_01";
-import Node_ID05_02 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_02";
-import Node_ID05_03 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_03";
-import Node_ID05_04 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_04";
-import Node_ID05_05 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_05";
-import Node_ID05_06 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_06";
+import Node_ID05_01 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_01.jsx";
+import Node_ID05_02 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_02.jsx";
+import Node_ID05_03 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_03.jsx";
+import Node_ID05_04 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_04.jsx";
+import Node_ID05_05 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_05.jsx";
+import Node_ID05_06 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_06.jsx";
+import { Cpu, Database, Lock } from "lucide-react";
+
 // import Node_ID05_07 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_07";
 // import Node_ID05_08 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_08";
 // import Node_ID05_09 from "@main-web/subPages/ID05-Investments/OMEGA/Node_ID05_09";

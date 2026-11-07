@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { createPortal } from "react-dom";
-
 // ============================================================================
 // ⚠️ OSTRÉ LOKÁLNE IMPORTY (ODKOMENTUJ VO SVOJOM VS CODE)
 // ============================================================================
-import { NexusDB } from "@shared/services/GlobalNexusDB_Core";
-import { GlobalProfil } from "@operators/components/GlobalProfil";
+import GlobalProfil from "@shared/components/GlobalProfil.jsx";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 // import MetaTags from "@operators/components/MetaTags";
 
 export default function OperatorPage() {
+  
+
   const { entityId } = useParams();
   const navigate = useNavigate();
   const [targetOperator, setTargetOperator] = useState(null);

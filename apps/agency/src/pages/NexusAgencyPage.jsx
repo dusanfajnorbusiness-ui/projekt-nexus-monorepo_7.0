@@ -1,3 +1,11 @@
+import { GlobalYTMediaPlayer } from "@agency/components/Agency-YT-MediaPlayer.jsx";
+import { AgencyFilters, getPrimaryCategoryKey, getTierKey } from "@agency/components/AgencyFilters.jsx";
+import { AgencyHeader } from "@agency/components/AgencyHeader.jsx";
+import { AgencyServiceCard } from "@agency/components/AgencyServiceCard.jsx";
+import { AgencyServiceModal } from "@agency/components/AgencyServiceModal.jsx";
+import { SERVICES_DATA } from "@agency/data/AgencyServicesData.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { Globe, HelpCircle, Zap } from "lucide-react";
 /* eslint-disable no-undef */
 
 // ============================================================================
@@ -7,98 +15,64 @@
 // Author: Dušan Fajnor @nexus-core2Mb (CyberTech Architect)
 // ============================================================================
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Globe, Zap, HelpCircle } from "lucide-react";
 
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { SERVICES_DATA } from "@agency/data/AgencyServicesData";
+export const NexusAgencyPage = ({
+  onThemeChange,
+  userState,
+  getTierColor,
+  themeColor,
+}) => {
+  // 🎯 AUTOMATICKÉ PREPNUTIE GLOBÁLNEJ ZBERNICE NA KYBERNETICKÝ CYAN (#00f3ff)
+  useEffect(() => {
+    if (onThemeChange) {
+      onThemeChange("#00f3ff"); // Agency Digital Infrastructure Mainframe
+    }
+  }, [onThemeChange]);
 
-import { AgencyHeader } from "@agency/components/AgencyHeader";
-import {
-  AgencyFilters,
-  getPrimaryCategoryKey,
-  getTierKey,
-} from "@agency/components/AgencyFilters";
-import { AgencyServiceCard } from "@agency/components/AgencyServiceCard";
-import { AgencyServiceModal } from "@agency/components/AgencyServiceModal";
-import { GlobalYTMediaPlayer } from "@agency/components/Agency-YT-MediaPlayer";
-
-export const NexusAgencyPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // 🔗 STAVY SYNCHRONIZOVANÉ PRIAMO S URL ADRESOU
-  const activeSubcat = searchParams.get("cat") || "ALL";
-  const activeTier = searchParams.get("tier") || "ALL";
-  const searchTerm = searchParams.get("q") || "";
-  const selectedSrvId = searchParams.get("srv") || null;
+  // 100% PURE REACT STATE (BEZ ZNEČISŤOVANIA URL ADRESY)
+  const [activeSubcat, setActiveSubcat] = useState("ALL");
+  const [activeTier, setActiveTier] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedService, setSelectedService] = useState(null);
   const [layoutView, setLayoutView] = useState("GRID_3");
 
   const servicesList = useMemo(() => {
     return Object.values(SERVICES_DATA || {});
   }, []);
 
-  // 🎯 SPÁROVANIE VYBRANEJ SLUŽBY S URL PARAMETROM (?srv=SRV_14)
-  const selectedService = useMemo(() => {
-    if (!selectedSrvId) return null;
-    return (
-      servicesList.find(
-        (s) => s.id === selectedSrvId || s.nodeKey === selectedSrvId,
-      ) || null
-    );
-  }, [selectedSrvId, servicesList]);
-
-  // ⚙️ HANDLERY PRE AKTUALIZÁCIU URL PARAMETROV
+  // ⚙️ PURE STATE HANDLERY (BEZ SETSEARCHPARAMS)
   const handleSubcatChange = (newCat) => {
     SoundFX?.playClick?.();
-    setSearchParams((prev) => {
-      const p = new URLSearchParams(prev);
-      if (newCat && newCat !== "ALL") p.set("cat", newCat);
-      else p.delete("cat");
-      return p;
-    });
+    setActiveSubcat(newCat || "ALL");
   };
 
   const handleTierChange = (newTier) => {
     SoundFX?.playClick?.();
-    setSearchParams((prev) => {
-      const p = new URLSearchParams(prev);
-      if (newTier && newTier !== "ALL") p.set("tier", newTier);
-      else p.delete("tier");
-      return p;
-    });
+    setActiveTier(newTier || "ALL");
   };
 
   const handleSearchChange = (newQ) => {
-    setSearchParams((prev) => {
-      const p = new URLSearchParams(prev);
-      if (newQ) p.set("q", newQ);
-      else p.delete("q");
-      return p;
-    });
+    setSearchTerm(newQ || "");
   };
 
   const handleOpenModal = (service) => {
     SoundFX?.playClick?.();
-    setSearchParams((prev) => {
-      const p = new URLSearchParams(prev);
-      if (service?.id) p.set("srv", service.id);
-      return p;
-    });
+    setSelectedService(service || null);
   };
 
   const handleCloseModal = () => {
     SoundFX?.playClick?.();
-    setSearchParams((prev) => {
-      const p = new URLSearchParams(prev);
-      p.delete("srv");
-      return p;
-    });
+    setSelectedService(null);
   };
 
   const handleResetFilters = () => {
     SoundFX?.playClick?.();
-    setSearchParams({});
+    setActiveSubcat("ALL");
+    setActiveTier("ALL");
+    setSearchTerm("");
+    setSelectedService(null);
     setLayoutView("GRID_3");
   };
 

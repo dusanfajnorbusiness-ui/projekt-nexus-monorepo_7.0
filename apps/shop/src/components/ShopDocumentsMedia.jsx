@@ -1,67 +1,20 @@
+import { MetaTags } from "@shared/components/MetaTags.jsx";
+import { getVipTicketsStatus } from "@shared/data/permissionsRegistry.js";
+import { getTooltip } from "@shared/data/TooltipsShop.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { CATEGORY_MAP, CATEGORY_TOOLTIPS, getDimensionColor, getTierColor, SHOP_DOCUMENTS_DATA, TIER_TOOLTIPS } from "@shop/data/ShopDocumentsMedia.js";
+import { DOCUMENT_BALENE_DIGITALNE_DATA } from "@shop/data/ShopDocumentsMedia/Document_Balene-Digitalne.js";
+import { GlobalPaywallModal } from "@shop/components/GlobalPaywallModal.jsx";
+import { ModalPreFilterDrawer } from "@shop/components/ModalPreFilterDrawer.jsx";
+import { ShopFilters } from "@shop/components/ShopFilters.jsx";
+import { ShopHeaderComponent } from "@shop/components/ShopHeaderComponent.jsx";
+import { VyhodyClenstva } from "@shop/components/Vyhody-Clenstva.jsx";
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Activity, Check, CheckCircle2, Copy, Cpu, Download, Eye, FileText, Filter, HelpCircle, Info, Layers, Lock, PlayCircle, Sparkles, Terminal, X, Zap } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Search,
-  Grid3X3,
-  Grid,
-  List,
-  Terminal,
-  Cpu,
-  Activity,
-  CheckCircle2,
-  Folder,
-  FileText,
-  Download,
-  Eye,
-  HelpCircle,
-  ChevronRight,
-  ChevronLeft,
-  Lock,
-  Unlock,
-  X,
-  Zap,
-  PlayCircle,
-  ExternalLink,
-  Copy,
-  Share2,
-  Sparkles,
-  Check,
-  Info,
-  ChevronDown,
-  ChevronUp,
-  Package,
-  Shield,
-  Wallet,
-  Filter,
-  Layers,
-} from "lucide-react";
-
-import { SoundFX } from "@shared/utils/SoundEngine";
-import {
-  SHOP_DOCUMENTS_DATA,
-  CATEGORY_MAP,
-  CATEGORY_TOOLTIPS,
-  TIER_COLOR_MAP,
-  TIER_TOOLTIPS,
-  getTierColor,
-  DIMENSION_COLOR_MAP,
-  getDimensionColor,
-} from "../data/ShopDocumentsMedia";
-import { SHOP_TOOLTIPS, getTooltip } from "../data/TooltipsShop";
-import { MetaTags } from "../MetaTags";
-import { VyhodyClenstva } from "./Vyhody-Clenstva";
-import { GlobalPaywallModal } from "./GlobalPaywallModal";
-import { supabase } from "@shared/services/NexusDB_Supabase";
-import {
-  canPreviewPdf,
-  getVipTicketsStatus,
-} from "../data/permissionsRegistry";
-import { ShopHeaderComponent } from "./ShopHeaderComponent";
-import { DOCUMENT_BALENE_DIGITALNE_DATA } from "../data/ShopDocumentsMedia/Document_Balene-Digitalne";
-import { ShopFilters } from "./ShopFilters";
-import { ModalPreFilterDrawer } from "./ModalPreFilterDrawer";
-import { NexusDB } from "@shared/services/NexusDB_Core";
 
 // ============================================================================
 // 👑 NEXUS OS: ZIP ALL-PACKS REGISTER (5 MASTER ARCHIVES IN CLOUD)
@@ -597,70 +550,7 @@ export const ShopDocumentsMedia = () => {
     }));
   };
 
-  // --- 5. URL DEEP LINKING & ROUTING ---
-  useEffect(() => {
-    const currentPath =
-      typeof window !== "undefined"
-        ? window.location.pathname
-        : location.pathname;
-    const currentSearch =
-      typeof window !== "undefined" ? window.location.search : location.search;
-
-    const pathParts = currentPath.split("/").filter(Boolean);
-    const searchParams = new URLSearchParams(currentSearch);
-
-    const [root, p1, p2, p3, p4] = pathParts;
-
-    let docFromUrl = searchParams.get("doc");
-    let catFromUrl = searchParams.get("cat");
-    let tierFromUrl = searchParams.get("tier");
-
-    if (root && root.toLowerCase() === "shop") {
-      if (p1 && p1.toLowerCase() === "documents") {
-        if (p2) {
-          if (
-            p2.toLowerCase().startsWith("kt-") ||
-            (typeof CATEGORY_MAP !== "undefined" && CATEGORY_MAP[p2])
-          ) {
-            catFromUrl = p2;
-            if (p3) {
-              docFromUrl =
-                p3.toLowerCase() === "camp" && p4
-                  ? `CAMP_${p4.replace(/^[_/-]/, "")}`
-                  : p3;
-            }
-          } else {
-            docFromUrl = p2;
-          }
-        }
-      } else if (
-        p1 &&
-        (p1.toLowerCase().startsWith("kt-") ||
-          (typeof CATEGORY_MAP !== "undefined" && CATEGORY_MAP[p1]))
-      ) {
-        catFromUrl = p1;
-        if (p2) docFromUrl = p2;
-      }
-    }
-
-    if (docFromUrl) {
-      const found = allDocumentItems.find(
-        (d) => d.id === docFromUrl || d.nodeKey === docFromUrl,
-      );
-      if (found) setSelectedDocId(found.id);
-    } else {
-      setSelectedDocId(null);
-    }
-
-    if (catFromUrl && CATEGORY_MAP[catFromUrl]) {
-      setActiveSubcat(catFromUrl);
-    }
-    if (tierFromUrl && TIER_TOOLTIPS[tierFromUrl]) {
-      setTierFilter(tierFromUrl);
-    }
-  }, [location.pathname, location.search, allDocumentItems]);
-
-  // Selected document resolver (OPRAVA: hľadá v allDocumentItems namiesto len SHOP_DOCUMENTS_DATA)
+  // Selected document resolver (PURE REACT STATE SSOT)
   const selectedDoc = useMemo(() => {
     if (!selectedDocId) return null;
     return allDocumentItems.find((d) => d.id === selectedDocId) || null;
@@ -853,7 +743,9 @@ export const ShopDocumentsMedia = () => {
 
     const doc = allDocumentItems.find((d) => d.id === docId);
     const cat = subCat || doc?.subCategory || "kt-01";
-    navigate(`/shop/documents/${cat}/${docId}`);
+    if (typeof window !== "undefined") {
+      window.history.pushState({}, "", `/shop/shop/${cat}/${docId}?tab=documents`);
+    }
   };
 
   const handleCloseDetail = () => {
@@ -865,7 +757,9 @@ export const ShopDocumentsMedia = () => {
     const newPath = currentCat
       ? `/shop/documents/${currentCat}`
       : "/shop/documents";
-    navigate(newPath);
+    if (typeof window !== "undefined") {
+      window.history.pushState({}, "", `/shop/shop/${currentCat}?tab=documents`);
+    }
   };
 
   const handleSelectCategory = (catKey) => {
@@ -1132,17 +1026,19 @@ export const ShopDocumentsMedia = () => {
 
     try {
       // 🛡️ Očistenie cesty a oprava bucketu na "shop"
-      const cleanPath = targetPath
-        .replace(
-          /^https?:\/\/[^\/]+\/storage\/v1\/object\/(public|authenticated)\/[^\/]+\//,
-          "",
-        )
-        .replace(/^shop[\/\\]+/, "")
-        .replace(/^pdf-assets[\/\\]+/, "")
-        .replace(/^\/+/, "");
+      const cleanPath = decodeURIComponent(
+        targetPath
+          .replace(
+            /^https?:\/\/[^\/]+\/storage\/v1\/object\/(public|authenticated|sign)\/[^\/]+\//,
+            "",
+          )
+          .replace(/^shop[\/\\]+/, "")
+          .replace(/^pdf-assets[\/\\]+/, "")
+          .replace(/^\/+/, "")
+      );
 
       const { data, error } = await supabase.storage
-        .from("shop") // 👈 OPRAVENÝ BUCKET ZO ZLÉHO "pdf-assets" NA "shop"
+        .from("shop")
         .createSignedUrl(cleanPath, 60);
 
       if (!error && data?.signedUrl) {
@@ -1300,13 +1196,8 @@ export const ShopDocumentsMedia = () => {
         />
       )}
 
-      {/* 👑 JEDNOTNÁ MASTER HLAVIČKA A NAVIGÁCIA */}
-      <ShopHeaderComponent
-        onShowTooltip={handleShowTooltip}
-        onUpdateTooltipPos={handleUpdateTooltipPos}
-        onHideTooltip={handleHideTooltip}
-        activeTab="documents"
-      />
+      {/* 👑 SHOP HEADER WITH VIP WALLET */}
+      {/*Zmazané dualne zobrazenie*/}
 
       {/* 👑 VÝHODY ČLENSTVA (SPOILER ACCORDION) */}
       <VyhodyClenstva

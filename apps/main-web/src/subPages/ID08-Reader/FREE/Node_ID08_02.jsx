@@ -72,8 +72,8 @@ import {
 import { TierBadge } from "@shared/components/TierBadge";
 import { SoundFX } from "@shared/utils/SoundEngine";
 import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode";
-import { GlobalNodeVideo } from "@main-web/components/GlobalNodeVideo";
-import { GlobalNodePodcast } from "@main-web/components/GlobalNodePodcast";
+import { GlobalNodeVideo } from "@main-web/components/main-web-legacy-code/GlobalNodeVideo";
+import { GlobalNodePodcast } from "@main-web/components/main-web-legacy-code/GlobalNodePodcast";
 import MetaTags from "@shared/components/MetaTags";
 
 // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼

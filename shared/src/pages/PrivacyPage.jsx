@@ -1,62 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { ShieldAlert, ArrowLeft, ShieldCheck } from "lucide-react";
+/* eslint-disable no-undef */
 
 // ============================================================================
-// ⚡ OSTRÉ IMPORTY MATRIXU
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS03 MASTER DATASET V20.95)
+// Súbor: apps/agency/src/pages/PrivacyPage.jsx
+// Status: 100% VITE RAW MARKDOWN INTEGRATED // ZERO FETCH LAG
+// CORE_VERSION: PRIVACY-PAGE V20.14
 // ============================================================================
-import { parseNexusFormat } from "../utils/nexusParser";
-import privacyUrl from "../data/privacy_nexus.md";
-import { SoundFX } from "@shared/utils/SoundEngine";
-// import MetaTags from "../components/MetaTags";
+
+import React, { useEffect } from "react";
+import { ArrowLeft, ShieldAlert, ShieldCheck } from "lucide-react";
+
+// ⚠️ OSTRÉ LOKÁLNE IMPORTY MATRIXU
+import { parseNexusFormat } from "@shared/utils/nexusParser.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+
+// 🚀 VITE DIRECT RAW MARKDOWN IMPORT (Načíta priamo text súboru ako reťazec)
+import privacyContent from "@shared/data/privacy_nexus.md?raw";
 
 export default function PrivacyPage({ onBack }) {
-  const [content, setContent] = useState("Skenujem štíty súkromia...");
-
   // 🚀 FORCED SCROLL-TO-TOP (Reset osi Y pri načítaní stránky)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
-  useEffect(() => {
-    const loadMarkdown = async () => {
-      try {
-        const response = await fetch(privacyUrl);
-        const text = await response.text();
-
-        // Ak to vráti index.html (napríklad pri 404 chybe vo Webpacku/Vite)
-        if (
-          text.trim().startsWith("<!DOCTYPE") ||
-          text.trim().startsWith("<html")
-        ) {
-          throw new Error("Súbor privacy_nexus.md sa nenašiel.");
-        }
-
-        setContent(text);
-      } catch (err) {
-        console.error("🔴 [PRIVACY_LOAD_ERROR]:", err);
-        setContent(
-          "# ⚠️ PROTOKOL NEDOSTUPNÝ\nZáznamy o súkromí momentálne nie je možné načítať zo Siete. Uisti sa, že súbor privacy_nexus.md existuje v zložke data.",
-        );
-      }
-    };
-
-    loadMarkdown();
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#03080a] text-white font-mono p-4 md:p-8 animate-in fade-in duration-700 text-left">
-      {/* <MetaTags
-        title="Ochrana súkromia a GDPR | NEXUS OS"
-        description="Protokol ochrany súkromia a GDPR pre Projekt Nexus. Striktne chránime dáta a identitu našich operátorov v Sieti."
-        image="https://projekt-nexus.sk/img-nexus/nexus-agency/Sidlo-Architekta.jpg"
-        color="#8A2BE2"
-        url="https://projekt-nexus.sk/privacy"
-        ogTitle="Ochrana súkromia a GDPR | NEXUS OS"
-        ogDescription="Protokol ochrany súkromia a GDPR. Striktne chránime dáta a identitu našich B2B a B2C klientov. Vaša identita v Matrixe zostáva iba vaša."
-        twitterTitle="Ochrana súkromia a GDPR | NEXUS OS"
-        twitterDescription="Protokol ochrany súkromia a GDPR. Striktne chránime dáta a identitu našich operátorov."
-      /> */}
       <div className="max-w-4xl mx-auto pb-20">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8">
           <div>
@@ -107,9 +75,12 @@ export default function PrivacyPage({ onBack }) {
           <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#00FFFF] to-transparent opacity-20" />
 
           <article className="max-w-none text-left leading-relaxed text-sm text-white/60">
+            {/* ⚡ Vykreslenie preloženého Markdownu cez parseNexusFormat */}
             <div
               className="nexus-content space-y-2"
-              dangerouslySetInnerHTML={{ __html: parseNexusFormat(content) }}
+              dangerouslySetInnerHTML={{
+                __html: parseNexusFormat(privacyContent),
+              }}
             />
           </article>
 

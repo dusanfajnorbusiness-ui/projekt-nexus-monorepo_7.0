@@ -25,14 +25,14 @@ import {
 } from "lucide-react";
 
 // =====================================================================
-// 🟢 1. PRODUKČNÉ IMPORTY (Vo VS Code odkomentované)
+// 🟢 1. PRODUKČNÉ IMPORTY
 // =====================================================================
-import { TierBadge } from "@shared/components/TierBadge";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode";
-import { GlobalNodeVideo } from "@main-web/components/GlobalNodeVideo";
-import { GlobalNodePodcast } from "@main-web/components/GlobalNodePodcast";
-import MetaTags from "@shared/components/MetaTags";
+import { TierBadge } from "@shared/components/TierBadge.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode.jsx";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { DMLTooltip } from "@shared/components/DMLTooltip.jsx";
 
 // =====================================================================
 // 🔌 NAPOJENIE NA LEXIKÓN UZLOV DIMENZIE ID00 (Dohodnutý Import)
@@ -534,197 +534,7 @@ const localLexikon = {
   },
 };
 
-const DMLTooltip = ({ slug, label }) => {
-  const [isOpen, setIsOpen] = useState(false);
 
-  const categoryStyles = {
-    1: {
-      type: "foreign_lang (Cudzí / Svetový jazyk)",
-      textColor: "text-[#94A3B8]",
-      borderColor: "border-slate-500/30",
-      bgColor: "bg-slate-500/5",
-      hoverBorderColor: "md:hover:border-slate-400",
-    },
-    2: {
-      type: "it_term (IT Pojem / Hardvér / Sieť)",
-      textColor: "text-[#00B4D8]",
-      borderColor: "border-cyan-500/30",
-      bgColor: "bg-cyan-500/5",
-      hoverBorderColor: "md:hover:border-cyan-400",
-    },
-    3: {
-      type: "ai_concept (AI Pojem / Augmentácia)",
-      textColor: "text-[#00FFFF]",
-      borderColor: "border-cyan-500/30",
-      bgColor: "bg-cyan-500/5",
-      hoverBorderColor: "md:hover:border-cyan-400",
-      extraClass: "shadow-[0_0_15px_rgba(0,255,255,0.25)]",
-    },
-    4: {
-      type: "system_command (Systémový príkaz / Akcia)",
-      textColor: "text-[#FF003C]",
-      borderColor: "border-red-500/30",
-      bgColor: "bg-red-500/5",
-      hoverBorderColor: "md:hover:border-red-400",
-      extraClass: "shadow-[0_0_15px_rgba(255,0,60,0.25)]",
-    },
-    5: {
-      type: "work_term (Work / Kvadrant Z)",
-      textColor: "text-[#FFEB3B]",
-      borderColor: "border-yellow-500/30",
-      bgColor: "bg-yellow-500/5",
-      hoverBorderColor: "md:hover:border-yellow-400",
-    },
-    6: {
-      type: "finance_term (Finance / Toky)",
-      textColor: "text-[#FFD700]",
-      borderColor: "border-amber-500/30",
-      bgColor: "bg-amber-500/5",
-      hoverBorderColor: "md:hover:border-amber-400",
-    },
-    7: {
-      type: "business_term (Business / Budovanie B-Systému)",
-      textColor: "text-[#FFAA00]",
-      borderColor: "border-orange-500/30",
-      bgColor: "bg-orange-500/5",
-      hoverBorderColor: "md:hover:border-orange-400",
-    },
-    8: {
-      type: "investment_term (Investments / Alokácia)",
-      textColor: "text-[#FF8C00]",
-      borderColor: "border-orange-700/30",
-      bgColor: "bg-orange-700/5",
-      hoverBorderColor: "md:hover:border-orange-600",
-    },
-    9: {
-      type: "philosophical_term (Filozofický Pojem - Mŕtve knihy)",
-      textColor: "text-[#8B5CF6]",
-      borderColor: "border-purple-500/30",
-      bgColor: "bg-purple-500/5",
-      hoverBorderColor: "md:hover:border-purple-400",
-    },
-    10: {
-      type: "psychological_term (Psychologický Pojem - Mŕtve knihy)",
-      textColor: "text-[#6366F1]",
-      borderColor: "border-indigo-500/30",
-      bgColor: "bg-indigo-500/5",
-      hoverBorderColor: "md:hover:border-indigo-400",
-    },
-    11: {
-      type: "psychiatric_term (Psychiatrický Pojem / Diagnózy)",
-      textColor: "text-[#EC4899]",
-      borderColor: "border-pink-500/30",
-      bgColor: "bg-pink-500/5",
-      hoverBorderColor: "md:hover:border-pink-400",
-    },
-    12: {
-      type: "personal_ui_term (Personal UI - Duševno / ČIERNE SLOVO)",
-      textColor: "text-[#39FF14]",
-      borderColor: "border-green-500/30",
-      bgColor: "bg-green-500/5",
-      hoverBorderColor: "md:hover:border-green-400",
-      extraClass: "shadow-[0_0_15px_rgba(57,255,20,0.3)]",
-    },
-    13: {
-      type: "home_ui_term (Home UI - Duchovno / BIELE SLOVO)",
-      textColor: "text-[#0044FF]",
-      borderColor: "border-blue-500/40",
-      bgColor: "bg-blue-500/5",
-      hoverBorderColor: "md:hover:border-blue-400",
-      extraClass: "shadow-[0_0_20px_rgba(0,68,255,0.4)]",
-    },
-  };
-
-  const slugNormalizer = (s) => {
-    if (!s) return "";
-    return s
-      .toLowerCase()
-      .trim()
-      .replace(/[áä]/g, "a")
-      .replace(/í/g, "i")
-      .replace(/ó/g, "o")
-      .replace(/ú/g, "u")
-      .replace(/[éě]/g, "e")
-      .replace(/ý/g, "y")
-      .replace(/č/g, "c")
-      .replace(/ď/g, "d")
-      .replace(/[ľĺ]/g, "l")
-      .replace(/ň/g, "n")
-      .replace(/ŕ/g, "r")
-      .replace(/š/g, "s")
-      .replace(/ť/g, "t")
-      .replace(/ž/g, "z")
-      .replace(/ô/g, "o")
-      .replace(/[^a-z0-9_]/g, "_");
-  };
-
-  const normalized = slugNormalizer(slug);
-
-  let entry = localLexikon[normalized];
-
-  // Ochranná poistka pre chýbajúce výrazy
-  if (!entry) {
-    return (
-      <span className="text-red-500 font-bold font-mono">
-        [{label || slug}]
-      </span>
-    );
-  }
-
-  const style = categoryStyles[entry.category] || categoryStyles[2];
-  const finalTextColor = entry.textColor || style.textColor;
-  const finalBorderColor = entry.borderColor || style.borderColor;
-  const finalBgColor = entry.bgColor || style.bgColor;
-  const finalHoverBorder = entry.hoverBorderColor || style.hoverBorderColor;
-  const finalExtraClass = entry.glow || style.extraClass || "";
-  const finalCategoryType = entry.categoryType || style.type;
-
-  const handleToggle = (e) => {
-    setIsOpen(!isOpen);
-    if (SoundFX && SoundFX.click) SoundFX.click();
-  };
-
-  return (
-    <span className="relative inline-block mx-1">
-      <button
-        onClick={handleToggle}
-        onTouchStart={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-          if (SoundFX && SoundFX.click) SoundFX.click();
-        }}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border font-mono text-xs md:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 cursor-default md:cursor-pointer ${finalTextColor} ${finalBorderColor} ${finalBgColor} ${finalHoverBorder} ${finalExtraClass}`}
-      >
-        <span>{label || entry.term}</span>
-        <HelpCircle className="w-3 h-3 opacity-60 shrink-0 inline-block" />
-      </button>
-
-      {isOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40 bg-transparent"
-            onClick={() => setIsOpen(false)}
-          />
-          <span
-            className={`absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 rounded-lg bg-[#050A0E] border border-gray-800 shadow-[0_0_20px_rgba(0,0,0,0.9)] text-xs font-mono text-gray-300 block text-left ${finalExtraClass}`}
-          >
-            <span
-              className={`font-bold block mb-1 pb-1 border-b border-gray-900 ${finalTextColor}`}
-            >
-              {entry.term} ➔ {entry.translation}
-            </span>
-            <span className="text-gray-500 font-bold block mb-1 text-[9px] uppercase tracking-wider font-mono">
-              Kategória: {finalCategoryType}
-            </span>
-            <span className="text-gray-400 leading-relaxed block text-[11px] font-normal normal-case">
-              {entry.tooltip}
-            </span>
-          </span>
-        </>
-      )}
-    </span>
-  );
-};
 
 // =====================================================================
 // 🗛️ NO-GOAL FLOW & PURPOSE SIMULATOR (Zmysel života)

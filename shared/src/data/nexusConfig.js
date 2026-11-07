@@ -1,3 +1,5 @@
+// 🛡️ CENTRÁLNY MOST: Získavame Supabase klienta z JEDINÉHO platného zdroja (Strojovne)
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
 /**
  * ============================================================================
  * 👑 NEXUS CONFIG - MASTER REGISTER & DB ROUTING (V4.9)
@@ -13,12 +15,9 @@
  * ============================================================================
  */
 
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-
-// 🛡️ CENTRÁLNY MOST: Získavame Supabase klienta z JEDINÉHO platného zdroja (Strojovne)
-import { supabase } from "../services/NexusDB_Supabase";
 
 const isLocalhost =
   typeof window !== "undefined" && window.location.hostname === "localhost";

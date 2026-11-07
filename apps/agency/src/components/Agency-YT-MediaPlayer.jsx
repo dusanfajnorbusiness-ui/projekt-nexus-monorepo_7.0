@@ -5,7 +5,8 @@
 // Author: Dušan Fajnor @nexus-core2Mb (CyberTech Architect)
 // ============================================================================
 
-import { SoundFX } from "@shared/utils/SoundEngine";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+
 // import { trackEvent } from "@shared/utils/Globaltelemetry"; // 🛑 ZAKOMENTOVANÉ: Chýbajúci modul telemetry
 const trackEvent = () => {}; // Defenzívny mock pre V20 stav bez chýb
 import {

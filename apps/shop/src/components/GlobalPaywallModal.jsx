@@ -1,20 +1,8 @@
-import React, { useState, useMemo } from "react";
-import {
-  X,
-  Zap,
-  ExternalLink,
-  Copy,
-  Check,
-  Shield,
-  Crown,
-  Clock,
-  Calendar,
-  Sparkles,
-  AlertTriangle,
-  ArrowRight,
-} from "lucide-react";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { supabase } from "@shared/services/NexusDB_Supabase";
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import { AlertTriangle, ArrowRight, Calendar, Check, Clock, Copy, Crown, ExternalLink, Shield, Sparkles, X, Zap } from "lucide-react";
+import React, { useMemo, useState } from "react";
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (GLOBAL PAYWALL MODAL V20.95)
@@ -443,21 +431,23 @@ export const GlobalPaywallModal = ({
 
       currentHistory.unshift(newTxRecord);
 
-      // 3. TVRDÝ UPDATE DO TABUĽKY 'users' V SUPABASE
+      // 1. Konverzia dátumu expirácie na ISO 8601 pre Postgres TIMESTAMP WITH TIME ZONE
+      let validIsoExpiry = null;
+      if (isMembership && newExpirationDate && !String(newExpirationDate).includes("DOBA NEURČITÁ")) {
+        const parsedDate = new Date(newExpirationDate);
+        validIsoExpiry = !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : null;
+      }
+
+      // 2. Unifikovaný Payload pre Supabase JSONB stĺpce (priamo JS polia, NIE JSON.stringify)
       const updatePayload = {
         credits: newCredits,
         tier: targetTier,
-        unlocked_nodes: JSON.stringify(currentUnlocked),
-        transaction_history: JSON.stringify(currentHistory.slice(0, 50)),
-        // last_active omitted for schema safety
+        unlocked_nodes: currentUnlocked,
+        transaction_history: currentHistory.slice(0, 50),
       };
 
       if (isMembership) {
-        updatePayload.tier_expires_at = newExpirationDate.includes(
-          "DOBA NEURČITÁ",
-        )
-          ? null
-          : newExpirationDate;
+        updatePayload.tier_expires_at = validIsoExpiry;
       }
 
       let { error: updateErr } = await supabase
@@ -465,13 +455,13 @@ export const GlobalPaywallModal = ({
         .update(updatePayload)
         .eq("email", operatorEmail);
 
-      // 🛡️ FALLBACK FIREWALL: Ak v databáze chýba stĺpec subscription_expires_at alebo last_active
+      // 🛡️ FALLBACK FIREWALL: Ak zlyhá prvý pokus, odstránime tier_expires_at
       if (updateErr) {
         console.warn(
           "[SUPABASE UPDATE WARN]: Prvý pokus zlyhal, aplikujem Fallback:",
           updateErr.message,
         );
-        delete updatePayload.subscription_expires_at;
+        delete updatePayload.tier_expires_at;
         delete updatePayload.last_active;
 
         const { error: retryErr } = await supabase

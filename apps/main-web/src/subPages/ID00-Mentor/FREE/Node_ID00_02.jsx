@@ -27,12 +27,12 @@ import {
 // =====================================================================
 // 🟢 1. PRODUKČNÉ IMPORTY
 // =====================================================================
-import { TierBadge } from "@shared/components/TierBadge";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode";
-import { GlobalNodeVideo } from "@main-web/components/GlobalNodeVideo";
-import { GlobalNodePodcast } from "@main-web/components/GlobalNodePodcast";
-import MetaTags from "@shared/components/MetaTags";
+import { TierBadge } from "@shared/components/TierBadge.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { GlobalPredFooterNode } from "@main-web/components/GlobalPredFooterNode.jsx";
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { DMLTooltip } from "@shared/components/DMLTooltip.jsx";
 
 // ============================================================================
 // 🔊 NEXUS SOUND ENGINE (V4.0 - BROWSER UNLOCK FIX)
@@ -139,15 +139,15 @@ const playTone = (type, startFreq, endFreq, duration, volume) => {
   }
 };
 
-export const SoundFX = {
-  hover: () => playTone("sine", 1200, null, 0.05, 0.015),
-  click: () => playTone("square", 400, 50, 0.1, 0.05),
-  error: () => playTone("sawtooth", 150, 50, 0.3, 0.1),
-  success: () => {
-    playTone("triangle", 600, null, 0.1, 0.05);
-    setTimeout(() => playTone("triangle", 800, null, 0.1, 0.05), 100);
-  },
-};
+// export const SoundFX = {
+//   hover: () => playTone("sine", 1200, null, 0.05, 0.015),
+//   click: () => playTone("square", 400, 50, 0.1, 0.05),
+//   error: () => playTone("sawtooth", 150, 50, 0.3, 0.1),
+//   success: () => {
+//     playTone("triangle", 600, null, 0.1, 0.05);
+//     setTimeout(() => playTone("triangle", 800, null, 0.1, 0.05), 100);
+//   },
+// };
 
 // =====================================================================
 // 🎨 SÉMANTICKÉ ŠTÝLY KATEGÓRIÍ (categoryStyles) podla DML v6.0
@@ -512,88 +512,7 @@ const localLexikon = {
   },
 };
 
-// =====================================================================
-// 💻 ODĽAHČENÝ TOOLTIP KOMPONENT (DMLTooltip)
-// =====================================================================
-const DMLTooltip = ({ slug, label }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const normalized = slug ? slug.toLowerCase().trim() : "";
-  const entry = localLexikon[normalized];
 
-  const termToShow = entry ? entry.term : label || slug;
-
-  if (!entry) {
-    return (
-      <span className="text-red-500 font-bold font-mono">
-        [{termToShow}_NOT_FOUND]
-      </span>
-    );
-  }
-
-  const style = categoryStyles[entry.category] || {};
-  const finalTextColor = entry.textColor || style.textColor || "text-[#00B4D8]";
-  const finalBorderColor =
-    entry.borderColor || style.borderColor || "border-cyan-500/30";
-  const finalBgColor = entry.bgColor || style.bgColor || "bg-cyan-500/5";
-  const finalHoverBorder =
-    entry.hoverBorderColor ||
-    style.hoverBorderColor ||
-    "md:hover:border-cyan-400";
-  const finalExtraClass = entry.glow || style.extraClass || "";
-  const finalCategoryType = entry.categoryType || style.type || "IT Pojem";
-
-  const handleToggle = (e) => {
-    setIsOpen(!isOpen);
-    if (SoundFX && SoundFX.click) SoundFX.click();
-  };
-
-  return (
-    <span className="relative inline-block mx-1">
-      <button
-        onClick={handleToggle}
-        onMouseEnter={() => {
-          if (SoundFX && SoundFX.hover) SoundFX.hover();
-        }}
-        onClickCapture={() => {
-          if (SoundFX && SoundFX.click) SoundFX.click();
-        }}
-        onTouchStart={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-          if (SoundFX && SoundFX.click) SoundFX.click();
-        }}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border font-mono text-xs md:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 cursor-default md:cursor-pointer ${finalTextColor} ${finalBorderColor} ${finalBgColor} ${finalHoverBorder} ${finalExtraClass}`}
-      >
-        <span>{termToShow}</span>
-        <HelpCircle className="w-3 h-3 opacity-60 shrink-0 inline-block" />
-      </button>
-
-      {isOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40 bg-transparent"
-            onClick={() => setIsOpen(false)}
-          />
-          <span
-            className={`absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 rounded-lg bg-[#050A0E] border border-gray-800 shadow-[0_0_20px_rgba(0,0,0,0.9)] text-xs font-mono text-gray-300 animate-fade-in block text-left ${finalExtraClass}`}
-          >
-            <span
-              className={`font-bold block mb-1 pb-1 border-b border-gray-900 ${finalTextColor}`}
-            >
-              {entry.term} ➔ {entry.translation}
-            </span>
-            <span className="text-gray-500 font-bold block mb-1 text-[9px] uppercase tracking-wider font-mono">
-              Kategória: {finalCategoryType}
-            </span>
-            <span className="text-gray-400 leading-relaxed block text-[11px] font-normal normal-case">
-              {entry.tooltip}
-            </span>
-          </span>
-        </>
-      )}
-    </span>
-  );
-};
 
 // =====================================================================
 // 🎛️ REFACTORING & SPRINT DIAGNOSTICS SIMULATOR (Memory Leak)

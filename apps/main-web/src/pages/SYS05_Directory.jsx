@@ -1,3 +1,12 @@
+import { Sys01_05_Filters } from "@main-web/components/Sys01-05_Filters.jsx";
+// ⚠️ PRIAMY DOVOZ TVOJHO VLASTNÉHO DATASETU Z src/data/sys05_directory.js
+import * as Sys05DataModule from "@main-web/data/sys05_directory.js";
+import { GlobalComponents } from "@shared/components/GlobalComponents.jsx";
+import { GlobalFooter } from "@shared/components/GlobalFooter.jsx";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { Briefcase, Check, Copy, ExternalLink, Globe, HardDrive, Lock, Mail, Share2, ShoppingCart, Terminal } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 /* eslint-disable no-undef */
 
 // ============================================================================
@@ -6,31 +15,8 @@
 // Status: 100% GROUNDED // CLUSTER & FLAT DATASET ADAPTER // ZERO IMPROVISATION
 // ============================================================================
 
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import {
-  HardDrive,
-  Globe,
-  Mail,
-  Share2,
-  ShoppingCart,
-  Briefcase,
-  Terminal,
-  Copy,
-  ExternalLink,
-  Lock,
-  Check,
-} from "lucide-react";
-import * as LucideIcons from "lucide-react";
-
-import { GlobalComponents } from "@main-web/components/GlobalComponents";
-import { GlobalHamburgerMenu } from "@main-web/components/GlobalHamburgerMenu";
-import { GlobalFooter } from "@main-web/components/GlobalFooter";
-import { Sys01_05_Filters } from "@main-web/components/Sys01-05_Filters";
-import { SoundFX } from "@shared/utils/SoundEngine";
-
-// ⚠️ PRIAMY DOVOZ TVOJHO VLASTNÉHO DATASETU Z src/data/sys05_directory.js
-import * as Sys05DataModule from "@main-web/data/sys05_directory";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SYS05_COLOR = Sys05DataModule.SYS05_COLOR || "#39FF14";
 

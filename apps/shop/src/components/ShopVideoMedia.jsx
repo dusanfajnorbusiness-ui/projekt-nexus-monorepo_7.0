@@ -1,37 +1,12 @@
 /* eslint-disable no-undef */
-import React, { useState, useMemo } from "react";
-import {
-  Video,
-  Eye,
-  ChevronDown,
-  ChevronUp,
-  X,
-  Copy,
-  Check,
-  Sparkles,
-  PlayCircle,
-  Zap,
-  Shield,
-  ChevronRight,
-  Lock,
-  HelpCircle,
-} from "lucide-react";
-import { SoundFX } from "@shared/utils/SoundEngine";
-import {
-  SHOP_VIDEO_SECTIONS,
-  SHOP_VIDEO_DATA,
-  VIDEO_CENNIK_MATRICA,
-  getTierColor,
-} from "../data/ShopVideoMedia";
-import { SHOP_TOOLTIPS, getTooltip } from "../data/TooltipsShop";
-import { MetaTags } from "../MetaTags";
-import { VyhodyClenstva } from "./Vyhody-Clenstva";
-import { ShopHeaderComponent } from "./ShopHeaderComponent";
-import {
-  SHOP_PRIPRAVUJEME_DATA,
-  PRIPRAVUJEME_SECTION_TITLES,
-  PRIPRAVUJEME_THEME_COLORS,
-} from "../data/ShopPripravujeme";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { ShopHeaderComponent } from "@shop/components/ShopHeaderComponent.jsx";
+import { ShopPripravujeme } from "@shop/components/ShopPripravujeme.jsx";
+import { VyhodyClenstva } from "@shop/components/Vyhody-Clenstva.jsx";
+import { getTierColor, SHOP_VIDEO_DATA } from "@shop/data/ShopVideoMedia.js";
+import { Check, Copy, HelpCircle, Lock, PlayCircle, Sparkles, Video, X } from "lucide-react";
+import { useMemo, useState } from "react";
 
 // ============================================================================
 // 👑 NEXUS OS: SHOPVIDEOMEDIA COMPONENT V20.50 (CLEAN MASTER ACCORDION & STANDBY)
@@ -180,13 +155,8 @@ export const ShopVideoMedia = () => {
         />
       )}
 
-      {/* 👑 JEDNOTNÁ MASTER HLAVIČKA A NAVIGÁCIA */}
-      <ShopHeaderComponent
-        onShowTooltip={handleShowTooltip}
-        onUpdateTooltipPos={handleUpdateTooltipPos}
-        onHideTooltip={handleHideTooltip}
-        activeTab="videos"
-      />
+      {/* 👑 SHOP HEADER WITH VIP WALLET */}
+      {/*Zmazané dualne zobrazenie*/}
 
       {/* 1. VÝHODY ČLENSTVA ACCORDION */}
       <VyhodyClenstva

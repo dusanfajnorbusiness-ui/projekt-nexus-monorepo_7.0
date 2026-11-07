@@ -1,12 +1,11 @@
-import React from "react";
-import { Crown, Zap, ShieldCheck, User, ShieldAlert } from "lucide-react";
-
 // ============================================================================
 // ⚠️ LOKÁLNE IMPORTY (ZAKOMENTOVANÉ PRE STABILITU CANVAS NÁHĽADU) ⚠️
 // ARCHITEKT: PRED NASADENÍM ODKOMENTUJ TIETO ORIGINÁLY A ZMAŽ MOCK BLOK:
 // ============================================================================
 
-import { getTierColor } from "@shared/data/nexusConfig";
+import { getTierColor } from "@shared/data/nexusConfig.js";
+import { Crown, ShieldAlert, ShieldCheck, User, Zap } from "lucide-react";
+import React from "react";
 
 // ============================================================================
 // 🛑 MOCK PRE CANVAS NÁHĽAD (ZMAZAŤ V LOKÁLNOM PROJEKTE) 🛑

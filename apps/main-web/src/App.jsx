@@ -1,107 +1,130 @@
-﻿import React, { useState, useEffect, useRef } from "react";
-import {
-  Wand2,
-  Shield,
-  Grid,
-  Terminal,
-  Users,
-  ShoppingCart,
-  Settings,
-  User,
-  LogOut,
-  Cpu,
-  Database,
-  Activity,
-  AlertTriangle,
-  Mail,
-  ShieldAlert,
-  Briefcase,
-  Wallet,
-} from "lucide-react";
-/* eslint-disable no-undef */
+﻿/* eslint-disable no-undef */
 
 // ============================================================================
-// 👑 PROJECT NEXUS — OS GENESIS EDITION (MAIN WEB ROUTING APP V20.95)
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS00 MASTER APP V20.95)
 // Súbor: apps/main-web/src/App.jsx
-// Status: 100% GROUNDED // CANONICAL ALIASES & ROUTING MATRIX V20
-// Author: Dušan Fajnor @nexus-core2Mb (CyberTech Architect)
+// Status: 100% GROUNDED // V20 ESM STRICT EXPORT // ZERO STANDBY FALLBACK
 // ============================================================================
-
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
-
-// 📡 1. DATABÁZOVÉ MOSTY A SLUŽBY (@shared/services/)
-import { supabase } from "@shared/services/NexusDB_Supabase"; // ⚡ CENTRÁLNY MOST SUPABASE
-import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config";
-import { NexusDB } from "@shared/services/NexusDB_Core";
-
-// 🗄️ 2. DÁTA A REGISTRE (@shared/data/)
-import { getTierColor, DIMENSIONS } from "@shared/data/nexusConfig";
-import { checkPermission } from "@shared/data/permissionsRegistry";
-
-// 🛠️ 3. NÁSTROJE A ENGINE (@shared/utils/)
-import { SoundFX } from "@shared/utils/SoundEngine";
-
-// 🧩 4. GLOBÁLNE UI KOMPONENTY (@shared/components/ & @main-web/components/)
-import { GlobalComponents } from "@shared/components/GlobalComponents";
-import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
-import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu";
-import { GlobalFooter } from "@shared/components/GlobalFooter";
-import { GlobalProfil } from "@shared/components/GlobalProfil";
-import { GlobalMessages } from "@shared/components/GlobalMessages";
-import UplinkModal from "@uplink/pages/UplinkModal";
-import SettingsPage from "@settings/pages/SettingsPage";
-import MetaTags from "@shared/components/MetaTags";
-import ShopDocumentsMedia from "@shop/components/ShopDocumentsMedia";
-import ShopImageMedia from "@shop/components/ShopImageMedia";
-import ShopAudioMedia from "@shop/components/ShopAudioMedia";
-import ShopVideoMedia from "@shop/components/ShopVideoMedia";
-import ShopAppsMedia from "@shop/components/ShopAppsMedia";
-import GlobalWallet from "@shop/components/GlobalWallet";
-import GlobalQuestAuth from "@shop/components/GlobalQuestAuth";
-import { GlobalKeyboard } from "@main-web/components/GlobalKeyboard";
-import {
-  PublicRoute,
-  AuthRoute,
-  StrictRoute,
-} from "@shared/components/NexusRouting";
-
+import AdminPage from "@admin/pages/AdminPage.jsx";
+import NexusAgencyPage from "@agency/pages/NexusAgencyPage.jsx";
+import BlogPage from "@blog/pages/BlogPage.jsx";
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
+import { GlobalKeyboard } from "@main-web/components/GlobalKeyboard.jsx";
 // 🏠 5. HLAVNÉ STRÁNKY A PORTÁLY (@main-web/pages/ & Subdomény)
-import { HomePage } from "@main-web/pages/HomePage";
-import OperatorsPage from "@operators/pages/OperatorsPage";
-import ShopPage from "@shop/pages/ShopPage";
-import AdminPage from "@admin/pages/AdminPage";
-import VopPage from "@shared/pages/VopPage";
-import PrivacyPage from "@shared/pages/PrivacyPage";
-import BlogPage from "@blog/pages/BlogPage";
-import OperatorPage from "@operators/pages/OperatorPage";
-
+import { HomePage } from "@main-web/pages/HomePage.jsx";
 // 🌌 6. KOGNITÍVNE DIMENZIE (@main-web/pages/IDxx)
-import ID00_Mentor from "@main-web/pages/ID00-Mentor";
-import ID01_Identity from "@main-web/pages/ID01-Identity";
-import ID02_Workflow from "@main-web/pages/ID02-Workflow";
-import ID03_Finance from "@main-web/pages/ID03-Finance";
-import ID04_Revenue from "@main-web/pages/ID04-Revenue";
-import ID05_Assets from "@main-web/pages/ID05-Assets";
-import ID06_Study from "@main-web/pages/ID06-Study";
-import ID07_Skills from "@main-web/pages/ID07-Skills";
-import ID08_Reader from "@main-web/pages/ID08-Reader";
-import ID09_Player from "@main-web/pages/ID09-Player";
-import ID10_Home from "@main-web/pages/ID10-Home";
-import ID11_Recovery from "@main-web/pages/ID11-Recovery";
-import ID12_Codex from "@main-web/pages/ID12-Codex";
-import ID13_Habits from "@main-web/pages/ID13-Habits";
-import ID14_Blog from "@main-web/pages/ID14-Blog";
-import ID15_Death from "@main-web/pages/ID15-Death";
-
+import ID00_Mentor from "@main-web/pages/ID00-Mentor.jsx";
+import ID01_Identity from "@main-web/pages/ID01-Identity.jsx";
+import ID02_Workflow from "@main-web/pages/ID02-Workflow.jsx";
+import ID03_Finance from "@main-web/pages/ID03-Finance.jsx";
+import ID04_Revenue from "@main-web/pages/ID04-Revenue.jsx";
+import ID05_Assets from "@main-web/pages/ID05-Assets.jsx";
+import ID06_Study from "@main-web/pages/ID06-Study.jsx";
+import ID07_Skills from "@main-web/pages/ID07-Skills.jsx";
+import ID08_Reader from "@main-web/pages/ID08-Reader.jsx";
+import ID09_Player from "@main-web/pages/ID09-Player.jsx";
+import ID10_Home from "@main-web/pages/ID10-Home.jsx";
+import ID11_Recovery from "@main-web/pages/ID11-Recovery.jsx";
+import ID12_Codex from "@main-web/pages/ID12-Codex.jsx";
+import ID13_Habits from "@main-web/pages/ID13-Habits.jsx";
+import ID14_Blog from "@main-web/pages/ID14-Blog.jsx";
+import ID15_Death from "@main-web/pages/ID15-Death.jsx";
 // 🌌 7. SYSTÉMOVÉ UZLY (@main-web/pages/SysXX)
-import Sys01_VideoNodes from "@main-web/pages/Sys01_VideoNodes";
-import Sys02_Mentoring from "@main-web/pages/Sys02_Mentoring";
-import Sys03_ImgGallery from "@main-web/pages/Sys03_ImgGallery";
-import Sys04_VideoGallery from "@main-web/pages/Sys04_VideoGallery";
-import { SYS05_Directory } from "@main-web/pages/SYS05_Directory";
+import Sys01_VideoNodes from "@main-web/pages/Sys01_VideoNodes.jsx";
+import Sys02_Mentoring from "@main-web/pages/Sys02_Mentoring.jsx";
+import Sys03_ImgGallery from "@main-web/pages/Sys03_ImgGallery.jsx";
+import Sys04_VideoGallery from "@main-web/pages/Sys04_VideoGallery.jsx";
+import { SYS05_Directory } from "@main-web/pages/SYS05_Directory.jsx";
+import OperatorPage from "@operators/pages/OperatorPage.jsx";
+import OperatorsPage from "@operators/pages/OperatorsPage.jsx";
+import SettingsPage from "@settings/pages/SettingsPage.jsx";
+// 🧩 4. GLOBÁLNE UI KOMPONENTY (@shared/components/ & @main-web/components/)
+import { GlobalComponents } from "@shared/components/GlobalComponents.jsx";
+import { GlobalFooter } from "@shared/components/GlobalFooter.jsx";
+import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx";
+import { GlobalMessages } from "@shared/components/GlobalMessages.jsx";
+import { GlobalProfil } from "@shared/components/GlobalProfil.jsx";
+import MetaTags from "@shared/components/MetaTags.jsx";
+import { AuthRoute, PublicRoute, StrictRoute } from "@shared/components/NexusRouting.jsx";
+import { SystemLogModal } from "@shared/components/SystemLogModal.jsx";
+// 🗄️ 2. DÁTA A REGISTRE (@shared/data/)
+import { DIMENSIONS, getTierColor } from "@shared/data/nexusConfig.js";
+import { checkPermission } from "@shared/data/permissionsRegistry.js";
+import PrivacyPage from "@shared/pages/PrivacyPage.jsx";
+import VopPage from "@shared/pages/VopPage.jsx";
+// ⚡ CENTRÁLNY MOST SUPABASE
+import { EXODUS_CONFIG } from "@shared/services/NexusDB_Config.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
+// 📡 1. DATABÁZOVÉ MOSTY A SLUŽBY (@shared/services/)
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+// 🛠️ 3. NÁSTROJE A ENGINE (@shared/utils/)
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import GlobalQuestAuth from "@shop/components/GlobalQuestAuth.jsx";
+import GlobalWallet from "@shop/components/GlobalWallet.jsx";
+import ShopAppsMedia from "@shop/components/ShopAppsMedia.jsx";
+import ShopAudioMedia from "@shop/components/ShopAudioMedia.jsx";
+import ShopDocumentsMedia from "@shop/components/ShopDocumentsMedia.jsx";
+import ShopImageMedia from "@shop/components/ShopImageMedia.jsx";
+import ShopVideoMedia from "@shop/components/ShopVideoMedia.jsx";
+import ShopPage from "@shop/pages/ShopPage.jsx";
+import UplinkModal from "@uplink/pages/UplinkModal.jsx";
+import { Activity, AlertTriangle, Briefcase, Cpu, Database, Grid, LogOut, Mail, Settings, Shield, ShieldAlert, ShoppingCart, Terminal, User, Users, Wallet, Wand2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { HelmetProvider } from "react-helmet-async";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 export const CORE_VERSION = "SK-App V20.95_STABLE";
+
+class SystemErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("🔥 [NEXUS CRASH DETECTED]:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      const errorMsg = String(
+        this.state.error?.stack ||
+          this.state.error?.message ||
+          this.state.error ||
+          "Unknown Error",
+      );
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in-95 duration-500 font-mono">
+          <AlertTriangle
+            size={80}
+            className="text-red-600 mb-8 animate-pulse drop-shadow-[0_0_30px_rgba(220,38,38,0.8)]"
+          />
+          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-4 tracking-[0.3em] italic">
+            System_Crash
+          </h2>
+          <p className="text-white/50 text-sm md:text-base max-w-2xl mb-12">
+            V tomto sektore nastala fatálna chyba kompilácie kódu. Systém
+            zablokoval bielu obrazovku a spustil núdzový režim.
+            <br />
+            <br />
+            <span className="text-red-400 font-mono text-xs bg-red-950/40 p-4 rounded-xl border border-red-500/30 block text-left overflow-x-auto whitespace-pre-wrap max-h-60 shadow-inner">
+              {errorMsg}
+            </span>
+          </p>
+          <button
+            type="button"
+            onClick={() => (window.location.href = "/")}
+            className="px-10 py-5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black border border-red-600/30 transition-all rounded-2xl font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(220,38,38,0.2)] cursor-pointer"
+          >
+            Reboot System (Return Home)
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Inicializačný signál zrodu do konzoly operátora
 console.log(
@@ -229,106 +252,6 @@ const clearNexusCookie = () => {
   }
 };
 
-const CoreChronometer = ({ themeColor }) => {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const yy = String(time.getFullYear()).slice(-2);
-  const mm = String(time.getMonth() + 1).padStart(2, "0");
-  const dd = String(time.getDate()).padStart(2, "0");
-  const hh = String(time.getHours()).padStart(2, "0");
-  const min = String(time.getMinutes()).padStart(2, "0");
-  const ss = String(time.getSeconds()).padStart(2, "0");
-
-  const genesisDate = new Date(2018, 7, 4);
-  let years = time.getFullYear() - genesisDate.getFullYear();
-  let months = time.getMonth() - genesisDate.getMonth();
-  let days = time.getDate() - genesisDate.getDate();
-
-  if (days < 0) {
-    months--;
-    const prevMonth = new Date(time.getFullYear(), time.getMonth(), 0);
-    days += prevMonth.getDate();
-  }
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-
-  const tooltipText = `MATRIX CORE UPTIME: ${years} rokov ${months} mesiacov ${days} dní`;
-
-  return (
-    <div
-      title={tooltipText}
-      className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-[#050505]/80 backdrop-blur-md transition-colors duration-500 cursor-help hover:scale-105"
-      style={{
-        borderColor: `${themeColor}30`,
-        boxShadow: `0 0 10px ${themeColor}10`,
-      }}
-    >
-      <Activity
-        size={12}
-        style={{ color: themeColor }}
-        className="animate-pulse opacity-70"
-      />
-      <span
-        className="font-mono text-[10px] font-black tracking-widest"
-        style={{ color: themeColor }}
-      >
-        {dd}.{mm}.{yy} | {hh}:{min}:{ss}
-      </span>
-    </div>
-  );
-};
-
-class SystemErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-  componentDidCatch(error, errorInfo) {
-    console.error("🔥 SYSTEM CRASH DETECTED:", error, errorInfo);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in-95 duration-500 font-mono">
-          <AlertTriangle
-            size={80}
-            className="text-red-600 mb-8 animate-pulse drop-shadow-[0_0_30px_rgba(220,38,38,0.8)]"
-          />
-          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-4 tracking-[0.3em] italic">
-            System_Crash
-          </h2>
-          <p className="text-white/50 text-sm md:text-base max-w-2xl mb-12">
-            V tomto sektore nastala fatálna chyba kompilácie kódu. Systém
-            zablokoval bielu obrazovku a spustil núdzový režim.
-            <br />
-            <br />
-            <span className="text-red-500 font-bold bg-red-500/10 px-4 py-4 rounded-xl border border-red-500/20 block text-left overflow-x-auto whitespace-pre-wrap">
-              {this.state.error?.toString()}
-            </span>
-          </p>
-          <button
-            onClick={() => (window.location.href = "/")}
-            className="px-10 py-5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black border border-red-600/30 transition-all rounded-2xl font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(220,38,38,0.2)]"
-          >
-            Reboot System (Return Home)
-          </button>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
 const DimensionConstruction = ({ dimId, dimName, color, navigateTo }) => (
   <div className="min-h-[85vh] flex flex-col items-center justify-center relative z-10 text-center p-8 animate-in fade-in zoom-in-95 duration-1000 mt-20">
     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none" />
@@ -375,73 +298,127 @@ const DimensionConstruction = ({ dimId, dimName, color, navigateTo }) => (
   </div>
 );
 
-const getIsAdminSubdomain = () => {
+const getIsAgencySubdomain = () => {
   if (typeof window === "undefined") return false;
   const urlParams = new URLSearchParams(window.location.search);
-  // Detekcia: začína na admin. ALEBO má v URL ?admin=true (pre localhost)
   return (
-    window.location.hostname.startsWith("admin.") ||
-    urlParams.get("admin") === "true"
+    window.location.hostname.startsWith("agency.") ||
+    urlParams.get("agency") === "true"
   );
 };
 
-const getIsAgencySubdomain = () => {
+const getIsAdminSubdomain = () => {
   if (typeof window === "undefined") return false;
-  return window.location.hostname.startsWith("agency.");
+  const host = window.location.hostname;
+  return host.startsWith("admin.") || host.includes("admin-");
 };
 
-const AgencyTeleport = () => {
+const AgencyTeleport = ({ themeColor, userState }) => {
+  const isLocalhost =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1");
+
   useEffect(() => {
-    window.location.replace("https://agency.projekt-nexus.sk");
-  }, []);
+    if (!isLocalhost) {
+      window.location.replace("https://agency.projekt-nexus.sk");
+    }
+  }, [isLocalhost]);
+
+  // 🎯 Na Localhoste zobrazíme priamo stránku Agency bez prerušenia na port 3001
+  if (isLocalhost) {
+    return (
+      <NexusAgencyPage
+        themeColor={themeColor}
+        userState={userState}
+      />
+    );
+  }
+
   return null;
 };
 
 export default function App() {
   const navigate = useNavigate();
-  const location = useLocation(); // 🟢 INJEKCIA LOKÁTORA
+  const location = useLocation();
 
-  // 🛑 OMEGA FIX: Absolútna synchronizácia Farieb a Favicony
-  // Tento systémový Radar neustále skenuje URL adresu a mení farby naprieč celým Matrixom
-  useEffect(() => {
-    const path = location.pathname.toLowerCase();
-    const host = typeof window !== "undefined" ? window.location.hostname : "";
 
-    if (path.includes("/home")) {
-      setActiveTab("home");
-    } else if (path.includes("/blog")) {
-      setActiveTab("blog");
-    } else if (path.includes("/shop")) {
-      setActiveTab("shop");
-    } else if (path.includes("/operators")) {
-      setActiveTab("operators");
-    } else if (path.includes("/settings")) {
-      setActiveTab("settings");
-    } else if (path.includes("/blog")) {
+  // 1. Kánonická lazy inicializácia activeTab pre F5 refresh
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname.toLowerCase();
+      const isAdminSub = typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
+      if (isAdminSub || path.startsWith("/admin")) {
+        return "admin";
+      }
     }
-  }, [location.pathname]);
+    return "home";
+  });
 
-  const [activeTab, setActiveTab] = useState("home");
+  // 2. Kánonické stavy aplikácie (Vytvorené výhradne 1x)
+  const [isSystemLogOpen, setIsSystemLogOpen] = useState(false);
   const [userState, setUserState] = useState(DEFAULT_USER_STATE);
-  // 🛑 OMEGA BOT DETEKTOR: Chrome môže "ReactSnap" prepísať. Reagujeme na akéhokoľvek headless bota.
+  const [themeColor, setThemeColor] = useState("#39FF14");
+
   const isBot =
     typeof navigator !== "undefined" &&
     /ReactSnap|HeadlessChrome|Puppeteer|bot|spider|crawl/i.test(
       navigator.userAgent,
     );
 
-  // Bot okamžite preskočí Boot Screen a dostane naservírované čisté UI
   const [isBooting, setIsBooting] = useState(() => {
-    // 🛑 GHOST-MODE BYPASS: Ak klope SEO Bot, okamžite vypni Boot Screen.
-    // Bot nečaká na animácie, potrebuje okamžite sťahovať HTML a SEO tagy!
-    if (
-      typeof navigator !== "undefined" &&
-      navigator.userAgent === "ReactSnap"
-    ) {
-      return false;
-    }
-    return true; // Pre bežných ľudí sa Boot Screen normálne zobrazí
+    if (isBot) return false;
+    return true;
   });
+
+  const currentGitHash =
+    (typeof import.meta !== "undefined" &&
+      import.meta.env?.VITE_GIT_COMMIT_HASH) ||
+    "v20.95-master";
+
+  // 3. Efekt detekcie nového pushu (LocalStorage System Log)
+  useEffect(() => {
+    try {
+      const lastSeenCommit = localStorage.getItem("nexus_last_seen_git_commit");
+      if (lastSeenCommit !== currentGitHash) {
+        setIsSystemLogOpen(true);
+      }
+    } catch (err) {
+      console.warn("⚠️ [NEXUS STORAGE] LocalStorage read skipped:", err);
+    }
+  }, [currentGitHash]);
+
+  // 4. Unifikovaný Radar URL Adresy (Synchronizuje activeTab aj themeColor)
+  useEffect(() => {
+    const path = location.pathname.toLowerCase();
+    const urlParams = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.search : "",
+    );
+    const isAdminSub = typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
+
+    if (isAdminSub || path.includes("/admin")) {
+      setActiveTab("admin");
+      setThemeColor("#FF003C");
+    } else if (path.includes("/home") || path === "/") {
+      setActiveTab("home");
+      setThemeColor("#39FF14");
+    } else if (path.includes("/agency") || urlParams.get("agency") === "true") {
+      setActiveTab("agency");
+      setThemeColor("#00f3ff");
+    } else if (path.includes("/blog")) {
+      setActiveTab("blog");
+      setThemeColor("#E91E63");
+    } else if (path.includes("/shop")) {
+      setActiveTab("shop");
+      setThemeColor("#FFD700");
+    } else if (path.includes("/operators")) {
+      setActiveTab("operators");
+      setThemeColor("#FFAA00");
+    } else if (path.includes("/settings")) {
+      setActiveTab("settings");
+    }
+  }, [location.pathname]);
+
   const lastDbUpdateRef = useRef(0);
   const [systemStatus, setSystemStatus] = useState("INITIALIZING CORE...");
   const [showGlobalProfile, setShowGlobalProfile] = useState(false);
@@ -599,28 +576,44 @@ export default function App() {
 
   // PREPÍSANÁ FUNKCIA PRE NAVIGÁCIU (Prepojenie tlačidiel na URL)
   const navigateTo = (targetId) => {
+    if (!targetId) return;
     if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
 
-    // 🛡️ OCHRANNÝ ŠTÍT: Ak sme na subdoméne agency alebo admin, unikáme na hlavný portál
+    const isLocalhost =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1");
+
+    // 1. TLAČIDLO AGENCY (LOCALHOST VS PRODUCTION TELEPORT)
+    if (targetId === "agency") {
+      if (!isLocalhost) {
+        window.location.href = "https://agency.projekt-nexus.sk";
+        return;
+      }
+    }
+
+    // 2. TLAČIDLO HOME (ÚNIK ZO SUBDOMÉN NA HLAVNÝ PORTÁL)
     if (targetId === "home") {
-      if (getIsAgencySubdomain() || getIsAdminSubdomain()) {
+      const isAgency =
+        typeof getIsAgencySubdomain === "function" && getIsAgencySubdomain();
+      const isAdmin =
+        typeof getIsAdminSubdomain === "function" && getIsAdminSubdomain();
+
+      if (!isLocalhost && (isAgency || isAdmin)) {
         window.location.href = "https://projekt-nexus.sk";
         return;
       }
-      setActiveTab("home");
-      navigate("/");
-      return;
     }
 
-    // 1. Zmeníme vizuálny stav (aby tlačidlá svietili správnou farbou)
+    // 3. SYNCHRÓNNA KOREKCIA STAVU A ROUTERU
     setActiveTab(targetId);
 
-    // 2. Fyzicky presmerujeme URL adresu v prehliadači
     if (targetId === "uplinkmodal") {
-      navigate("/uplinkmodal"); // Zachytenie starého modalu na novú URL
+      navigate("/uplinkmodal");
+    } else if (targetId === "home") {
+      navigate("/");
     } else {
-      // Všetky ostatné dimenzie (/ID01, /blog, /shop, /settings)
-      navigate(`/${targetId}`);
+      navigate(`/${targetId.toLowerCase()}`);
     }
   };
 
@@ -747,7 +740,7 @@ export default function App() {
       return getTierColor(userState.tier) || "#FF003C";
     return "#FF003C";
   };
-  const themeColor = getThemeColorDyn();
+  // const themeColor = getThemeColorDyn();
 
   useEffect(() => {
     const sequence = [
@@ -1002,42 +995,6 @@ export default function App() {
     }
   };
 
-  // 🛑 ULTIMÁTNA OCHRANA: Bot NESMIE vidieť Boot Screen, aj keby sa state náhodou prepol!
-  if (isBooting && !isBot) {
-    return (
-      <div className="min-h-screen bg-[#03080a] flex flex-col items-center justify-center font-mono p-6">
-        <div className="w-20 h-20 border-2 border-purple-500 rounded-full animate-ping opacity-20 absolute" />
-        <Cpu
-          className="text-purple-500 animate-pulse relative z-10"
-          size={32}
-        />
-        <div className="mt-8 text-center space-y-2">
-          <h2 className="text-white text-xl font-black tracking-[10px] uppercase italic">
-            Nexus <span className="text-purple-500">OS</span>
-          </h2>
-          <p className="text-[#39FF14] text-[10px] uppercase tracking-widest font-bold">
-            {systemStatus}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Pridaný obal <HelmetProvider>, aby SEO tagy vnútri modalu nespadli
-  if (showUplink) {
-    return (
-      <HelmetProvider>
-        <UplinkModal
-          onUnlock={handleUnlock}
-          onViewVop={() => {
-            setActiveTab("vop"); // Prepne Matrix na podmienky
-            setShowUplink(false); // Dočasne schová modal, aby si ich mohol čítať
-          }}
-        />
-      </HelmetProvider>
-    );
-  }
-
   const NavButton = ({ id, icon: Icon, label, onClick }) => {
     const isActive = activeTab === id;
     return (
@@ -1078,17 +1035,73 @@ export default function App() {
     );
   };
 
+  useEffect(() => {
+    const routeCheck = {
+      Sys01_VideoNodes,
+      Sys02_Mentoring,
+      Sys03_ImgGallery,
+      Sys04_VideoGallery,
+      SYS05_Directory,
+      NodeViewer,
+      NotFoundPage,
+    };
+
+    Object.entries(routeCheck).forEach(([name, comp]) => {
+      if (!comp)
+        console.error(
+          `🚨 [CRITICAL ROUTE MISSING]: Komponent '${name}' je UNDEFINED! Skontroluj jeho import v App.jsx!`,
+        );
+    });
+  }, []);
+
+  // 🛑 ULTIMÁTNA OCHRANA: Jediný zjednotený Boot Screen po vyhodnotení všetkých hookov!
+  if (isBooting && !isBot) {
+    return (
+      <div className="min-h-screen bg-[#03080a] flex flex-col items-center justify-center font-mono p-6">
+        <div className="w-20 h-20 border-2 border-purple-500 rounded-full animate-ping opacity-20 absolute" />
+        <Cpu
+          className="text-purple-500 animate-pulse relative z-10"
+          size={32}
+        />
+        <div className="mt-8 text-center space-y-2">
+          <h2 className="text-white text-xl font-black tracking-[10px] uppercase italic">
+            Nexus <span className="text-purple-500">OS</span>
+          </h2>
+          <p className="text-[#39FF14] text-[10px] uppercase tracking-widest font-bold">
+            {systemStatus}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Pridaný obal <HelmetProvider>, aby SEO tagy vnútri modalu nespadli
+  if (showUplink) {
+    return (
+      <HelmetProvider>
+        <UplinkModal
+          onUnlock={handleUnlock}
+          onViewVop={() => {
+            setActiveTab("vop"); // Prepne Matrix na podmienky
+            setShowUplink(false); // Dočasne schová modal, aby si ich mohol čítať
+          }}
+        />
+      </HelmetProvider>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#03080a] text-[#b3d4d6] font-mono overflow-x-hidden flex flex-col relative text-left">
-      <MetaTags
-        title="PROJEKT NEXUS OS | GENESIS EDITION"
-        description="Kybernetický operačný systém pre ľudské vedomie. Sémantická dekompresia, taktické kódexy a B2B digitálna architektúra."
-        image="/img-nexus/pages/ShopPage.jpg"
-        color={themeColor || "#FFD700"}
-        url={location.pathname}
-      />
-      {/* 🛑 FIX: transform-gpu odstránený kvôli obnove fixed pozícií (Hamburger Menu opäť levituje) */}
-      <style>{`
+    <HelmetProvider>
+      <div className="min-h-screen bg-[#03080a] text-[#b3d4d6] font-mono overflow-x-hidden flex flex-col relative text-left">
+        <MetaTags
+          title="PROJEKT NEXUS OS | GENESIS EDITION"
+          description="Kybernetický operačný systém pre ľudské vedomie. Sémantická dekompresia, taktické kódexy a B2B digitálna architektúra."
+          image="/img-nexus/pages/ShopPage.jpg"
+          color={themeColor || "#FFD700"}
+          url={location.pathname}
+        />
+        {/* 🛑 FIX: transform-gpu odstránený kvôli obnove fixed pozícií (Hamburger Menu opäť levituje) */}
+        <style>{`
         ::selection { background-color: ${themeColor}; color: #000; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
@@ -1096,240 +1109,281 @@ export default function App() {
         /* ⚡ GLOBÁLNY RADAR OFFSET: Zastaví scroll 150px pred nadpisom */
         [id^="nexus-"] { scroll-margin-top: 150px; }
     `}</style>
-      {/* ⚡ INJEKTÁŽ RÝCHLEHO NAVIGAČNÉHO UZLA (CHAMELEÓN) ⚡ */}
-      {/* ⚡ ABSOLÚTNA KARANTÉNA: NA LOGINE VYPÍNAME GLOBÁLNE MENU AJ BLESKY */}
-      {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
-      {location.pathname !== "/login" &&
-        !location.pathname.includes("/ID") &&
-        !location.pathname.includes("nexus_") &&
-        !location.pathname.includes("video_") && (
-          <div
-            className={`relative z-50 pointer-events-none transition-all duration-300 ${showGlobalProfile ? "opacity-0 invisible" : "opacity-100 visible"}`}
-          >
-            <div className="pointer-events-auto">
-              <GlobalHamburgerMenu
-                activeTab={activeTab}
-                themeColor={themeColor}
-              />
-              {/* 📡 DÁTOVÝ MOST: Posielame identitu priamo do motora pre overenie v Ústave */}
-              <GlobalComponents themeColor={themeColor} userState={userState} />
-            </div>
-          </div>
-        )}
-      <GlobalProfil
-        isOpen={showGlobalProfile}
-        onClose={() => {
-          setShowGlobalProfile(false);
-          setTimeout(() => setTargetDossier(null), 300); // Po zatvorení vyčistí cudzie dáta
-        }}
-        isMaximized={isProfileMaximized}
-        onToggleMaximize={() => setIsProfileMaximized(!isProfileMaximized)}
-        // Ak existuje targetDossier, ukáž cudzí. Ak nie, ukáž tvoj vlastný (userState)
-        profileData={targetDossier || userState}
-        title={
-          targetDossier
-            ? `Dossier: ${targetDossier.displayName || "Entita"}`
-            : "Profil Operátora"
-        }
-      />
-      {GlobalMessages && (
-        <GlobalMessages
-          isOpen={isGlobalMessagesOpen}
-          onClose={() => setIsGlobalMessagesOpen(false)}
-          userState={userState}
-          composeData={globalComposeData}
-          clearComposeData={() => setGlobalComposeData(null)}
-        />
-      )}
-      {/* ==================================================================== */}
-      {/* 🧭 GLOBÁLNA SYSTÉMOVÁ NAVIGÁCIA (V20 CYBER-DOCK RESPONZÍVNY ŠTANDARD) */}
-      {/* ==================================================================== */}
-      {location.pathname !== "/login" && (
-        <nav
-          style={{ zIndex: 1000 }}
-          className="fixed top-0 left-0 w-full border-b border-white/5 bg-[#03080a]/95 backdrop-blur-xl px-2 sm:px-3 py-2 flex justify-between items-center shadow-2xl font-mono"
-        >
-          {/* 🛡️ ĽAVÁ ČASŤ: LOGO + CYBER-DOCK TLAČIDLÁ */}
-          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-1 min-w-0 pr-2">
-            {/* LOGO MATERSKEJ LODE */}
+        {/* ⚡ INJEKTÁŽ RÝCHLEHO NAVIGAČNÉHO UZLA (CHAMELEÓN) ⚡ */}
+        {/* ⚡ ABSOLÚTNA KARANTÉNA: NA LOGINE VYPÍNAME GLOBÁLNE MENU AJ BLESKY */}
+        {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
+        {location.pathname !== "/login" &&
+          !location.pathname.includes("/ID") &&
+          !location.pathname.includes("nexus_") &&
+          !location.pathname.includes("video_") && (
             <div
-              className="flex items-center gap-2 shrink-0 cursor-pointer group px-1"
-              onClick={() => navigateTo("home")}
-              title="Projekt Nexus OS"
+              className={`relative z-50 pointer-events-none transition-all duration-300 ${showGlobalProfile ? "opacity-0 invisible" : "opacity-100 visible"}`}
             >
-              <div
-                className="p-1.5 rounded-lg transition-all duration-500"
-                style={{
-                  backgroundColor: themeColor,
-                  boxShadow: `0 0 15px ${themeColor}50`,
-                }}
-              >
-                <Shield size={15} className="text-black" />
+              <div className="pointer-events-auto">
+                <GlobalHamburgerMenu
+                  activeTab={activeTab}
+                  themeColor={themeColor}
+                />
+                {/* 📡 DÁTOVÝ MOST: Posielame identitu priamo do motora pre overenie v Ústave */}
+                <GlobalComponents
+                  themeColor={themeColor}
+                  userState={userState}
+                />
               </div>
-              <span className="text-white font-black tracking-tighter uppercase italic text-xs sm:text-sm hidden 2xl:block">
-                Nexus <span style={{ color: themeColor }}>OS</span>
-              </span>
+            </div>
+          )}
+        <GlobalProfil
+          isOpen={showGlobalProfile}
+          onClose={() => {
+            setShowGlobalProfile(false);
+            setTimeout(() => setTargetDossier(null), 300); // Po zatvorení vyčistí cudzie dáta
+          }}
+          isMaximized={isProfileMaximized}
+          onToggleMaximize={() => setIsProfileMaximized(!isProfileMaximized)}
+          // Ak existuje targetDossier, ukáž cudzí. Ak nie, ukáž tvoj vlastný (userState)
+          profileData={targetDossier || userState}
+          title={
+            targetDossier
+              ? `Dossier: ${targetDossier.displayName || "Entita"}`
+              : "Profil Operátora"
+          }
+        />
+        {GlobalMessages && (
+          <GlobalMessages
+            isOpen={isGlobalMessagesOpen}
+            onClose={() => setIsGlobalMessagesOpen(false)}
+            userState={userState}
+            composeData={globalComposeData}
+            clearComposeData={() => setGlobalComposeData(null)}
+          />
+        )}
+        {/* ==================================================================== */}
+        {/* 🧭 GLOBÁLNA SYSTÉMOVÁ NAVIGÁCIA (V20 CYBER-DOCK RESPONZÍVNY ŠTANDARD) */}
+        {/* ==================================================================== */}
+        {location.pathname !== "/login" && (
+          <nav
+            style={{ zIndex: 1000 }}
+            className="fixed top-0 left-0 w-full border-b border-cyan-500/30 bg-[#030609]/95 backdrop-blur-xl px-2 sm:px-4 py-2 flex justify-between items-center shadow-[0_4px_25px_rgba(0,180,216,0.15)] font-mono text-left"
+          >
+            {/* 🛡️ ĽAVÁ ČASŤ: LOGO MATERSKEJ LODE + CYBER-DOCK TLAČIDLÁ */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 pr-2">
+              {/* LOGO MATERSKEJ LODE (AGENCY CYBER-BRUTALISM BADGE) */}
+              <div
+                className="flex items-center gap-2 shrink-0 cursor-pointer group px-2 py-1 rounded-xl bg-[#080E14] border border-cyan-500/40 hover:border-cyan-300 transition-all shadow-[0_0_12px_rgba(0,180,216,0.2)]"
+                onClick={() => navigateTo("home")}
+                title="Projekt Nexus OS Genesis"
+              >
+                <div
+                  className="p-1.5 rounded-lg transition-all duration-300 group-hover:scale-105"
+                  style={{
+                    backgroundColor: themeColor,
+                    boxShadow: `0 0 15px ${themeColor}60`,
+                  }}
+                >
+                  <Shield size={14} className="text-black font-black" />
+                </div>
+                <span className="text-white font-black tracking-widest uppercase italic text-xs sm:text-sm hidden sm:inline-block">
+                  NEXUS <span style={{ color: themeColor }}>OS</span>
+                </span>
+              </div>
+
+              {/* CYBER-DOCK IKONY / TLAČIDLÁ (VRÁTANE AGENCY BRIEFCASE) */}
+              <div className="flex items-center gap-1 xl:gap-1.5 overflow-x-auto flex-1 min-w-0 hide-scroll py-0.5">
+                <NavButton id="home" icon={Grid} label="Home" />
+                <NavButton id="agency" icon={Briefcase} label="Agency" />
+                <NavButton id="blog" icon={Terminal} label="Blog" />
+                <NavButton id="operators" icon={Users} label="Operators" />
+                <NavButton id="shop" icon={ShoppingCart} label="Shop" />
+                <NavButton id="settings" icon={Settings} label="Settings" />
+
+                {userState?.tier === "ARCHITECT" && (
+                  <NavButton id="admin" icon={ShieldAlert} label="ADMIN" />
+                )}
+
+                {/* CHRONOMETER / CORE UPTIME (CYBER IKONA + HOVER TOOLTIP) */}
+                {/* Presunutý do GlobalFooter */}
+              </div>
             </div>
 
-            {/* CYBER-DOCK IKONY / TLAČIDLÁ (TEXT AŽ PRI XL, NIKDY SA NEPREKRYJÚ) */}
-            <div className="flex items-center gap-1 xl:gap-1.5 overflow-x-auto flex-1 min-w-0 hide-scroll py-0.5">
-              <NavButton id="home" icon={Grid} label="Home" />
-              <NavButton id="blog" icon={Terminal} label="Blog" />
-              <NavButton id="operators" icon={Users} label="Operators" />
-              <NavButton id="shop" icon={ShoppingCart} label="Shop" />
-              <NavButton id="settings" icon={Settings} label="Settings" />
+            {/* 🪙 PRAVÁ ČASŤ: PEŇAŽENKA + INBOX + PROFIL + LOGOUT */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pl-2">
+              {/* KONTROLA A WRAPPER PEŇAŽENKY S HOVER TOOLTIPOM */}
+              <div className="relative group flex items-center">
+                {/* HLAVNÁ PEŇAŽENKA (KONTROLOVANÁ ŠÍRKA) */}
+                <div className="transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(234,179,8,0.3)] rounded-xl">
+                  <GlobalWallet
+                    balance={userState?.credits || 0}
+                    userEmail={userState?.email || ""}
+                    userTier={userState?.tier || "FREE"}
+                    getTierColor={getTierColor}
+                  />
+                </div>
 
-              {userState?.tier === "ARCHITECT" && (
-                <NavButton id="admin" icon={ShieldAlert} label="ADMIN" />
+                {/* QUICK ACTIONS TOOLTIP PRI NÁJAZDE MYŠOU (PRE STREDNÉ MONITORY) */}
+                <div className="absolute top-full right-0 mt-2 hidden group-hover:flex flex-col gap-1.5 p-3 rounded-xl bg-[#050A0E]/95 border border-amber-500/40 shadow-[0_10px_30px_rgba(0,0,0,0.95)] backdrop-blur-md text-[11px] font-mono whitespace-nowrap z-50 pointer-events-none transition-all">
+                  <div className="flex items-center justify-between gap-3 border-b border-amber-500/20 pb-1.5">
+                    <span className="text-amber-400 font-black flex items-center gap-1">
+                      <span>🪙</span> NEXUS KREDITY
+                    </span>
+                    <span
+                      className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase"
+                      style={{
+                        backgroundColor: `${getTierColor(userState?.tier)}20`,
+                        color: getTierColor(userState?.tier),
+                        border: `1px solid ${getTierColor(userState?.tier)}50`,
+                      }}
+                    >
+                      {userState?.tier || "FREE"}
+                    </span>
+                  </div>
+                  <div className="text-gray-300 text-[10px] flex items-center justify-between gap-4">
+                    <span>Zostatok:</span>
+                    <strong className="text-white font-mono">
+                      {userState?.credits || 0} OC
+                    </strong>
+                  </div>
+                  <div className="text-gray-400 text-[9px] pt-0.5">
+                    Klikom otvoríš centrum dobíjania v Shope
+                  </div>
+                </div>
+              </div>
+
+              {/* SÚKROMNÉ SIGNÁLY (INBOX) */}
+              {userState && !userState.isGuest && (
+                <button
+                  onClick={() => {
+                    if (SoundFX?.click) SoundFX.click();
+                    setIsGlobalMessagesOpen(true);
+                  }}
+                  title="Súkromné Signály (INBOX)"
+                  className="relative p-1.5 sm:p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20 hover:bg-blue-500 hover:text-black transition-colors shrink-0 cursor-pointer"
+                >
+                  <Mail size={15} />
+                  {unreadMessagesCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-[0_0_8px_red] animate-bounce">
+                      {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+                    </span>
+                  )}
+                </button>
               )}
 
-              {/* CHRONOMETER (KOMPAKTNÝ ODSTUP) */}
-              <div className="ml-1 shrink-0">
-                <CoreChronometer themeColor={themeColor} />
+              {/* MENO A TIER (ZOBRAZENÉ AŽ OD XL ŠÍRKY - ŽIADNY PRETLAK PRI F12) */}
+              <div className="hidden xl:block text-right leading-tight max-w-[130px]">
+                <p
+                  className="text-[10px] font-black text-white uppercase tracking-wider truncate"
+                  title={`Operátor: ${userState?.displayName || "GUEST_ENTITY"}`}
+                >
+                  {userState?.displayName || "GUEST_ENTITY"}
+                </p>
+                {(() => {
+                  const isQuest =
+                    userState?.isGuest ||
+                    userState?.tier === "QUEST" ||
+                    !userState?.email;
+                  const activeTierLabel = isQuest
+                    ? "QUEST"
+                    : userState?.tier || "FREE";
+                  const activeColor = getTierColor(activeTierLabel);
+                  return (
+                    <p
+                      className="text-[7px] font-black uppercase tracking-widest"
+                      style={{ color: activeColor }}
+                    >
+                      {activeTierLabel} TIER
+                    </p>
+                  );
+                })()}
               </div>
-            </div>
-          </div>
 
-          {/* 🪙 PRAVÁ ČASŤ: PEŇAŽENKA + INBOX + PROFIL + LOGOUT */}
-          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 shrink-0">
-            {/* GLOBÁLNA PEŇAŽENKA */}
-            <GlobalWallet
-              balance={userState?.credits || 0}
-              userEmail={userState?.email || ""}
-              userTier={userState?.tier || "FREE"}
-              getTierColor={getTierColor}
-            />
+              {/* KOMPAKTNÝ AVATAR */}
+              <div
+                onClick={() => setShowGlobalProfile(true)}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 cursor-pointer overflow-hidden flex items-center justify-center transition-transform hover:scale-105 bg-black shrink-0 relative"
+                style={{
+                  borderColor: getTierColor(
+                    userState?.isGuest ||
+                      userState?.tier === "QUEST" ||
+                      !userState?.email
+                      ? "QUEST"
+                      : userState?.tier || "FREE",
+                  ),
+                }}
+                title="Profil Operátora"
+              >
+                {userState?.avatar ? (
+                  <img
+                    src={userState.avatar}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User
+                    size={14}
+                    style={{
+                      color:
+                        userState?.tier === "QUEST" || userState?.isGuest
+                          ? "#6B7280"
+                          : getTierColor(userState?.tier || "FREE"),
+                    }}
+                  />
+                )}
+              </div>
 
-            {/* SÚKROMNÉ SIGNÁLY (INBOX) */}
-            {userState && !userState.isGuest && (
+              {/* DYNAMICKÉ LOGOUT TLAČIDLO (TEXT AŽ PRI XL) */}
               <button
                 onClick={() => {
-                  if (SoundFX?.click) SoundFX.click();
-                  setIsGlobalMessagesOpen(true);
+                  if (typeof handleLogout === "function") {
+                    handleLogout();
+                  } else if (typeof navigate === "function") {
+                    navigate("/login");
+                  } else {
+                    window.location.href = "/login";
+                  }
                 }}
-                title="Súkromné Signály (INBOX)"
-                className="relative p-1.5 sm:p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20 hover:bg-blue-500 hover:text-black transition-colors shrink-0 cursor-pointer"
+                title="Odhlásiť sa zo systému"
+                className="px-2 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-black transition-all shrink-0 flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider cursor-pointer"
               >
-                <Mail size={15} />
-                {unreadMessagesCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-[0_0_8px_red] animate-bounce">
-                    {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
-                  </span>
-                )}
+                <LogOut size={13} />
+                <span className="hidden xl:inline">LOGOUT</span>
               </button>
-            )}
-
-            {/* MENO A TIER (ZOBRAZENÉ AŽ OD XL ŠÍRKY - ŽIADNY PRETLAK PRI F12) */}
-            <div className="hidden xl:block text-right leading-tight max-w-[130px]">
-              <p
-                className="text-[10px] font-black text-white uppercase tracking-wider truncate"
-                title={`Operátor: ${userState?.displayName || "GUEST_ENTITY"}`}
-              >
-                {userState?.displayName || "GUEST_ENTITY"}
-              </p>
-              {(() => {
-                const isQuest =
-                  userState?.isGuest ||
-                  userState?.tier === "QUEST" ||
-                  !userState?.email;
-                const activeTierLabel = isQuest
-                  ? "QUEST"
-                  : userState?.tier || "FREE";
-                const activeColor = getTierColor(activeTierLabel);
-                return (
-                  <p
-                    className="text-[7px] font-black uppercase tracking-widest"
-                    style={{ color: activeColor }}
-                  >
-                    {activeTierLabel} TIER
-                  </p>
-                );
-              })()}
             </div>
+          </nav>
+        )}
 
-            {/* KOMPAKTNÝ AVATAR */}
-            <div
-              onClick={() => setShowGlobalProfile(true)}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 cursor-pointer overflow-hidden flex items-center justify-center transition-transform hover:scale-105 bg-black shrink-0 relative"
-              style={{
-                borderColor: getTierColor(
-                  userState?.isGuest ||
-                    userState?.tier === "QUEST" ||
-                    !userState?.email
-                    ? "QUEST"
-                    : userState?.tier || "FREE",
-                ),
-              }}
-              title="Profil Operátora"
-            >
-              {userState?.avatar ? (
-                <img
-                  src={userState.avatar}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <User
-                  size={14}
-                  style={{
-                    color:
-                      userState?.tier === "QUEST" || userState?.isGuest
-                        ? "#6B7280"
-                        : getTierColor(userState?.tier || "FREE"),
-                  }}
-                />
-              )}
-            </div>
+        {/* 🧭 HLAVNÝ OBSAHOVÝ KONTAJNER MATRIXU */}
 
-            {/* DYNAMICKÉ LOGOUT TLAČIDLO (TEXT AŽ PRI XL) */}
-            <button
-              onClick={() => {
-                if (typeof handleLogout === "function") {
-                  handleLogout();
-                } else if (typeof navigate === "function") {
-                  navigate("/login");
-                } else {
-                  window.location.href = "/login";
-                }
-              }}
-              title="Odhlásiť sa zo systému"
-              className="px-2 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-black transition-all shrink-0 flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider cursor-pointer"
-            >
-              <LogOut size={13} />
-              <span className="hidden xl:inline">LOGOUT</span>
-            </button>
-          </div>
-        </nav>
-      )}
-
-      {/* 🧭 HLAVNÝ OBSAHOVÝ KONTAJNER MATRIXU */}
-
-      <main
-        className={
-          getIsAdminSubdomain() ||
-          getIsAgencySubdomain() ||
-          location.pathname.includes("/agency")
-            ? "pt-24 flex-1 relative z-10"
-            : "pt-24 flex-1 px-2 md:px-8 pb-20 text-left relative z-10"
-        }
-      >
-        <div
+        <main
           className={
             getIsAdminSubdomain() ||
             getIsAgencySubdomain() ||
             location.pathname.includes("/agency")
-              ? "w-full"
-              : "max-w-7xl mx-auto w-full text-left"
+              ? "pt-24 flex-1 relative z-10"
+              : "pt-24 flex-1 px-2 md:px-8 pb-20 text-left relative z-10"
           }
         >
-          <HelmetProvider>
+          <div
+            className={
+              getIsAdminSubdomain() ||
+              getIsAgencySubdomain() ||
+              location.pathname.includes("/agency")
+                ? "w-full"
+                : "max-w-7xl mx-auto w-full text-left"
+            }
+          >
+            {/* <HelmetProvider> */}
             <SystemErrorBoundary>
               {/* 🏰 0. Globálna Klávesnica (Aktívna pre celý OS Genesis) */}
               <GlobalKeyboard />
 
               {getIsAdminSubdomain() ? (
                 /* 🏰 1. ADMIN SUBDOMÉNA */
-                <AdminPage />
+                <AdminPage
+                  setActiveTab={setActiveTab}
+                  userState={userState}
+                  themeColor={themeColor}
+                  setThemeColor={setThemeColor}
+                  onThemeChange={setThemeColor}
+                />
               ) : (
                 /* 🌍 2. HLAVNÝ MATRIX (V20 BYPASS ROUTING) */
                 <Routes>
@@ -1368,7 +1422,13 @@ export default function App() {
                     path="/"
                     element={
                       <PublicRoute>
-                        <HomePage setActiveTab={setActiveTab} />
+                        <HomePage
+                          setActiveTab={setActiveTab}
+                          userState={userState}
+                          themeColor={themeColor}
+                          setThemeColor={setThemeColor}
+                          onThemeChange={setThemeColor}
+                        />
                       </PublicRoute>
                     }
                   />
@@ -1376,15 +1436,39 @@ export default function App() {
                     path="/home/*"
                     element={
                       <PublicRoute>
-                        <HomePage setActiveTab={() => {}} />
+                        <HomePage
+                          setActiveTab={setActiveTab}
+                          userState={userState}
+                          themeColor={themeColor}
+                          setThemeColor={setThemeColor}
+                          onThemeChange={setThemeColor}
+                        />
                       </PublicRoute>
                     }
                   />
+
+                  <Route
+                    path="/agency/*"
+                    element={
+                      <NexusAgencyPage
+                      userState={userState}
+                      getTierColor={getTierColor}
+                      themeColor={themeColor}
+                      onThemeChange={setThemeColor}
+                    />
+                    }
+                  />
+
                   <Route
                     path="/blog/*"
                     element={
                       <PublicRoute>
-                        <BlogPage userState={userState} />
+                        <BlogPage
+                          setActiveTab={setActiveTab}
+                          userState={userState}
+                          themeColor={themeColor}
+                          onThemeChange={setThemeColor}
+                        />
                       </PublicRoute>
                     }
                   />
@@ -1396,7 +1480,13 @@ export default function App() {
                     path="/shop/*"
                     element={
                       <GlobalQuestAuth activeUser={userState}>
-                        <ShopPage />
+                        <ShopPage
+                          setActiveTab={setActiveTab}
+                          userState={userState}
+                          themeColor={themeColor}
+                          setThemeColor={setThemeColor}
+                          onThemeChange={setThemeColor}
+                        />
                       </GlobalQuestAuth>
                     }
                   />
@@ -1449,29 +1539,53 @@ export default function App() {
                     element={
                       <AuthRoute>
                         <SettingsPage
+                          setActiveTab={setActiveTab}
                           userState={userState}
                           setUserState={setUserState}
+                          themeColor={themeColor}
+                          setThemeColor={setThemeColor}
+                          onThemeChange={setThemeColor}
                         />
                       </AuthRoute>
                     }
                   />
                   <Route
-                    path="/operators/*"
-                    element={
-                      <AuthRoute>
-                        <OperatorsPage />
-                      </AuthRoute>
-                    }
-                  />
+                  path="/operators/*"
+                  element={
+                    <AuthRoute>
+                      <OperatorsPage
+                        setActiveTab={setActiveTab}
+                        userState={userState}
+                        themeColor={themeColor}
+                        setThemeColor={setThemeColor}
+                        onThemeChange={setThemeColor}
+                      />
+                    </AuthRoute>
+                  }
+                />
                   <Route
                     path="/operator/:entityId/*"
-                    element={<OperatorPage />}
+                    element={
+                      <OperatorPage
+                        setActiveTab={setActiveTab}
+                        userState={userState}
+                        themeColor={themeColor}
+                        setThemeColor={setThemeColor}
+                        onThemeChange={setThemeColor}
+                      />
+                    }
                   />
                   <Route
                     path="/admin/*"
                     element={
                       <AuthRoute>
-                        <AdminPage />
+                        <AdminPage
+                          setActiveTab={setActiveTab}
+                          userState={userState}
+                          themeColor={themeColor}
+                          setThemeColor={setThemeColor}
+                          onThemeChange={setThemeColor}
+                        />
                       </AuthRoute>
                     }
                   />
@@ -1479,14 +1593,7 @@ export default function App() {
                   {/* ======================================================= */}
                   {/* 🚀 5. SATELITNÝ BRAND TELEPORT (Nexus Agency)           */}
                   {/* ======================================================= */}
-                  <Route
-                    path="/agency/*"
-                    element={
-                      <PublicRoute>
-                        <AgencyTeleport />
-                      </PublicRoute>
-                    }
-                  />
+                  {/* Presuntá na vrch a presmerovaný port na localhost 3000 */}
 
                   {/* ======================================================= */}
                   {/* 🌌 6. KOGNITÍVNE DIMENZIE (ID00 - ID15 PODĽA ČÍSEL)     */}
@@ -1708,16 +1815,49 @@ export default function App() {
                 </Routes>
               )}
             </SystemErrorBoundary>
-          </HelmetProvider>
-        </div>
-      </main>
-      {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
-      {!location.pathname.includes("/ID") &&
-        !location.pathname.includes("nexus_") &&
-        !location.pathname.includes("video_") &&
-        location.pathname !== "/login" && (
-          <GlobalFooter themeColor={themeColor} />
-        )}
-    </div>
+          </div>
+        </main>
+        {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
+        {!location.pathname.includes("/ID") &&
+          !location.pathname.includes("nexus_") &&
+          !location.pathname.includes("video_") &&
+          location.pathname !== "/login" && (
+            <GlobalFooter
+              userTier={
+                typeof userTier !== "undefined"
+                  ? userTier
+                  : typeof tier !== "undefined"
+                    ? tier
+                    : typeof userState !== "undefined" && userState?.tier
+                      ? userState.tier
+                      : typeof user !== "undefined" && user?.tier
+                        ? user.tier
+                        : "QUEST"
+              }
+              themeColor={
+                typeof themeColor !== "undefined" ? themeColor : "#39FF14"
+              }
+              activeTab={typeof activeTab !== "undefined" ? activeTab : "home"}
+              onNavigate={
+                typeof handleNavigate === "function"
+                  ? handleNavigate
+                  : (path) => typeof navigate === "function" && navigate(path)
+              }
+              onOpenSystemLog={() =>
+                typeof setIsSystemLogOpen === "function" &&
+                setIsSystemLogOpen(true)
+              }
+              uptime={
+                typeof coreUptimeSeconds !== "undefined" ? coreUptimeSeconds : 0
+              }
+            />
+          )}
+        <SystemLogModal
+          isOpen={isSystemLogOpen}
+          onClose={() => setIsSystemLogOpen(false)}
+          themeColor={themeColor}
+        />
+      </div>
+    </HelmetProvider>
   );
 }

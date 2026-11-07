@@ -1,121 +1,76 @@
-/* eslint-disable no-undef */
-
+import { GlobalMediaPlayer } from "@shared/components/GlobalMediaPlayer.jsx";
 // ============================================================================
-// 1. CORE REACT & ROUTER HOOKS
+// 6. SYSTÉMOVÉ & SEO KOMPONENTY
 // ============================================================================
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-
+import { MetaTags } from "@shared/components/MetaTags.jsx";
+import { getTooltip, TOOLTIP_CONFIG } from "@shared/data/TooltipsShop.js";
+// ============================================================================
+// 4. BACKEND & SERVISY (SUPABASE / DB)
+// ============================================================================
+import { supabase } from "@shared/services/NexusDB_Supabase.js";
+// ============================================================================
+// 3. UTILS & ENGINE (ZVUK / EFEKTY)
+// ============================================================================
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+// --- Modály, Peňaženka, História & Paywall ---
+import GlobalCashflow from "@shop/components/GlobalCashflow.jsx";
+import GlobalPaywallModal from "@shop/components/GlobalPaywallModal.jsx";
+// ============================================================================
+// 7. NEXUS SHOP ECOSYSTEM (src/components/shop/)
+// ============================================================================
+// --- Hlavička, Navigácia & Filtre ---
+import ModalPreFilterDrawer from "@shop/components/ModalPreFilterDrawer.jsx";
+// --- Súrodenci a Médiá Obchodu ---
+import ShopAppsMedia from "@shop/components/ShopAppsMedia.jsx";
+import ShopAudioMedia from "@shop/components/ShopAudioMedia.jsx";
+import ShopDocumentsMedia from "@shop/components/ShopDocumentsMedia.jsx";
+import ShopFilters from "@shop/components/ShopFilters.jsx";
+import ShopHeaderComponent, {
+  SHOP_NAV_TABS,
+} from "@shop/components/ShopHeaderComponent.jsx";
+import ShopImageMedia from "@shop/components/ShopImageMedia.jsx";
+import ShopVideoMedia from "@shop/components/ShopVideoMedia.jsx";
+// --- VIP Vstupenky & Členstvo ---
+import VyhodyClenstva from "@shop/components/Vyhody-Clenstva.jsx";
+import { Zmenaren } from "@shop/components/Zmenaren.jsx";
+// ============================================================================
+// 5. DÁTOVÉ REGISTRE & TOOLTIPY
+// ============================================================================
+import { getTierColor, SHOP_CAMPAIGN_DATA } from "@shop/data/ShopPage.js";
 // ============================================================================
 // 2. UI IKONY (LUCIDE-REACT)
 // ============================================================================
 import {
   Activity,
-  ArrowLeft,
-  Banknote,
-  BookOpen,
-  Briefcase,
-  Check,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
   Copy,
   Cpu,
-  Crown,
-  Database,
   ExternalLink,
   Eye,
   FileText,
+  Filter,
   Folder,
-  Grid,
-  Grid3X3,
   HelpCircle,
-  History,
-  Image,
+  Image as ImageIcon,
   Info,
-  Key,
   Layers,
-  LayoutGrid,
-  List,
-  Lock,
-  Menu,
+  Music,
   PlayCircle,
-  RefreshCw,
-  Search,
-  Server,
   Shield,
-  ShieldAlert,
-  ShoppingCart,
+  ShoppingBag,
   Sparkles,
   Terminal,
-  Unlock,
-  User,
   Video,
-  Volume2,
-  Wallet,
   X,
   Zap,
-  Brain,
-  Filter,
 } from "lucide-react";
+/* eslint-disable no-undef */
 
 // ============================================================================
-// 3. UTILS & ENGINE (ZVUK / EFEKTY)
+// 1. CORE REACT & ROUTER HOOKS
 // ============================================================================
-import { SoundFX } from "@shared/utils/SoundEngine";
-
-// ============================================================================
-// 4. BACKEND & SERVISY (SUPABASE / DB)
-// ============================================================================
-import { supabase } from "@shop/services/NexusDB_Supabase";
-
-// ============================================================================
-// 5. DÁTOVÉ REGISTRE & TOOLTIPY
-// ============================================================================
-import {
-  SHOP_CAMPAIGN_DATA,
-  getTierColor,
-  TIER_COLORS,
-  TIER_TOOLTIPS,
-} from "@shop/data/ShopPage";
-import {
-  TOOLTIP_CONFIG,
-  SHOP_TOOLTIPS,
-  getTooltip,
-} from "@shop/data/TooltipsShop";
-
-// ============================================================================
-// 6. SYSTÉMOVÉ & SEO KOMPONENTY
-// ============================================================================
-import { MetaTags } from "@shop/components/MetaTags";
-
-// ============================================================================
-// 7. NEXUS SHOP ECOSYSTEM (src/components/shop/)
-// ============================================================================
-// --- Hlavička, Navigácia & Filtre ---
-import ShopHeaderComponent from "@shop/components/shop/ShopHeaderComponent";
-import ShopFilters from "@shop/components/shop/ShopFilters";
-import ModalPreFilterDrawer from "@shop/components/shop/ModalPreFilterDrawer";
-
-// --- Súrodenci a Médiá Obchodu ---
-import ShopAudioMedia from "@shop/components/shop/ShopAudioMedia";
-import ShopDocumentsMedia from "@shop/components/shop/ShopDocumentsMedia";
-import ShopVideoMedia from "@shop/components/shop/ShopVideoMedia";
-import ShopImageMedia from "@shop/components/shop/ShopImageMedia";
-import ShopAppsMedia from "@shop/components/shop/ShopAppsMedia";
-import ShopPripravujeme from "@shop/components/shop/ShopPripravujeme";
-
-// --- Modály, Peňaženka, História & Paywall ---
-import GlobalCashflow from "@shop/components/shop/GlobalCashflow";
-import GlobalWallet from "@shop/components/shop/GlobalWallet";
-import GlobalShopHistory from "@shop/components/shop/GlobalShopHistory";
-import GlobalEventRewards from "@shop/components/shop/GlobalEventRewards";
-import GlobalPaywallModal from "@shop/components/shop/GlobalPaywallModal";
-import { Zmenaren } from "@shop/components/shop/Zmenaren";
-
-// --- VIP Vstupenky & Členstvo ---
-import ShopVIP_Ticket from "@shop/components/shop/ShopVIP_Ticket";
-import VyhodyClenstva from "@shop/components/shop/Vyhody-Clenstva";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // ============================================================================
 // 👑 NEXUS OS: SHOP PAGE MASTER COMPONENT V20.80
@@ -129,7 +84,7 @@ const VALID_SUBCATS = [
   "membership",
   "packs",
   "matrix_fx",
-  "services",
+  
   "zmenaren",
   "cashflow",
 ];
@@ -145,37 +100,43 @@ const VALID_TIERS = [
   "MASTERMIUM",
 ];
 
-export const ShopPage = () => {
+// 1. Defenzívny Normalizátor Záložiek (SSOT)
+const normalizeTab = (tab) => {
+  if (!tab || typeof tab !== "string") return "shop";
+  const t = tab.toLowerCase().trim();
+  if (t === "video" || t === "videos") return "videos";
+  if (t === "audio" || t === "audios") return "audios";
+  if (t === "image" || t === "images") return "images";
+  if (t === "document" || t === "documents") return "documents";
+  if (t === "app" || t === "apps") return "apps";
+  return "shop";
+};
+
+export const ShopPage = ({
+  onThemeChange,
+  setThemeColor,
+  userState,
+  getTierColor = (tier) => "#FFD700", // Default Kybernetická Zlatá
+  themeColor = "#FFD700",
+  setActiveTab: setGlobalActiveTab,
+}) => {
+  // 🛡️ Defenzívny garant funkčnosti pre mapovacie slučky
+  const safeGetTierColor =
+    typeof getTierColor === "function" ? getTierColor : (t) => "#FFD700";
   const navigate = useNavigate();
   const location = useLocation();
 
-  // --- TAB ROUTING ENGINE ---
-  const [activeTab, setActiveTab] = useState(() => {
-    const parts = location.pathname.toLowerCase().split("/").filter(Boolean);
-    const clean = parts.filter((p) => p !== "shop" && !p.includes(","));
-    const firstClean = String(clean || "")
-      .toLowerCase()
-      .trim();
-    if (firstClean && VALID_TABS.includes(firstClean)) return firstClean;
-    const searchParams = new URLSearchParams(location.search);
-    const tabParam = searchParams.get("tab");
-    if (tabParam && VALID_TABS.includes(tabParam)) return tabParam;
-    return sessionStorage.getItem("nexus_shop_active_tab") || "shop";
-  });
+  // 🎯 Kánonická Zlatá farba pre Shop Mainframe (#FFD700)
+  useEffect(() => {
+    const triggerTheme = onThemeChange || setThemeColor;
+    if (typeof triggerTheme === "function") {
+      triggerTheme("#FFD700");
+    }
+  }, [onThemeChange, setThemeColor]);
 
-  // --- SUBCATEGORY ROUTING MEMORY FOR MAIN SHOP TAB ---
-  const [activeSubcat, setActiveSubcat] = useState(() => {
-    const parts = location.pathname.toLowerCase().split("/").filter(Boolean);
-    const clean = parts.filter((p) => p !== "shop" && !p.includes(","));
-    const firstClean = String(clean || "")
-      .toLowerCase()
-      .trim();
-    if (firstClean && VALID_SUBCATS.includes(firstClean)) return firstClean;
-    const searchParams = new URLSearchParams(location.search);
-    const catParam = searchParams.get("cat");
-    if (catParam && VALID_SUBCATS.includes(catParam)) return catParam;
-    return sessionStorage.getItem("nexus_shop_active_subcat") || "all";
-  });
+ // --- TAB & SUBCATEGORY STATES (PURE REACT STATE) ---
+  const [activeTab, setActiveTab] = useState("shop");
+  const [activeSubcat, setActiveSubcat] = useState("all");
 
   // --- LOCAL STATES ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -223,8 +184,28 @@ export const ShopPage = () => {
     return parts[0] ? parts[0].trim() : str;
   };
 
-  // --- 3S MYSTERY RADAR SCANNER TOOLTIP HANDLERS ---
-  const handleShowTooltip = (title, text, e) => {
+  const handleShowTooltip = (titleOrKey, textOrEvent, eParam) => {
+    let actualTitle = titleOrKey;
+    let actualText = textOrEvent;
+    let e = eParam;
+
+    // 🛡️ Ak 2. argument prišiel ako SyntheticEvent (napr. z Hlavičky: showFn(key, e))
+    if (
+      textOrEvent &&
+      typeof textOrEvent === "object" &&
+      (textOrEvent._reactName || textOrEvent.nativeEvent)
+    ) {
+      e = textOrEvent;
+      const tooltipData =
+        typeof getTooltip === "function" ? getTooltip(titleOrKey) : null;
+      if (tooltipData) {
+        actualTitle = tooltipData.title || titleOrKey;
+        actualText = tooltipData.text || tooltipData.desc || "";
+      } else {
+        actualText = "";
+      }
+    }
+
     if (
       window.innerWidth < 1024 ||
       ("ontouchstart" in window && navigator.maxTouchPoints > 0) ||
@@ -233,7 +214,7 @@ export const ShopPage = () => {
       return;
     }
 
-    triggerHover();
+    if (typeof triggerHover === "function") triggerHover();
     if (window.innerWidth < 768) return; // Disable floating cursor tooltip on touch screens
 
     if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
@@ -244,18 +225,21 @@ export const ShopPage = () => {
       text: "",
       visible: true,
       isScanning: true,
-      x: e ? e.clientX + 15 : 100,
-      y: e ? e.clientY + 15 : 100,
+      x: e && typeof e.clientX === "number" ? e.clientX + 15 : 100,
+      y: e && typeof e.clientY === "number" ? e.clientY + 15 : 100,
     });
 
     scanTimerRef.current = setTimeout(() => {
       setFloatingTooltip((prev) => ({
         ...prev,
-        title: title || "[ 💡 NEXUS NÁPOVEDA ]",
-        text: text || "Dátový uzol OS Genesis.",
+        title: actualTitle || "[ 💡 NEXUS NÁPOVEDA ]",
+        text:
+          typeof actualText === "string"
+            ? actualText
+            : "Dátový uzol OS Genesis.",
         isScanning: false,
       }));
-    }, TOOLTIP_CONFIG.SCAN_DELAY_MS || 3000);
+    }, TOOLTIP_CONFIG?.SCAN_DELAY_MS || 3000);
   };
 
   const handleUpdateTooltipPos = (e) => {
@@ -277,136 +261,68 @@ export const ShopPage = () => {
     }));
   };
 
-  // Sync URL & Session Memory
-  useEffect(() => {
+  // --------------------------------------------------------------------------
+  // 🛡️ V20 CANONICAL URL & SESSION SYNC (3-ÚROVŇOVÝ RESOLVER BEZ ARRAY BUGU)
+  // --------------------------------------------------------------------------
+useEffect(() => {
     const parts = location.pathname.split("/").filter(Boolean);
-    const partsLower = parts.map((p) => p.toLowerCase());
-
+    const partsLower = parts.map((p) => String(p || "").toLowerCase().trim());
     const searchParams = new URLSearchParams(location.search);
 
-    const validTabs = [
-      "shop",
-      "videos",
-      "audios",
-      "images",
-      "documents",
-      "apps",
-    ];
-    const validSubcats = [
-      "all",
-      "membership",
-      "packs",
-      "matrix_fx",
-      "services",
-      "zmenaren",
-      "cashflow",
-    ];
-    const validTiers = [
-      "all",
-      "free",
-      "freemium",
-      "pro",
-      "promium",
-      "omega",
-      "omegamium",
-      "master",
-      "mastermium",
-    ];
+    const validTabs = ["shop", "videos", "audios", "images", "documents", "apps"];
 
-    const cleanSegments = partsLower.filter(
-      (p) => p !== "shop" && !p.includes(","),
-    );
-
-    let targetTab = "shop";
-    let targetSubcat =
-      sessionStorage.getItem("nexus_shop_active_subcat") || "all";
-    let targetTier = sessionStorage.getItem("nexus_shop_tier_filter") || "ALL";
-    let prodId =
-      searchParams.get("doc") ||
-      searchParams.get("item") ||
-      searchParams.get("id");
-
-    const segFirst = cleanSegments
-      ? String(cleanSegments).toLowerCase().trim()
-      : "";
-
-    if (
-      partsLower.length >= 2 &&
-      validTabs.includes(partsLower) &&
-      partsLower !== "shop"
-    ) {
+    // 1. URČENIE AKTÍVNEHO TABU / SÚRODENCA (napr. /shop/shop/... -> partsLower = "shop")
+    let targetTab = searchParams.get("tab") || sessionStorage.getItem("nexus_shop_active_tab") || "shop";
+    if (partsLower.length >= 2 && validTabs.includes(partsLower)) {
       targetTab = partsLower;
-    } else if (
-      cleanSegments.length > 0 &&
-      validTabs.includes(segFirst) &&
-      segFirst !== "shop"
-    ) {
-      targetTab = segFirst;
-    } else {
-      targetTab = "shop";
     }
 
-    // Resolvovanie subkategórie a TIERu bez prepísania na 'all'
-    if (targetTab === "shop") {
-      if (cleanSegments.length >= 1) {
-        const seg0 = cleanSegments
-          ? String(cleanSegments).toLowerCase().trim()
-          : "";
-        if (validSubcats.includes(seg0)) {
-          targetSubcat = seg0;
-          if (cleanSegments.length >= 2) {
-            const seg1 = cleanSegments
-              ? String(cleanSegments).toLowerCase().trim()
-              : "";
-            if (validTiers.includes(seg1)) {
-              targetTier = seg1.toUpperCase();
-            } else {
-              const idx = partsLower.indexOf(seg1);
-              if (idx !== -1) prodId = parts[idx];
-            }
-          }
-        }
+    // 2. URČENIE SUBKATEGÓRIE (napr. /shop/shop/membership -> partsLower = "membership")
+    let targetSubcat = "all";
+    if (partsLower.length >= 3 && partsLower) {
+      targetSubcat = partsLower;
+    } else {
+      const catParam = searchParams.get("cat");
+      if (catParam) {
+        targetSubcat = catParam.toLowerCase().trim();
+      } else if (sessionStorage.getItem("nexus_shop_active_subcat")) {
+        targetSubcat = sessionStorage.getItem("nexus_shop_active_subcat");
       }
     }
 
-    const catParam = searchParams.get("cat");
-    if (catParam && validSubcats.includes(catParam.toLowerCase())) {
-      targetSubcat = catParam.toLowerCase().trim();
-    }
-    const tierParam = searchParams.get("tier");
-    if (tierParam && validTiers.includes(tierParam.toLowerCase())) {
-      targetTier = tierParam.toUpperCase().trim();
+    // 3. URČENIE DETAIL PRODUKTU ID (napr. /shop/shop/membership/CAMP_14 -> parts = "CAMP_14")
+    let prodId = null;
+    if (parts.length >= 4 && parts) {
+      prodId = parts;
+    } else {
+      prodId = searchParams.get("doc") || searchParams.get("item") || searchParams.get("id");
     }
 
+    // Aplikácia stavov jednorazovo a synchrónne
     setActiveTab(targetTab);
     sessionStorage.setItem("nexus_shop_active_tab", targetTab);
 
-    if (validSubcats.includes(targetSubcat)) {
-      setActiveSubcat(targetSubcat);
-      sessionStorage.setItem("nexus_shop_active_subcat", targetSubcat);
-    }
+    setActiveSubcat(targetSubcat);
+    sessionStorage.setItem("nexus_shop_active_subcat", targetSubcat);
 
-    setTierFilter(targetTier);
-    sessionStorage.setItem("nexus_shop_tier_filter", targetTier);
-
+    // Otvorenie Campaign Detail Modalu pre Main Shop
     if (prodId && targetTab === "shop") {
-      const cleanProdId = String(prodId || "")
-        .toLowerCase()
-        .trim();
-      const found = Object.values(SHOP_CAMPAIGN_DATA).find(
+      const cleanProdId = String(prodId || "").toLowerCase().trim();
+      const found = Object.values(SHOP_CAMPAIGN_DATA || {}).find(
         (c) =>
-          String(c.id || "")
-            .toLowerCase()
-            .trim() === cleanProdId ||
-          (c.nodeKey &&
-            String(c.nodeKey || "")
-              .toLowerCase()
-              .trim() === cleanProdId),
+          String(c?.id || "").toLowerCase().trim() === cleanProdId ||
+          String(c?.nodeKey || "").toLowerCase().trim() === cleanProdId
       );
       if (found) {
         setSelectedCampaign(found);
         setIsDetailOpen(true);
+      } else {
+        setSelectedCampaign(null);
+        setIsDetailOpen(false);
       }
+    } else if (targetTab === "shop" && !prodId) {
+      setSelectedCampaign(null);
+      setIsDetailOpen(false);
     }
   }, [location.pathname, location.search]);
 
@@ -573,82 +489,53 @@ export const ShopPage = () => {
     handleHideTooltip();
   }, [location.pathname, isDetailOpen]);
 
-  const handleTabChange = (tabId) => {
-    triggerClick();
-    handleHideTooltip();
-    setActiveTab(tabId);
-    sessionStorage.setItem("nexus_shop_active_tab", tabId);
-    navigate(`/shop/${tabId}`);
+  // ⚡ HANDLER PRE PREPÍNANIE TABOV
+  const handleTabChange = (tabInput) => {
+    if (typeof triggerClick === "function") triggerClick();
+    if (typeof handleHideTooltip === "function") handleHideTooltip();
+
+    const rawId = typeof tabInput === "object" ? tabInput?.id : tabInput;
+    const cleanTab = normalizeTab(rawId);
+    setActiveTab(cleanTab);
   };
 
+  // ⚡ HANDLER PRE PREPÍNANIE SUBKATEGÓRIÍ (MEMBERSHIP, PACKS, SERVICES...)
   const handleSubcatChange = (subKey) => {
-    triggerClick();
-    handleHideTooltip();
-    const rawVal = Array.isArray(subKey) ? subKey : subKey;
-    const cleanSubcat = String(rawVal || "all")
-      .toLowerCase()
-      .replace(/,/g, "")
-      .trim();
+    if (typeof triggerClick === "function") triggerClick();
+    if (typeof handleHideTooltip === "function") handleHideTooltip();
 
+    const cleanSubcat = String(subKey || "all").toLowerCase().trim();
     setActiveSubcat(cleanSubcat);
     setServiceGroupFilter("ALL");
-    sessionStorage.setItem("nexus_shop_active_subcat", cleanSubcat);
-
-    const currentTier = String(tierFilter || "ALL")
-      .toLowerCase()
-      .trim();
-    if (currentTier !== "all") {
-      navigate(`/shop/shop/${cleanSubcat}/${currentTier}`);
-    } else {
-      navigate(`/shop/shop/${cleanSubcat}`);
-    }
-    // ⛔ Odstránený scrollIntoView! Stránka sa už nebude nasilu centrovať.
   };
 
-  // Tier Change Handler
+  // ⚡ HANDLER PRE PREPÍNANIE TIER FILTROV (ALL, FREE, PROMIUM...)
   const handleTierChange = (tierKey) => {
-    triggerClick();
-    handleHideTooltip();
-    const cleanTier = String(tierKey || "ALL")
-      .toUpperCase()
-      .trim();
-    setTierFilter(cleanTier);
-    sessionStorage.setItem("nexus_shop_tier_filter", cleanTier);
+    if (typeof triggerClick === "function") triggerClick();
+    if (typeof handleHideTooltip === "function") handleHideTooltip();
 
-    const searchParams = new URLSearchParams(location.search);
-    if (cleanTier === "ALL") {
-      searchParams.delete("tier");
-    } else {
-      searchParams.set("tier", cleanTier);
-    }
-    const queryStr = searchParams.toString()
-      ? `?${searchParams.toString()}`
-      : "";
-    navigate(`/shop/shop/${activeSubcat}${queryStr}`);
+    const cleanTier = String(tierKey || "ALL").toUpperCase().trim();
+    setTierFilter(cleanTier);
   };
 
-  // Open Campaign Detail Handler
+  // ⚡ HANDLER PRE OTVORENIE DETAILU PRODUKTU
   const handleOpenCampaignDetail = (camp) => {
-    triggerClick();
-    handleHideTooltip();
+    if (typeof triggerClick === "function") triggerClick();
+    if (typeof handleHideTooltip === "function") handleHideTooltip();
     setSelectedCampaign(camp);
     setIsDetailOpen(true);
-    // Preserves activeSubcat in the URL path so returning preserves the category!
-    navigate(`/shop/shop/${activeSubcat}/${camp.id}`);
   };
 
-  // Close Campaign Detail Handler (Preserves Category Memory)
+  // ⚡ HANDLER PRE ZATVORENIE DETAILU PRODUKTU
   function handleCloseCampaignDetail() {
-    triggerClick();
-    handleHideTooltip();
+    if (typeof triggerClick === "function") triggerClick();
+    if (typeof handleHideTooltip === "function") handleHideTooltip();
     setIsDetailOpen(false);
     setSelectedCampaign(null);
-    navigate(`/shop/shop/${activeSubcat}`);
   }
 
-  // Copy URL Link
   const handleCopyLink = (url) => {
-    triggerSuccess();
+    if (typeof triggerSuccess === "function") triggerSuccess();
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 3000);
@@ -673,7 +560,7 @@ export const ShopPage = () => {
       .trim();
 
     // 0. PACKS a SERVICES sú opakovateľné komerčné balíčky / B2B zákazky (nie trvalé uzly)
-    if (campCat === "PACKS" || campCat === "SERVICES") {
+    if (campCat === "PACKS") {
       return {
         isUnlocked: false,
         label: "OPAKOVATEĽNÝ NÁKUP",
@@ -942,7 +829,7 @@ export const ShopPage = () => {
       if (cat === "MEMBERSHIP") counts.membership++;
       else if (cat === "PACKS") counts.packs++;
       else if (cat === "MATRIX_FX") counts.matrix_fx++;
-      else if (cat === "SERVICES") counts.services++;
+      
     });
     return counts;
   }, []);
@@ -964,7 +851,7 @@ export const ShopPage = () => {
       if (activeSubcat === "membership" && cat !== "MEMBERSHIP") return;
       if (activeSubcat === "packs" && cat !== "PACKS") return;
       if (activeSubcat === "matrix_fx" && cat !== "MATRIX_FX") return;
-      if (activeSubcat === "services" && cat !== "SERVICES") return;
+      
 
       counts.ALL++;
       const t = String(c.tier || "FREE")
@@ -1006,25 +893,62 @@ export const ShopPage = () => {
         />
       )}
 
-      {/* 👑 UNIFIED NEXUS SHOP HEADER COMPONENT */}
+      {/* 👑 UNIFIED NEXUS SHOP HEADER COMPONENT (VOĽNE MIMO PODMIENOK TABOV) */}
       <ShopHeaderComponent
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        userBalance={balance}
-        userEmail={userEmail}
+        activeTab={String(activeTab || sessionStorage.getItem("nexus_shop_active_tab") || "shop")}
+        handleTabClick={(tab) => {
+          const rawId = typeof tab === "object" ? tab?.id : tab;
+          handleTabChange(rawId);
+        }}
+        tabConfig={SHOP_NAV_TABS}
         userTier={userTier}
         getTierColor={getTierColor}
-        handleShowTooltip={handleShowTooltip}
-        handleUpdateTooltipPos={handleUpdateTooltipPos}
-        handleHideTooltip={handleHideTooltip}
+        showFn={handleShowTooltip}
+        posFn={handleUpdateTooltipPos}
+        hideFn={handleHideTooltip}
       />
 
-      {/* TAB 1: MAIN SHOP TAB CONTENT */}
-      {activeTab === "shop" && (
-        <div className="space-y-8 animate-in fade-in duration-300">
-          {/* VÝHODY ČLENSTVA ACCORDION */}
-          <VyhodyClenstva />
+      <header className="max-w-[1600px] mx-auto px-4 md:px-8 my-8 space-y-6 text-center md:text-left border-b border-white/10 pb-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 max-w-3xl">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
+              style={{
+                borderColor: `${themeColor || "#FFD700"}40`,
+                backgroundColor: `${themeColor || "#FFD700"}10`,
+                color: themeColor || "#FFD700",
+              }}
+            >
+              <ShoppingBag size={14} className="animate-pulse" />
+              NEXUS SHOP // COMMERCIAL DIGITAL ASSETS & OC CENTER
+            </div>
+            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white leading-none">
+              KOMERČNÉ{" "}
+              <span
+                style={{
+                  color: themeColor || "#FFD700",
+                  filter: `drop-shadow(0 0 15px ${themeColor || "#FFD700"}60)`,
+                }}
+              >
+                CENTRUM
+              </span>{" "}
+              & MEMBERSHIP
+            </h1>
+            <p className="text-sm text-zinc-400 font-sans leading-relaxed">
+              Komerčné jadro OS Genesis. Správa členstiev (PRO, OMEGA, MASTER
+              Architekt), nakupovanie OC Kreditných balíkov, aktivácia Matrix FX
+              modifikátorov a prístup k digitálnym aktívam 6 súrodencov.
+            </p>
+          </div>
+        </div>
+      </header>
 
+      {/* 👑 TAB 1: MAIN SHOP TAB CONTENT (ISOLATED ONLY FOR "shop") */}
+      {activeTab === "shop" && (
+        <div className="space-y-6">
+          {/* Tu beží hlavný Shop: Zmenáreň, Cashflow, Grid produktov, Filtre */}
+
+          <VyhodyClenstva />
           <ShopFilters
             type="shop"
             activeSubcat={activeSubcat}
@@ -1036,7 +960,7 @@ export const ShopPage = () => {
             layoutView={layoutView}
             onLayoutChange={(l) => setLayoutView(l)}
             onResetFilters={() => {
-              triggerClick();
+              if (typeof triggerClick === "function") triggerClick();
               setSearchTerm("");
               setActiveSubcat("all");
               setTierFilter("ALL");
@@ -1430,13 +1354,6 @@ export const ShopPage = () => {
           )}
         </div>
       )}
-
-      {/* OTHER TABS */}
-      {activeTab === "videos" && <ShopVideoMedia />}
-      {activeTab === "audios" && <ShopAudioMedia />}
-      {activeTab === "images" && <ShopImageMedia />}
-      {activeTab === "documents" && <ShopDocumentsMedia />}
-      {activeTab === "apps" && <ShopAppsMedia />}
 
       {/* 🔮 CAMPAIGN DETAIL MODAL WITH FULL 6-PART PROTOCOL & 20-STEP PROOF OF PROCESS */}
       {selectedCampaign && isDetailOpen && (
@@ -1987,16 +1904,19 @@ export const ShopPage = () => {
         </div>
       )}
 
-      {/* GLOBAL PAYWALL MODAL */}
-      <GlobalPaywallModal
-        isOpen={paywallOpen}
-        onClose={() => setPaywallOpen(false)}
-        campaign={paywallCampaign}
-        userBalance={balance}
-        userTier={userTier}
-        requiredTier={paywallCampaign?.tier || "FREE"}
-      />
+      {/* 👑 GLOBAL PAYWALL MODAL */}
+      {paywallOpen && (
+        <GlobalPaywallModal
+          isOpen={paywallOpen}
+          onClose={() => setPaywallOpen(false)}
+          campaign={paywallCampaign}
+          userBalance={balance}
+          userTier={userTier}
+          requiredTier={paywallCampaign?.tier || "FREE"}
+        />
+      )}
 
+      {/* 👑 MODAL PRE-FILTER DRAWER */}
       <ModalPreFilterDrawer
         isOpen={isPreFilterOpen}
         onClose={() => setIsPreFilterOpen(false)}
@@ -2015,15 +1935,53 @@ export const ShopPage = () => {
         onResetFilters={() => setPreFilterTag("")}
       />
 
-      {/* 🔮 VIEWPORT FLOATING TOOLTIP CONTAINER WITH 3S MYSTERY SCANNER EFFECT */}
-      {floatingTooltip.visible && (
+      {/* 👑 TAB 2-6: SÚRODENCI S INJEKTOVANÝMI PROPS PRE BEZCHYBNÝ RE-ROUTING A NÁVRAT */}
+      {(activeTab === "videos" || activeTab === "video") && (
+        <ShopVideoMedia
+          setActiveTab={handleTabChange}
+          activeTab={activeTab}
+          userState={userState}
+        />
+      )}
+      {(activeTab === "audios" || activeTab === "audio") && (
+        <ShopAudioMedia
+          setActiveTab={handleTabChange}
+          activeTab={activeTab}
+          userState={userState}
+        />
+      )}
+      {(activeTab === "images" || activeTab === "image") && (
+        <ShopImageMedia
+          setActiveTab={handleTabChange}
+          activeTab={activeTab}
+          userState={userState}
+        />
+      )}
+      {(activeTab === "documents" || activeTab === "document") && (
+        <ShopDocumentsMedia
+          setActiveTab={handleTabChange}
+          activeTab={activeTab}
+          userState={userState}
+        />
+      )}
+      {(activeTab === "apps" || activeTab === "app") && (
+        <ShopAppsMedia
+          setActiveTab={handleTabChange}
+          activeTab={activeTab}
+          userState={userState}
+        />
+      )}
+
+      {/* 🔮 VIEWPORT FLOATING TOOLTIP CONTAINER WITH INLINE Z-INDEX */}
+      {floatingTooltip && floatingTooltip.visible && (
         <div
-          className={`fixed z-[99999] pointer-events-none rounded-xl border font-mono text-xs shadow-2xl backdrop-blur-xl transition-all duration-75 ${
+          className={`fixed pointer-events-none rounded-xl border font-mono text-xs shadow-2xl backdrop-blur-xl transition-all duration-75 ${
             floatingTooltip.isScanning
               ? "bg-[#080d12] border-[#00f3ff] text-[#00f3ff] shadow-[0_0_25px_rgba(0,243,255,0.6)] animate-pulse p-2.5 opacity-100"
               : "bg-[#080d12] border-[#FFD700] text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.95)] max-w-xs p-3.5 opacity-100"
           }`}
           style={{
+            zIndex: 99999,
             left: `${Math.min(Math.max(floatingTooltip.x + 15, 10), window.innerWidth - 320)}px`,
             top: `${
               floatingTooltip.y < 220
@@ -2043,7 +2001,7 @@ export const ShopPage = () => {
                 <HelpCircle size={12} /> {floatingTooltip.title}
               </div>
               <div className="text-[10px] text-zinc-300 leading-snug font-mono">
-                {floatingTooltip.text}
+                {floatingTooltip.text || floatingTooltip.desc}
               </div>
             </>
           )}

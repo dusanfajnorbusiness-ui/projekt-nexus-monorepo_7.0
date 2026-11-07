@@ -1,6 +1,3 @@
-import React from "react";
-import { Scale, Lock, Database } from "lucide-react";
-import { id12OmegaMap as ID12_Map } from "@main-web/data/ID12_OmegaMap";
 // import MetaTags from "@main-web/components/MetaTags";
 // ============================================================================
 // 🟢 PRODUKČNÝ KÓD (PRE LOKÁLNE POUŽITIE VO VS CODE A DEPLOYMENT)
@@ -8,10 +5,10 @@ import { id12OmegaMap as ID12_Map } from "@main-web/data/ID12_OmegaMap";
 // LOKÁLNE POUŽITIE: Keď budeš chcieť dimenziu spustiť ostro do produkcie,
 // odstráň blokové komentáre (/* a */) v tejto sekcii a zmaž úplne celý
 // komponent "OfflineDimensionPreview" umiestnený pod tým.
+import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
+import { id12OmegaMap as ID12_Map } from "@main-web/data/ID12_OmegaMap.js";
+import { Database, Lock, Scale } from "lucide-react";
 
-// import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub";
-import { GlobalComponents } from "@main-web/components/GlobalComponents";
-import { GlobalHamburgerMenu } from "@main-web/components/GlobalHamburgerMenu";
 // ============================================================================
 // --- ONLINE UZLY (ID12) - NEXUS-CODEX [100 NODES READY / PENDING] ---
 // ============================================================================

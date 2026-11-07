@@ -1,9 +1,9 @@
-/* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { HAMBURGER_MENU_DATA } from "@shared/data/MenuHamburgerData.js";
 import { Menu, X } from "lucide-react";
 import * as LucideIcons from "lucide-react";
-import { HAMBURGER_MENU_DATA } from "../data/MenuHamburgerData";
+/* eslint-disable no-undef */
+import React, { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // ============================================================================
 // 👑 NEXUS OS: GLOBÁLNE HAMBURGER MENU (CHAMELEÓN PROTOKOL & HYBRID ROUTING V20)
