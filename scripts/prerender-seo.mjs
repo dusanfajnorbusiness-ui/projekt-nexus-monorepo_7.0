@@ -187,6 +187,20 @@ async function executeGlobalPrerender() {
     fs.writeFileSync(mainWebDistSitemapPath, sitemapXml, "utf8");
   }
 
+const mainDist = path.join(ROOT_DIR, "apps/main-web/dist");
+  const subApps = ["agency", "shop", "blog", "operators", "settings", "admin", "uplink"];
+
+  if (fs.existsSync(mainDist)) {
+    subApps.forEach((subApp) => {
+      const srcDist = path.join(ROOT_DIR, `apps/${subApp}/dist`);
+      const targetDist = path.join(mainDist, subApp);
+      if (fs.existsSync(srcDist)) {
+        fs.cpSync(srcDist, targetDist, { recursive: true });
+        console.log(`📦 [V20 DIST SYNC]: apps/${subApp}/dist ➔ main-web/dist/${subApp}`);
+      }
+    });
+  }
+
   console.log(
     `✅ [NEXUS MASTER SEO V20]: Úspešne vygenerovaných ${totalProcessed} statických uzlov a sitemap.xml!`,
   );
