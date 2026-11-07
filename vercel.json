@@ -1,57 +1,51 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "main-web": { "root": "apps/main-web", "framework": "vite" },
-    "agency": { "root": "apps/agency", "framework": "vite" },
-    "uplink": { "root": "apps/uplink", "framework": "vite" },
-    "admin": { "root": "apps/admin", "framework": "vite" },
-    "blog": { "root": "apps/blog", "framework": "vite" },
-    "operators": { "root": "apps/operators", "framework": "vite" },
-    "shop": { "root": "apps/shop", "framework": "vite" },
-    "settings": { "root": "apps/settings", "framework": "vite" }
-  },
+  "buildCommand": "npm run build",
+  "outputDirectory": "apps/main-web/dist",
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "uplink.projekt-nexus.sk" }],
-      "destination": "uplink"
+      "destination": "/uplink/:path*"
     },
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "agency.projekt-nexus.sk" }],
-      "destination": "agency"
+      "destination": "/agency/:path*"
     },
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "shop.projekt-nexus.sk" }],
-      "destination": "shop"
+      "destination": "/shop/:path*"
     },
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "admin.projekt-nexus.sk" }],
-      "destination": "admin"
+      "destination": "/admin/:path*"
     },
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "blog.projekt-nexus.sk" }],
-      "destination": "blog"
+      "destination": "/blog/:path*"
     },
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "operators.projekt-nexus.sk" }],
-      "destination": "operators"
+      "destination": "/operators/:path*"
     },
     {
-      "source": "/:(path*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "settings.projekt-nexus.sk" }],
-      "destination": "settings"
+      "destination": "/settings/:path*"
     },
-    { "source": "/agency/(.*)", "destination": "agency" },
-    { "source": "/shop/(.*)", "destination": "shop" },
-    { "source": "/admin/(.*)", "destination": "admin" },
-    { "source": "/blog/(.*)", "destination": "blog" },
-    { "source": "/operators/(.*)", "destination": "operators" },
-    { "source": "/settings/(.*)", "destination": "settings" },
-    { "source": "/(.*)", "destination": "main-web" }
+    { "source": "/agency/(.*)", "destination": "/agency/index.html" },
+    { "source": "/shop/(.*)", "destination": "/shop/index.html" },
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
+    { "source": "/blog/(.*)", "destination": "/blog/index.html" },
+    { "source": "/operators/(.*)", "destination": "/operators/index.html" },
+    { "source": "/settings/(.*)", "destination": "/settings/index.html" },
+    { "source": "/uplink/(.*)", "destination": "/uplink/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
