@@ -23,6 +23,7 @@ export const createViteConfig = (appDir, port = 5173) => {
   const currentGitHash = getGitCommitHash();
 
   return defineConfig({
+    base: "./",
     root: appDir,
     define: {
       "import.meta.env.VITE_GIT_COMMIT_HASH": JSON.stringify(currentGitHash),
@@ -76,7 +77,8 @@ export const createViteConfig = (appDir, port = 5173) => {
               if (
                 id.includes("react") ||
                 id.includes("react-dom") ||
-                id.includes("react-router")
+                id.includes("react-router") ||
+                id.includes("scheduler")
               ) {
                 return "vendor-react";
               }
