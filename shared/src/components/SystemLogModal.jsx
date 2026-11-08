@@ -11,6 +11,56 @@ import { CheckCircle2, ChevronDown, ChevronUp, GitCommit, History, Shield, Termi
 
 import React, { useEffect, useState } from "react";
 
+// 🗄️ VÝCHODISKOVÝ CHANGELOG DÁTOVÝ SÚBOR (PRIPRAVENÝ AŽ NA 30 ZÁZNAMOV)
+  const defaultChangelog = [
+    {
+      id: "LOG-2095-01",
+      tag: "AGENCY_SYNC",
+      title: "1:1 Synchronizácia Headerov a Typografie",
+      summary: "Zosynchronizovaný vizuálny kánon pre Agency, HomePage a Blog.",
+      desc: "Implementovaný unifikovaný Header komponent s podporou dynamických farieb (Neónová Zelená #39FF14, Kybernetický Cyan #00f3ff, Magenta #E91E63 a Oranžová #FFAA00). Dekonštruovaný CSS Stacking Context.",
+      date: "06.11.2026",
+      color: "#00f3ff",
+    },
+    {
+      id: "LOG-2095-02",
+      tag: "UI_V20_NAV",
+      title: "Responsive Collision Shield pre Peňaženku a Chronometer",
+      summary: "Kompaktný ikonový režim pre stredné monitory s instantnými hover tooltipmi.",
+      desc: "Upravené z-index hranice pre mobilné viewporty. Pridané defenzívne ošetrenie String(val || '') na zabránenie TypeError pri rýchlom prepínaní dimenzií.",
+      date: "05.11.2026",
+      color: "#10B981",
+    },
+    {
+      id: "LOG-2095-03",
+      tag: "VITE_CONFIG",
+      title: "Build-Time Git Hash Injekcia",
+      summary: "Automatický detektor nových deployov a zmenových logov z repozitára.",
+      desc: "Prepojenie VITE_GIT_COMMIT_HASH prostredníctvom Vite bundlera s automatickým trigerom SystemLogModal pri detekcii novej verzionalizácie.",
+      date: "04.11.2026",
+      color: "#F59E0B",
+    },
+    {
+      id: "LOG-2095-04",
+      tag: "OPERATORS_CORE",
+      title: "Level 48 Operators Control Panel & HUD Tachometre",
+      summary: "Nasadenie Neónovo Oranžového (#FFAA00) kánonu pre Operators rozhranie.",
+      desc: "Prepojené stavové tachometre Online/Sleep/Offline entít s reálnou kapacitou siete. Registrácia routy vo Vite zbernici pod aliasom @operators.",
+      date: "03.11.2026",
+      color: "#FFAA00",
+    },
+    {
+      id: "LOG-2095-05",
+      tag: "ROUTING_HOTFIX",
+      title: "Route Theme Reset Eliminácia Memory Leakom",
+      summary: "Automatické prepínanie sémantických farieb pri zmene URL location.pathname.",
+      desc: "Pridaný odpočúvač useEffect vo webovej zbernici App.jsx, ktorý zabraňuje pretekaniu farieb medzi Homepage, Agency, Blogom a Shopom.",
+      date: "02.11.2026",
+      color: "#3B82F6",
+    },
+  ];
+
+
 export const SystemLogModal = ({
   isOpen = false,
   onClose = () => {},
@@ -103,55 +153,7 @@ const [gitLogs, setGitLogs] = useState([]);
     setExpandedLogId((prev) => (prev === id ? null : id));
   };
 
-  // 🗄️ VÝCHODISKOVÝ CHANGELOG DÁTOVÝ SÚBOR (PRIPRAVENÝ AŽ NA 30 ZÁZNAMOV)
-  const defaultChangelog = [
-    {
-      id: "LOG-2095-01",
-      tag: "AGENCY_SYNC",
-      title: "1:1 Synchronizácia Headerov a Typografie",
-      summary: "Zosynchronizovaný vizuálny kánon pre Agency, HomePage a Blog.",
-      desc: "Implementovaný unifikovaný Header komponent s podporou dynamických farieb (Neónová Zelená #39FF14, Kybernetický Cyan #00f3ff, Magenta #E91E63 a Oranžová #FFAA00). Dekonštruovaný CSS Stacking Context.",
-      date: "06.11.2026",
-      color: "#00f3ff",
-    },
-    {
-      id: "LOG-2095-02",
-      tag: "UI_V20_NAV",
-      title: "Responsive Collision Shield pre Peňaženku a Chronometer",
-      summary: "Kompaktný ikonový režim pre stredné monitory s instantnými hover tooltipmi.",
-      desc: "Upravené z-index hranice pre mobilné viewporty. Pridané defenzívne ošetrenie String(val || '') na zabránenie TypeError pri rýchlom prepínaní dimenzií.",
-      date: "05.11.2026",
-      color: "#10B981",
-    },
-    {
-      id: "LOG-2095-03",
-      tag: "VITE_CONFIG",
-      title: "Build-Time Git Hash Injekcia",
-      summary: "Automatický detektor nových deployov a zmenových logov z repozitára.",
-      desc: "Prepojenie VITE_GIT_COMMIT_HASH prostredníctvom Vite bundlera s automatickým trigerom SystemLogModal pri detekcii novej verzionalizácie.",
-      date: "04.11.2026",
-      color: "#F59E0B",
-    },
-    {
-      id: "LOG-2095-04",
-      tag: "OPERATORS_CORE",
-      title: "Level 48 Operators Control Panel & HUD Tachometre",
-      summary: "Nasadenie Neónovo Oranžového (#FFAA00) kánonu pre Operators rozhranie.",
-      desc: "Prepojené stavové tachometre Online/Sleep/Offline entít s reálnou kapacitou siete. Registrácia routy vo Vite zbernici pod aliasom @operators.",
-      date: "03.11.2026",
-      color: "#FFAA00",
-    },
-    {
-      id: "LOG-2095-05",
-      tag: "ROUTING_HOTFIX",
-      title: "Route Theme Reset Eliminácia Memory Leakom",
-      summary: "Automatické prepínanie sémantických farieb pri zmene URL location.pathname.",
-      desc: "Pridaný odpočúvač useEffect vo webovej zbernici App.jsx, ktorý zabraňuje pretekaniu farieb medzi Homepage, Agency, Blogom a Shopom.",
-      date: "02.11.2026",
-      color: "#3B82F6",
-    },
-  ];
-
+  
   
 
   return (

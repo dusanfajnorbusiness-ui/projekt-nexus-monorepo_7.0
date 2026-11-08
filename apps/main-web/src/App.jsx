@@ -45,7 +45,11 @@ import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx"
 import { GlobalMessages } from "@shared/components/GlobalMessages.jsx";
 import { GlobalProfil } from "@shared/components/GlobalProfil.jsx";
 import MetaTags from "@shared/components/MetaTags.jsx";
-import { AuthRoute, PublicRoute, StrictRoute } from "@shared/components/NexusRouting.jsx";
+import {
+  AuthRoute,
+  PublicRoute,
+  StrictRoute,
+} from "@shared/components/NexusRouting.jsx";
 import { SystemLogModal } from "@shared/components/SystemLogModal.jsx";
 // 🗄️ 2. DÁTA A REGISTRE (@shared/data/)
 import { DIMENSIONS, getTierColor } from "@shared/data/nexusConfig.js";
@@ -67,13 +71,108 @@ import ShopDocumentsMedia from "@shop/components/ShopDocumentsMedia.jsx";
 import ShopImageMedia from "@shop/components/ShopImageMedia.jsx";
 import ShopVideoMedia from "@shop/components/ShopVideoMedia.jsx";
 import ShopPage from "@shop/pages/ShopPage.jsx";
+import { SubdomainDropdown } from "@subdomeny/components/SubdomainDropdown.jsx";
+import { SubdomainStandbyPage } from "@subdomeny/components/SubdomainStandbyPage.jsx";
+import { SUBDOMAINS_ARRAY } from "@subdomeny/data/SubdomainsMasterData.js";
 import UplinkModal from "@uplink/pages/UplinkModal.jsx";
-import { Activity, AlertTriangle, Briefcase, Cpu, Database, Grid, LogOut, Mail, Settings, Shield, ShieldAlert, ShoppingCart, Terminal, User, Users, Wallet, Wand2 } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Briefcase,
+  Cpu,
+  Database,
+  Grid,
+  LogOut,
+  Mail,
+  Settings,
+  Shield,
+  ShieldAlert,
+  ShoppingCart,
+  Terminal,
+  User,
+  Users,
+  Wallet,
+  Wand2,
+} from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 export const CORE_VERSION = "SK-App V20.95_STABLE";
+
+// Použitie 'function' zaručuje 100% JS Hoisting v celom súbore pred prvým spustením useState
+export function getSubIdFromHostname() {
+  if (typeof window === "undefined") return null;
+  const hostname = String(window.location.hostname || "").toLowerCase();
+  const port = String(window.location.port || ""); // 👈 FIX: Pridaná chýbajúca deklarácia
+  const searchParams = new URLSearchParams(window.location.search);
+  const subParam = searchParams.get("sub");
+
+  // 1. URL OVERRIDE
+  if (subParam) {
+    const found = SUBDOMAINS_ARRAY?.find(
+      (s) =>
+        String(s.id || "").toLowerCase() ===
+          String(subParam || "").toLowerCase() ||
+        String(s.slug || "").toLowerCase() ===
+          String(subParam || "").toLowerCase(),
+    );
+    if (found) return found.id;
+  }
+
+  // 2. MONOREPO VITE DEV SERVERY (LOCALHOST RADAR)
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    // Port 5171 (main-web) a hlavné portály -> MUST RETURN null FOR HOMEPAGE
+    if (
+      ["5171", "5172", "5173", "5174", "5175", "5176", "5177"].includes(port)
+    ) {
+      return null;
+    }
+    // Porty 51800 - 51815 pre Subdomény
+    if (port === "51800") return "SUB 00";
+    if (port === "51801") return "SUB 01";
+    if (port === "51802") return "SUB 02";
+    if (port === "51803") return "SUB 03";
+    if (port === "51804") return "SUB 04";
+    if (port === "51805") return "SUB 05";
+    if (port === "51806") return "SUB 06";
+    if (port === "51807") return "SUB 07";
+    if (port === "51808") return "SUB 08";
+    if (port === "51809") return "SUB 09";
+    if (port === "51810") return "SUB 10";
+    if (port === "51811") return "SUB 11";
+    if (port === "51812") return "SUB 12";
+    if (port === "51813") return "SUB 13";
+    if (port === "51814") return "SUB 14";
+    if (port === "51815") return "SUB 15";
+    return null;
+  }
+
+  // 3. PRODUKČNÝ MAIN WEB (PROJEKT-NEXUS.SK)
+  if (hostname === "projekt-nexus.sk" || hostname === "www.projekt-nexus.sk") {
+    return null;
+  }
+
+  // 4. PRODUKČNÉ SUBDOMÉNY
+  if (hostname.includes("personal.")) return "SUB 01";
+  if (hostname.includes("work.")) return "SUB 02";
+  if (hostname.includes("finance.")) return "SUB 03";
+  if (hostname.includes("business.")) return "SUB 04";
+  if (hostname.includes("investments.")) return "SUB 05";
+  if (hostname.includes("study.")) return "SUB 06";
+  if (hostname.includes("professional.")) return "SUB 07";
+  if (hostname.includes("reader.")) return "SUB 08";
+  if (hostname.includes("player.")) return "SUB 09";
+  if (hostname.includes("home.")) return "SUB 10";
+  if (hostname.includes("recovery.")) return "SUB 11";
+  if (hostname.includes("codex.")) return "SUB 12";
+  if (hostname.includes("habits.")) return "SUB 13";
+  if (hostname.includes("blog.")) return "SUB 14";
+  if (hostname.includes("death.")) return "SUB 15";
+  if (hostname.includes("mentor.")) return "SUB 00";
+
+  return null;
+}
 
 class SystemErrorBoundary extends React.Component {
   constructor(props) {
@@ -327,12 +426,7 @@ const AgencyTeleport = ({ themeColor, userState }) => {
 
   // 🎯 Na Localhoste zobrazíme priamo stránku Agency bez prerušenia na port 3001
   if (isLocalhost) {
-    return (
-      <NexusAgencyPage
-        themeColor={themeColor}
-        userState={userState}
-      />
-    );
+    return <NexusAgencyPage themeColor={themeColor} userState={userState} />;
   }
 
   return null;
@@ -342,12 +436,14 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   // 1. Kánonická lazy inicializácia activeTab pre F5 refresh
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
-      const isAdminSub = typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
+      const isAdminSub =
+        typeof getIsAdminSubdomain === "function"
+          ? getIsAdminSubdomain()
+          : false;
       if (isAdminSub || path.startsWith("/admin")) {
         return "admin";
       }
@@ -357,8 +453,38 @@ export default function App() {
 
   // 2. Kánonické stavy aplikácie (Vytvorené výhradne 1x)
   const [isSystemLogOpen, setIsSystemLogOpen] = useState(false);
+
+  // DEFINÍCIA SAFE_SUB_ID A ACTIVE_COLOR (FIX REFERENCE_ERROR)
+  // 1. React stavy musia byť nadefinované AKO PRVÉ na začiatku komponentu App
   const [userState, setUserState] = useState(DEFAULT_USER_STATE);
   const [themeColor, setThemeColor] = useState("#39FF14");
+
+  // 1. Ručne vybraná subdoména tlačidlom (predvolene null)
+  const [selectedSubId, setSelectedSubId] = useState(null);
+
+  const handleSubdomainChange = (subId) => {
+    navigate(`/subdomeny?id=${encodeURIComponent(subId)}`);
+    
+    // Ak používaš navigateTo alebo setCurrentTab:
+    if (typeof navigateTo === "function") {
+      navigateTo("subdomains");
+    } else if (typeof setCurrentPage === "function") {
+      setCurrentPage("subdomains");
+    }
+  };
+
+  // 2. Detekcia subdomény z URL domény (na projekt-nexus.sk vracia null)
+  const detectedSubId =
+    typeof getSubIdFromHostname === "function" ? getSubIdFromHostname() : null;
+
+  // 3. Aktívna subdoména (null = Hlavný Web)
+  // Na domovskej stránke MUSÍ byť hodnota null! Žiadne || "SUB 00"!
+  const activeSubId = selectedSubId || detectedSubId || null;
+
+  // 4. Na Hlavnom Webe MUSÍ byť currentSubId null, aby SubdomainDropdown nesvietil ako SUB 00!
+  const currentSubId = activeSubId;
+  const safeSubId = currentSubId;
+  const activeColor = themeColor || "#00f3ff";
 
   const isBot =
     typeof navigator !== "undefined" &&
@@ -394,7 +520,8 @@ export default function App() {
     const urlParams = new URLSearchParams(
       typeof window !== "undefined" ? window.location.search : "",
     );
-    const isAdminSub = typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
+    const isAdminSub =
+      typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
 
     if (isAdminSub || path.includes("/admin")) {
       setActiveTab("admin");
@@ -472,6 +599,11 @@ export default function App() {
 
   // 🛑 FIX: Stav pre uloženie dát entity, na ktorú sme klikli z Blogu/Operátorov
   const [targetDossier, setTargetDossier] = useState(null);
+
+  const handleThemeChange = (newColor) => {
+    const safeColor = String(newColor || "#00f3ff");
+    setThemeColor(safeColor);
+  };
 
   // 📡 LAPAČ SIGNÁLOV: Čaká na povel na otvorenie cudzieho Dossieru
   useEffect(() => {
@@ -594,6 +726,7 @@ export default function App() {
 
     // 2. TLAČIDLO HOME (ÚNIK ZO SUBDOMÉN NA HLAVNÝ PORTÁL)
     if (targetId === "home") {
+      setSelectedSubId(null);
       const isAgency =
         typeof getIsAgencySubdomain === "function" && getIsAgencySubdomain();
       const isAdmin =
@@ -1165,9 +1298,9 @@ export default function App() {
             style={{ zIndex: 1000 }}
             className="fixed top-0 left-0 w-full border-b border-cyan-500/30 bg-[#030609]/95 backdrop-blur-xl px-2 sm:px-4 py-2 flex justify-between items-center shadow-[0_4px_25px_rgba(0,180,216,0.15)] font-mono text-left"
           >
-            {/* 🛡️ ĽAVÁ ČASŤ: LOGO MATERSKEJ LODE + CYBER-DOCK TLAČIDLÁ */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 pr-2">
-              {/* LOGO MATERSKEJ LODE (AGENCY CYBER-BRUTALISM BADGE) */}
+            {/* 🛡️ ĽAVÁ ČASŤ: LOGO MATERSKEJ LODE + CYBER-DOCK DOCK TLAČIDLÁ */}
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 overflow-hidden">
+              {/* LOGO MATERSKEJ LODE */}
               <div
                 className="flex items-center gap-2 shrink-0 cursor-pointer group px-2 py-1 rounded-xl bg-[#080E14] border border-cyan-500/40 hover:border-cyan-300 transition-all shadow-[0_0_12px_rgba(0,180,216,0.2)]"
                 onClick={() => navigateTo("home")}
@@ -1182,13 +1315,13 @@ export default function App() {
                 >
                   <Shield size={14} className="text-black font-black" />
                 </div>
-                <span className="text-white font-black tracking-widest uppercase italic text-xs sm:text-sm hidden sm:inline-block">
+                <span className="text-white font-black tracking-widest uppercase italic text-xs sm:text-sm hidden md:inline-block">
                   NEXUS <span style={{ color: themeColor }}>OS</span>
                 </span>
               </div>
 
-              {/* CYBER-DOCK IKONY / TLAČIDLÁ (VRÁTANE AGENCY BRIEFCASE) */}
-              <div className="flex items-center gap-1 xl:gap-1.5 overflow-x-auto flex-1 min-w-0 hide-scroll py-0.5">
+              {/* CYBER-DOCK IKONY / TLAČIDLÁ (PRESVETLENÉ PRE MOBIL) */}
+              <div className="flex items-center gap-1 overflow-x-auto hide-scroll py-0.5 max-w-full">
                 <NavButton id="home" icon={Grid} label="Home" />
                 <NavButton id="agency" icon={Briefcase} label="Agency" />
                 <NavButton id="blog" icon={Terminal} label="Blog" />
@@ -1199,17 +1332,30 @@ export default function App() {
                 {userState?.tier === "ARCHITECT" && (
                   <NavButton id="admin" icon={ShieldAlert} label="ADMIN" />
                 )}
-
-                {/* CHRONOMETER / CORE UPTIME (CYBER IKONA + HOVER TOOLTIP) */}
-                {/* Presunutý do GlobalFooter */}
               </div>
             </div>
 
-            {/* 🪙 PRAVÁ ČASŤ: PEŇAŽENKA + INBOX + PROFIL + LOGOUT */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pl-2">
-              {/* KONTROLA A WRAPPER PEŇAŽENKY S HOVER TOOLTIPOM */}
-              <div className="relative group flex items-center">
-                {/* HLAVNÁ PEŇAŽENKA (KONTROLOVANÁ ŠÍRKA) */}
+            {/* 🪙 PRAVÁ ČASŤ: SUBDOMÉNY + PEŇAŽENKA + INBOX + PROFIL + LOGOUT */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              {/* INTEGRÁCIA SUBDOMÉNOVÉHO DROPDOWNU (BEZPEČNE UMIESTNENÝ V PRAVEJ ZBERNICI) */}
+              <div className="shrink-0">
+                <SubdomainDropdown
+                  currentSubId={selectedSubId}
+                  activeColor={themeColor}
+                  onSelectSub={(subId) => {
+                    setSelectedSubId(subId);
+                    // Ak používate stavové prepínanie modulov v App.jsx:
+                    if (typeof setCurrentModule === "function") {
+                      setCurrentModule("subdomains");
+                    } else if (typeof navigateTo === "function") {
+                      navigateTo("subdomains");
+                    }
+                  }}
+                />
+              </div>
+
+              {/* KONTROLA PEŇAŽENKY S TOOLTIPOM */}
+              <div className="relative group flex items-center shrink-0">
                 <div className="transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(234,179,8,0.3)] rounded-xl">
                   <GlobalWallet
                     balance={userState?.credits || 0}
@@ -1219,7 +1365,7 @@ export default function App() {
                   />
                 </div>
 
-                {/* QUICK ACTIONS TOOLTIP PRI NÁJAZDE MYŠOU (PRE STREDNÉ MONITORY) */}
+                {/* QUICK ACTIONS TOOLTIP */}
                 <div className="absolute top-full right-0 mt-2 hidden group-hover:flex flex-col gap-1.5 p-3 rounded-xl bg-[#050A0E]/95 border border-amber-500/40 shadow-[0_10px_30px_rgba(0,0,0,0.95)] backdrop-blur-md text-[11px] font-mono whitespace-nowrap z-50 pointer-events-none transition-all">
                   <div className="flex items-center justify-between gap-3 border-b border-amber-500/20 pb-1.5">
                     <span className="text-amber-400 font-black flex items-center gap-1">
@@ -1242,13 +1388,10 @@ export default function App() {
                       {userState?.credits || 0} OC
                     </strong>
                   </div>
-                  <div className="text-gray-400 text-[9px] pt-0.5">
-                    Klikom otvoríš centrum dobíjania v Shope
-                  </div>
                 </div>
               </div>
 
-              {/* SÚKROMNÉ SIGNÁLY (INBOX) */}
+              {/* INBOX BUTTON */}
               {userState && !userState.isGuest && (
                 <button
                   onClick={() => {
@@ -1267,7 +1410,7 @@ export default function App() {
                 </button>
               )}
 
-              {/* MENO A TIER (ZOBRAZENÉ AŽ OD XL ŠÍRKY - ŽIADNY PRETLAK PRI F12) */}
+              {/* MENO A TIER (ZOBRAZENÉ AŽ OD XL ŠÍRKY) */}
               <div className="hidden xl:block text-right leading-tight max-w-[130px]">
                 <p
                   className="text-[10px] font-black text-white uppercase tracking-wider truncate"
@@ -1283,11 +1426,11 @@ export default function App() {
                   const activeTierLabel = isQuest
                     ? "QUEST"
                     : userState?.tier || "FREE";
-                  const activeColor = getTierColor(activeTierLabel);
+                  const activeColorTier = getTierColor(activeTierLabel);
                   return (
                     <p
                       className="text-[7px] font-black uppercase tracking-widest"
-                      style={{ color: activeColor }}
+                      style={{ color: activeColorTier }}
                     >
                       {activeTierLabel} TIER
                     </p>
@@ -1295,7 +1438,7 @@ export default function App() {
                 })()}
               </div>
 
-              {/* KOMPAKTNÝ AVATAR */}
+              {/* AVATAR OPERÁTORA */}
               <div
                 onClick={() => setShowGlobalProfile(true)}
                 className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 cursor-pointer overflow-hidden flex items-center justify-center transition-transform hover:scale-105 bg-black shrink-0 relative"
@@ -1329,7 +1472,7 @@ export default function App() {
                 )}
               </div>
 
-              {/* DYNAMICKÉ LOGOUT TLAČIDLO (TEXT AŽ PRI XL) */}
+              {/* LOGOUT TLAČIDLO */}
               <button
                 onClick={() => {
                   if (typeof handleLogout === "function") {
@@ -1387,6 +1530,29 @@ export default function App() {
               ) : (
                 /* 🌍 2. HLAVNÝ MATRIX (V20 BYPASS ROUTING) */
                 <Routes>
+                  {/* ALIAS TRASA 1 (ENGLISH URL) */}
+                  <Route
+                    path="/subdomains/*"
+                    element={
+                      <SubdomainStandbyPage
+                        subId={selectedSubId || "SUB 00"}
+                        onThemeChange={setThemeColor}
+                        onBackToHome={() => setSelectedSubId(null)}
+                      />
+                    }
+                  />
+
+                  {/* ALIAS TRASA 2 (SLOVAK URL) */}
+                  <Route
+                    path="/subdomeny/*"
+                    element={
+                      <SubdomainStandbyPage
+                        subId={selectedSubId || "SUB 00"}
+                        onThemeChange={setThemeColor}
+                        onBackToHome={() => setSelectedSubId(null)}
+                      />
+                    }
+                  />
                   {/* ======================================================= */}
                   {/* 🚪 1. MODALS & AUTH GATEWAY                             */}
                   {/* ======================================================= */}
@@ -1451,11 +1617,11 @@ export default function App() {
                     path="/agency/*"
                     element={
                       <NexusAgencyPage
-                      userState={userState}
-                      getTierColor={getTierColor}
-                      themeColor={themeColor}
-                      onThemeChange={setThemeColor}
-                    />
+                        userState={userState}
+                        getTierColor={getTierColor}
+                        themeColor={themeColor}
+                        onThemeChange={setThemeColor}
+                      />
                     }
                   />
 
@@ -1550,19 +1716,19 @@ export default function App() {
                     }
                   />
                   <Route
-                  path="/operators/*"
-                  element={
-                    <AuthRoute>
-                      <OperatorsPage
-                        setActiveTab={setActiveTab}
-                        userState={userState}
-                        themeColor={themeColor}
-                        setThemeColor={setThemeColor}
-                        onThemeChange={setThemeColor}
-                      />
-                    </AuthRoute>
-                  }
-                />
+                    path="/operators/*"
+                    element={
+                      <AuthRoute>
+                        <OperatorsPage
+                          setActiveTab={setActiveTab}
+                          userState={userState}
+                          themeColor={themeColor}
+                          setThemeColor={setThemeColor}
+                          onThemeChange={setThemeColor}
+                        />
+                      </AuthRoute>
+                    }
+                  />
                   <Route
                     path="/operator/:entityId/*"
                     element={
