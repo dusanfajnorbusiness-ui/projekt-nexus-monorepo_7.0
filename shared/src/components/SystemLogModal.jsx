@@ -118,6 +118,9 @@ export const SystemLogModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [expandedLogId, setExpandedLogId] = useState(null);
 
+
+
+
   // ⚡ AUTOMATICKÉ NAČÍTANIE ŽIVÝCH GITHUB LOGOV PRI OTVORENÍ
   useEffect(() => {
     if (isOpen) {

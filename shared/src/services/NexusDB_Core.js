@@ -163,9 +163,14 @@ export const NexusDB = {
         tokenPrefix: token ? `${token.substring(0, 7)}...` : "NONE (VITE_GITHUB_TOKEN chýba v .env)"
       });
 
+      if (!token) {
+        console.warn("⚠️ [NEXUS GIT API]: VITE_GITHUB_TOKEN nie je v .env. GitHub fetch vynechaný (Private Repo).");
+        return null;
+      }
+
       const headers = {
         Accept: "application/vnd.github.v3+json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        Authorization: `Bearer ${token}`,
       };
 
       const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=${limit}`, { headers });
