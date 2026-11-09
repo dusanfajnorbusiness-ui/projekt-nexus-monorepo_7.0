@@ -3,7 +3,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "apps/main-web/dist",
   "cleanUrls": true,
-  "redirects": [
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    },
     {
       "source": "/:path*",
       "has": [
@@ -245,12 +249,6 @@
       ],
       "destination": "[suspicious link removed]{subId}/:path*",
       "permanent": true
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }

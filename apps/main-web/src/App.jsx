@@ -88,13 +88,12 @@ export const NEXUS_SUBDOMAIN_MAP = {
   // 🌐 CORE SUBDOMÉNY OS GENESIS
   home: `${PROTO}${DOMAIN}`,
   agency: `${PROTO}agency.${DOMAIN}`,
-  blog: `${PROTO}blog.${DOMAIN}`,
+  blog: `${PROTO}blog0.${DOMAIN}`,
   operators: `${PROTO}operators.${DOMAIN}`,
   shop: `${PROTO}shop.${DOMAIN}`,
   settings: `${PROTO}settings.${DOMAIN}`,
   admin: `${PROTO}admin.${DOMAIN}`,
   uplink: `${PROTO}uplink.${DOMAIN}`,
-  login: `${PROTO}${DOMAIN}/login`,
   subdomains: `${PROTO}${DOMAIN}/subdomains`,
   subdomeny: `${PROTO}${DOMAIN}/subdomains`,
 
@@ -106,12 +105,11 @@ export const NEXUS_SUBDOMAIN_MAP = {
   apps: `${PROTO}shop.${DOMAIN}/apps`,
 
   // 📺 SYSTÉMOVÉ MEDIÁLNE MODULY (SYS01 – SYS05)
-  video_nodes: `${PROTO}${DOMAIN}/video_nodes`,
-  video_mentoring: `${PROTO}${DOMAIN}/video_mentoring`,
-  nexus_img_gallery: `${PROTO}${DOMAIN}/nexus_img_gallery`,
-  nexus_video_gallery: `${PROTO}${DOMAIN}/nexus_video_gallery`,
-  "sys05-directory": `${PROTO}${DOMAIN}/sys05-directory`,
-  links: `${PROTO}${DOMAIN}/sys05-directory`,
+  Sys01_VideoNodes: `${PROTO}${DOMAIN}/Sys01_VideoNodes`,
+  Sys02_Mentoring: `${PROTO}${DOMAIN}/Sys02_Mentoring`,
+  Sys03_ImgGallery: `${PROTO}${DOMAIN}/Sys03_ImgGallery`,
+  Sys04_VideoGallery: `${PROTO}${DOMAIN}/Sys04_VideoGallery`,
+  SYS05_Directory: `${PROTO}${DOMAIN}/SYS05_Directory`,
 
   // 🧠 16 KOGNITÍVNYCH DIMENZIÍ (ID00 – ID15 ON MAIN-WEB)
   id00: `${PROTO}${DOMAIN}/ID00`,
@@ -743,9 +741,9 @@ export default function App() {
     const isAdminSub =
       typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
 
-    if (isAdminSub || path.includes("/admin")) {
-      setActiveTab("admin");
-      setThemeColor("#FF003C");
+    if (isAdminSub || path.includes("/uplink")) {
+      setActiveTab("uplink");
+      setThemeColor("#8A2BE2");
     } else if (path.includes("/home") || path === "/") {
       setActiveTab("home");
       setThemeColor("#39FF14");
@@ -755,14 +753,18 @@ export default function App() {
     } else if (path.includes("/blog")) {
       setActiveTab("blog");
       setThemeColor("#E91E63");
+      } else if (path.includes("/operators")) {
+      setActiveTab("operators");
+      setThemeColor("#FFAA00");
     } else if (path.includes("/shop")) {
       setActiveTab("shop");
       setThemeColor("#FFD700");
-    } else if (path.includes("/operators")) {
-      setActiveTab("operators");
-      setThemeColor("#FFAA00");
     } else if (path.includes("/settings")) {
       setActiveTab("settings");
+      setThemeColor("#8A2BE2");
+    } else if (isAdminSub || path.includes("/admin")) {
+      setActiveTab("admin");
+      setThemeColor("#FF003C");
     }
   }, [location.pathname]);
 
@@ -956,12 +958,11 @@ export default function App() {
       else if (path.startsWith("login"))
         setActiveTab("login"); // 🛑 Tento port tu chýbal!
       // 🌐 ZACHYTENIE SYSTÉMOVÝCH UZLOV (SYS)
-      else if (path.startsWith("video_nodes")) setActiveTab("sys01");
-      else if (path.startsWith("video_mentoring")) setActiveTab("sys02");
-      else if (path.startsWith("nexus_img_gallery")) setActiveTab("sys03");
-      else if (path.startsWith("nexus_video_gallery")) setActiveTab("sys04");
-      else if (path.startsWith("sys05-directory") || path.startsWith("links"))
-        setActiveTab("sys05");
+      else if (path.startsWith("Sys01_VideoNodes")) setActiveTab("sys01");
+      else if (path.startsWith("Sys02_Mentoring")) setActiveTab("sys02");
+      else if (path.startsWith("Sys03_ImgGallery")) setActiveTab("sys03");
+      else if (path.startsWith("Sys04_VideoGallery")) setActiveTab("sys04");
+      else if (path.startsWith("SYS05_Directory")) setActiveTab("sys05");
       else if (path === "" || path === "home") {
         setActiveTab("home");
       }
@@ -1029,18 +1030,21 @@ export default function App() {
   }, [userState.email, userState.isGuest]);
 
   const getThemeColorDyn = () => {
+    if (activeTab === "uplink") return "#8A2BE2";
     if (activeTab === "home") return "#39FF14";
+    if (activeTab === "agency") return "#00f3ff";
+    if (activeTab === "blog") return "#FF1493";
+    if (activeTab === "operators") return "#FFAA00";
     if (activeTab === "shop") return "#FFD700";
-    if (activeTab === "operators") return "#00FFFF";
+    
     if (activeTab === "settings") return "#8A2BE2";
 
     if (activeTab === "admin") return "#FF003C"; // ⚡ PRIDANÉ: Farba Architekta pre Admin Panel
-    if (activeTab === "sys01" || activeTab === "video_uzly") return "#FF0000";
-    if (activeTab === "sys02" || activeTab === "video_mentoring")
-      return "#E91E63";
-    if (activeTab === "sys03") return "#BF00FF";
-    if (activeTab === "sys04") return "#FF0000";
-    if (activeTab === "sys05") return "#39FF14";
+    if (activeTab === "sys01" || activeTab === "Sys01_VideoNodes") return "#FF0000";
+    if (activeTab === "sys02" || activeTab === "Sys02_Mentoring") return "#E91E63";
+    if (activeTab === "sys03" || activeTab === "Sys03_ImgGallery" ) return "#BF00FF";
+    if (activeTab === "sys04" || activeTab === "Sys04_VideoGallery" ) return "#FF0000";
+    if (activeTab === "sys05" || activeTab === "SYS05_Directory" ) return "#39FF14";
 
     const dimPrefix = activeTab?.split("-")[0];
     const dimObj = DIMENSIONS?.find((d) => d.id === dimPrefix);
@@ -1435,12 +1439,9 @@ export default function App() {
         [id^="nexus-"] { scroll-margin-top: 150px; }
     `}</style>
         {/* ⚡ INJEKTÁŽ RÝCHLEHO NAVIGAČNÉHO UZLA (CHAMELEÓN) ⚡ */}
-        {/* ⚡ ABSOLÚTNA KARANTÉNA: NA LOGINE VYPÍNAME GLOBÁLNE MENU AJ BLESKY */}
-        {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
+        {/* ⚡ ABSOLÚTNA KARANTÉNA: NA LOGINE VYPÍNAME GLOBÁLNE MENU */}
         {location.pathname !== "/login" &&
-          !location.pathname.includes("/ID") &&
-          !location.pathname.includes("nexus_") &&
-          !location.pathname.includes("video_") && (
+           (
             <div
               className={`relative z-50 pointer-events-none transition-all duration-300 ${showGlobalProfile ? "opacity-0 invisible" : "opacity-100 visible"}`}
             >
@@ -1750,7 +1751,7 @@ export default function App() {
                   {/* 🚪 1. MODALS & AUTH GATEWAY                             */}
                   {/* ======================================================= */}
                   <Route
-                    path="/login/*"
+                    path="/uplinkmodal/login/*"
                     element={
                       <PublicRoute userState={userState}>
                         <UplinkModal
@@ -1770,7 +1771,7 @@ export default function App() {
                     }
                   />
                   <Route
-                    path="/register/*"
+                    path="/uplinkmodal/register/*"
                     element={
                       <PublicRoute userState={userState}>
                         <UplinkModal
@@ -2126,7 +2127,7 @@ export default function App() {
                   {/* 📡 7. SYSTÉMOVÉ MODULY (SYS01 - SYS05)                  */}
                   {/* ======================================================= */}
                   <Route
-                    path="/video_nodes/*"
+                    path="/Sys01_VideoNodes/*"
                     element={
                       <PublicRoute>
                         <Sys01_VideoNodes />
@@ -2134,7 +2135,7 @@ export default function App() {
                     }
                   />
                   <Route
-                    path="/video_mentoring/*"
+                    path="/Sys02_Mentoring/*"
                     element={
                       <StrictRoute requiredTier="OMEGA">
                         <Sys02_Mentoring />
@@ -2143,7 +2144,7 @@ export default function App() {
                   />
 
                   <Route
-                    path="/nexus_img_gallery/*"
+                    path="/Sys03_ImgGallery/*"
                     element={
                       <PublicRoute>
                         <Sys03_ImgGallery />
@@ -2151,7 +2152,7 @@ export default function App() {
                     }
                   />
                   <Route
-                    path="/nexus_video_gallery/*"
+                    path="/Sys04_VideoGallery/*"
                     element={
                       <PublicRoute>
                         <Sys04_VideoGallery />
@@ -2159,7 +2160,7 @@ export default function App() {
                     }
                   />
                   <Route
-                    path="/sys05-directory/*"
+                    path="/SYS05_Directory/*"
                     element={<SYS05_Directory />}
                   />
                   <Route path="/links/*" element={<SYS05_Directory />} />
@@ -2244,10 +2245,11 @@ export default function App() {
           </div>
         </main>
         {/* ⚡ ZÁKAZ VYKRESLENIA DOMOVSKÉHO FOOTERU NA SYS PORTOCH */}
-        {!location.pathname.includes("/ID") &&
+        {/* {!location.pathname.includes("/ID") &&
           !location.pathname.includes("nexus_") &&
           !location.pathname.includes("video_") &&
-          location.pathname !== "/login" && (
+          location.pathname !== "/login" && ( */}
+          {(
             <GlobalFooter
               userTier={
                 userState?.isGuest || !userState?.email || userState?.tier === "QUEST"
