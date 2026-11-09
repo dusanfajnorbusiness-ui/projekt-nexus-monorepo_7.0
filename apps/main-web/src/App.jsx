@@ -68,7 +68,7 @@ import ShopImageMedia from "@shop/components/ShopImageMedia.jsx";
 import ShopVideoMedia from "@shop/components/ShopVideoMedia.jsx";
 import ShopPage from "@shop/pages/ShopPage.jsx";
 import { SubdomainDropdown } from "@subdomeny/components/SubdomainDropdown.jsx";
-import { SubdomainStandbyPage } from "@subdomeny/components/SubdomainStandbyPage.jsx";
+import SubdomainStandbyPage from "@subdomeny/pages/SubdomainStandbyPage.jsx";
 import { SUBDOMAINS_ARRAY as SUBDOMAINS_LIST } from "@subdomeny/data/SubdomainsMasterData.js";
 import UplinkModal from "@uplink/pages/UplinkModal.jsx";
 import { Activity, AlertTriangle, Briefcase, Cpu, Database, Grid, LogOut, Mail, Settings, Shield, ShieldAlert, ShoppingCart, Terminal, User, Users, Wallet, Wand2 } from "lucide-react";
