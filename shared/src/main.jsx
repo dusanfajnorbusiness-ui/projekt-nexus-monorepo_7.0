@@ -2,7 +2,7 @@
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS03 MASTER DATASET V20.95)
-// Súbor: @apps/[nazov-uzla]/src/main.jsx
+// Súbor: @shared/src/main.jsx
 // Status: 100% GROUNDED // UNIVERSAL BOOTSTRAPPER // ZERO CRASH FALLBACK
 // CORE_VERSION: MAIN-BOOT-V20.95
 // ============================================================================

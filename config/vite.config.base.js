@@ -33,6 +33,7 @@ export const createViteConfig = (appDir, port = 5173) => {
   const rootDir = path.resolve(appDir, "../../");
 
   return defineConfig({
+    base: "/",
     root: appDir,
     plugins: [react()],
     define: {
@@ -62,6 +63,7 @@ export const createViteConfig = (appDir, port = 5173) => {
       outDir: path.resolve(appDir, "dist"),
       emptyOutDir: true,
       sourcemap: false,
+      chunkSizeWarningLimit: 1600,
     },
   });
 };
