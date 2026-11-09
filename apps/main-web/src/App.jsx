@@ -45,11 +45,7 @@ import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx"
 import { GlobalMessages } from "@shared/components/GlobalMessages.jsx";
 import { GlobalProfil } from "@shared/components/GlobalProfil.jsx";
 import MetaTags from "@shared/components/MetaTags.jsx";
-import {
-  AuthRoute,
-  PublicRoute,
-  StrictRoute,
-} from "@shared/components/NexusRouting.jsx";
+import { AuthRoute, PublicRoute, StrictRoute } from "@shared/components/NexusRouting.jsx";
 import { SystemLogModal } from "@shared/components/SystemLogModal.jsx";
 // 🗄️ 2. DÁTA A REGISTRE (@shared/data/)
 import { DIMENSIONS, getTierColor } from "@shared/data/nexusConfig.js";
@@ -73,32 +69,106 @@ import ShopVideoMedia from "@shop/components/ShopVideoMedia.jsx";
 import ShopPage from "@shop/pages/ShopPage.jsx";
 import { SubdomainDropdown } from "@subdomeny/components/SubdomainDropdown.jsx";
 import { SubdomainStandbyPage } from "@subdomeny/components/SubdomainStandbyPage.jsx";
-import { SUBDOMAINS_ARRAY } from "@subdomeny/data/SubdomainsMasterData.js";
+import { SUBDOMAINS_ARRAY as SUBDOMAINS_LIST } from "@subdomeny/data/SubdomainsMasterData.js";
 import UplinkModal from "@uplink/pages/UplinkModal.jsx";
-import {
-  Activity,
-  AlertTriangle,
-  Briefcase,
-  Cpu,
-  Database,
-  Grid,
-  LogOut,
-  Mail,
-  Settings,
-  Shield,
-  ShieldAlert,
-  ShoppingCart,
-  Terminal,
-  User,
-  Users,
-  Wallet,
-  Wand2,
-} from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { Activity, AlertTriangle, Briefcase, Cpu, Database, Grid, LogOut, Mail, Settings, Shield, ShieldAlert, ShoppingCart, Terminal, User, Users, Wallet, Wand2 } from "lucide-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 export const CORE_VERSION = "SK-App V20.95_STABLE";
+
+// ============================================================================
+// 👑 V20 MASTER REGISTER SUBDOMÉN A DIMENZIÍ (SSOT ROUTING ENGINE V20.99)
+// ============================================================================
+const PROTO = "https://";
+const DOMAIN = "projekt-nexus.sk";
+
+export const NEXUS_SUBDOMAIN_MAP = {
+  // 🌐 CORE SUBDOMÉNY OS GENESIS
+  home: `${PROTO}${DOMAIN}`,
+  agency: `${PROTO}agency.${DOMAIN}`,
+  blog: `${PROTO}blog.${DOMAIN}`,
+  operators: `${PROTO}operators.${DOMAIN}`,
+  shop: `${PROTO}shop.${DOMAIN}`,
+  settings: `${PROTO}settings.${DOMAIN}`,
+  admin: `${PROTO}admin.${DOMAIN}`,
+  uplink: `${PROTO}uplink.${DOMAIN}`,
+  login: `${PROTO}${DOMAIN}/login`,
+  subdomains: `${PROTO}${DOMAIN}/subdomains`,
+  subdomeny: `${PROTO}${DOMAIN}/subdomains`,
+
+  // 🛒 6 SÚRODENCOV OBCHODU (SHOP DIVÍZIE)
+  documents: `${PROTO}shop.${DOMAIN}/documents`,
+  images: `${PROTO}shop.${DOMAIN}/images`,
+  audios: `${PROTO}shop.${DOMAIN}/audios`,
+  videos: `${PROTO}shop.${DOMAIN}/videos`,
+  apps: `${PROTO}shop.${DOMAIN}/apps`,
+
+  // 📺 SYSTÉMOVÉ MEDIÁLNE MODULY (SYS01 – SYS05)
+  video_nodes: `${PROTO}${DOMAIN}/video_nodes`,
+  video_mentoring: `${PROTO}${DOMAIN}/video_mentoring`,
+  nexus_img_gallery: `${PROTO}${DOMAIN}/nexus_img_gallery`,
+  nexus_video_gallery: `${PROTO}${DOMAIN}/nexus_video_gallery`,
+  "sys05-directory": `${PROTO}${DOMAIN}/sys05-directory`,
+  links: `${PROTO}${DOMAIN}/sys05-directory`,
+
+  // 🧠 16 KOGNITÍVNYCH DIMENZIÍ (ID00 – ID15 ON MAIN-WEB)
+  id00: `${PROTO}${DOMAIN}/ID00`,
+  id01: `${PROTO}${DOMAIN}/ID01`,
+  id02: `${PROTO}${DOMAIN}/ID02`,
+  id03: `${PROTO}${DOMAIN}/ID03`,
+  id04: `${PROTO}${DOMAIN}/ID04`,
+  id05: `${PROTO}${DOMAIN}/ID05`,
+  id06: `${PROTO}${DOMAIN}/ID06`,
+  id07: `${PROTO}${DOMAIN}/ID07`,
+  id08: `${PROTO}${DOMAIN}/ID08`,
+  id09: `${PROTO}${DOMAIN}/ID09`,
+  id10: `${PROTO}${DOMAIN}/ID10`,
+  id11: `${PROTO}${DOMAIN}/ID11`,
+  id12: `${PROTO}${DOMAIN}/ID12`,
+  id13: `${PROTO}${DOMAIN}/ID13`,
+  id14: `${PROTO}${DOMAIN}/ID14`,
+  id15: `${PROTO}${DOMAIN}/ID15`,
+
+  // 🌐 SUBDOMÉNY DIMENZIÍ (SUB 00 – SUB 15)
+  "sub 00": `${PROTO}mentor.${DOMAIN}`,
+  "sub 01": `${PROTO}personal.${DOMAIN}`,
+  "sub 02": `${PROTO}work.${DOMAIN}`,
+  "sub 03": `${PROTO}finance.${DOMAIN}`,
+  "sub 04": `${PROTO}business.${DOMAIN}`,
+  "sub 05": `${PROTO}investments.${DOMAIN}`,
+  "sub 06": `${PROTO}study.${DOMAIN}`,
+  "sub 07": `${PROTO}professional.${DOMAIN}`,
+  "sub 08": `${PROTO}reader.${DOMAIN}`,
+  "sub 09": `${PROTO}player.${DOMAIN}`,
+  "sub 10": `${PROTO}home.${DOMAIN}`,
+  "sub 11": `${PROTO}recovery.${DOMAIN}`,
+  "sub 12": `${PROTO}codex.${DOMAIN}`,
+  "sub 13": `${PROTO}habits.${DOMAIN}`,
+  "sub 14": `${PROTO}blog.${DOMAIN}`,
+  "sub 15": `${PROTO}death.${DOMAIN}`,
+
+  // BEZMEDZERATÉ SYNONYMÁ PRE SUB 00 – SUB 15
+  sub00: `${PROTO}mentor.${DOMAIN}`,
+  sub01: `${PROTO}personal.${DOMAIN}`,
+  sub02: `${PROTO}work.${DOMAIN}`,
+  sub03: `${PROTO}finance.${DOMAIN}`,
+  sub04: `${PROTO}business.${DOMAIN}`,
+  sub05: `${PROTO}investments.${DOMAIN}`,
+  sub06: `${PROTO}study.${DOMAIN}`,
+  sub07: `${PROTO}professional.${DOMAIN}`,
+  sub08: `${PROTO}reader.${DOMAIN}`,
+  sub09: `${PROTO}player.${DOMAIN}`,
+  sub10: `${PROTO}home.${DOMAIN}`,
+  sub11: `${PROTO}recovery.${DOMAIN}`,
+  sub12: `${PROTO}codex.${DOMAIN}`,
+  sub13: `${PROTO}habits.${DOMAIN}`,
+  sub14: `${PROTO}blog.${DOMAIN}`,
+  sub15: `${PROTO}death.${DOMAIN}`,
+};
+ 
+
 
 // Použitie 'function' zaručuje 100% JS Hoisting v celom súbore pred prvým spustením useState
 export function getSubIdFromHostname() {
@@ -436,14 +506,20 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1. Kánonická lazy inicializácia activeTab pre F5 refresh
+  const [userState, setUserState] = useState(
+    typeof DEFAULT_USER_STATE !== "undefined"
+      ? DEFAULT_USER_STATE
+      : { isGuest: true, tier: "QUEST", credits: 0, displayName: "GUEST_ENTITY" }
+  );
+  const [themeColor, setThemeColor] = useState("#39FF14");
+  const [isSystemLogOpen, setIsSystemLogOpen] = useState(false);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+
+  // 2. LAZY INICIALIZÁCIA ACTIVE TAB & SELECTED SUB ID
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
-      const isAdminSub =
-        typeof getIsAdminSubdomain === "function"
-          ? getIsAdminSubdomain()
-          : false;
+      const isAdminSub = typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
       if (isAdminSub || path.startsWith("/admin")) {
         return "admin";
       }
@@ -451,16 +527,168 @@ export default function App() {
     return "home";
   });
 
-  // 2. Kánonické stavy aplikácie (Vytvorené výhradne 1x)
-  const [isSystemLogOpen, setIsSystemLogOpen] = useState(false);
+   const navigateTo = (targetId) => {
+    if (!targetId) return;
+    try {
+      if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
+    } catch (e) {}
 
-  // DEFINÍCIA SAFE_SUB_ID A ACTIVE_COLOR (FIX REFERENCE_ERROR)
-  // 1. React stavy musia byť nadefinované AKO PRVÉ na začiatku komponentu App
-  const [userState, setUserState] = useState(DEFAULT_USER_STATE);
-  const [themeColor, setThemeColor] = useState("#39FF14");
+    // 🎯 DEFENZÍVNA DEKLARÁCIA PREMENNÝCH (PREVENCIA REFERENCE_ERROR)
+    const rawId = String(targetId).trim();
+    const cleanId = rawId.replace(/^\//, "");
 
-  // 1. Ručne vybraná subdoména tlačidlom (predvolene null)
-  const [selectedSubId, setSelectedSubId] = useState(null);
+    // 🎯 1. SUBDOMÉNOVÉ MODULY (/sub-00 až /sub-15)
+    const subMatch = cleanId.match(/^sub[\s_-]?(\d{2})$/i);
+    if (subMatch) {
+      const num = subMatch[1]; // 🎯 ZÍSKA VÝHRADNE "04" (INDEX 1 Z REGEXU)
+      const formattedSubId = `SUB ${num}`;
+
+      if (typeof setSelectedSubId === "function") {
+        setSelectedSubId(formattedSubId);
+      }
+      if (typeof setActiveTab === "function") {
+        setActiveTab("subdomains");
+      }
+
+      navigate(`/sub-${num}`);
+      return;
+    }
+
+    // 🎯 2. KOGNITÍVNE DIMENZIE (/ID00 až /ID15)
+    const idMatch = cleanId.match(/^id[\s_-]?(\d{2})$/i);
+    if (idMatch) {
+      const num = idMatch[1]; // 🎯 ZÍSKA VÝHRADNE "04" (INDEX 1 Z REGEXU)
+      if (typeof setActiveTab === "function") setActiveTab(`ID${num}`);
+      navigate(`/ID${num}`);
+      return;
+    }
+
+    // 🎯 3. HLAVNÉ SEKTORY (agency, shop, blog, settings, home...)
+    const cleanKey = cleanId.toLowerCase();
+    if (typeof setActiveTab === "function") setActiveTab(cleanKey);
+    const targetRoute = cleanKey === "home" ? "/" : `/${cleanKey}`;
+    navigate(targetRoute);
+  };
+
+  const [selectedSubId, setSelectedSubId] = useState(() => {
+    if (typeof window === "undefined") return "SUB 00";
+    const host = window.location.hostname.toLowerCase();
+
+    if (typeof SUBDOMAINS_LIST !== "undefined" && Array.isArray(SUBDOMAINS_LIST)) {
+      const matchedSub = SUBDOMAINS_LIST.find(
+        (sub) => sub?.domain && host.includes(sub.domain.toLowerCase())
+      );
+      if (matchedSub) {
+        console.log("⚡ [NEXUS PROD ROUTER] Detekovaná subdoména z URL:", matchedSub.id, matchedSub.name);
+        return matchedSub.id;
+      }
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get("id") || "SUB 00";
+  });
+
+  // 3. V20 DYNAMICKÉ PREMENNÉ PRE FOOTER A STROJOVŇU (userTier & currentSector)
+  const userTier = useMemo(() => {
+    if (!userState || userState.isGuest || userState.tier === "QUEST") {
+      return "QUEST";
+    }
+    return userState.tier || "FREE";
+  }, [userState]);
+
+  const currentSector = useMemo(() => {
+    const rawPathParts = String(location.pathname || "").replace(/^\//, "").split("/");
+    const firstSegment = String(rawPathParts || "").toLowerCase();
+
+    if (!firstSegment || firstSegment === "home") return "home";
+    if (firstSegment === "login" || firstSegment === "uplinkmodal" || firstSegment === "register") return "uplink";
+    if (firstSegment.startsWith("sub")) return selectedSubId || firstSegment;
+    return firstSegment;
+  }, [location.pathname, selectedSubId]);
+
+  // 4. EFFECTY (GIT LOG PROTOKOL & SUPABASE AUTH HYDRATÁCIA)
+  useEffect(() => {
+    const currentGitHash = import.meta.env.VITE_GIT_COMMIT_HASH || "v20.95-master";
+    const lastSeenHash = localStorage.getItem("nexus_last_seen_git_commit");
+    const sessionShown = sessionStorage.getItem("nexus_system_log_session_shown");
+
+    if (lastSeenHash !== currentGitHash && !sessionShown && !isLogModalOpen) {
+      setIsLogModalOpen(true);
+      sessionStorage.setItem("nexus_system_log_session_shown", "TRUE");
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    let authListener = null;
+
+    const initAuthSession = async () => {
+      try {
+        if (typeof supabase === "undefined" || !supabase?.auth) return;
+
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session?.user) {
+          const userMeta = session.user.user_metadata || {};
+          const userEmail = session.user.email || "";
+          const isMasterAdmin = userEmail.includes("nexus") || userEmail.includes("architect") || userMeta.tier === "ARCHITECT";
+          const currentTier = isMasterAdmin ? "ARCHITECT" : (userMeta.tier || "FREE");
+
+          setUserState({
+            id: session.user.id,
+            email: userEmail,
+            displayName: userMeta.display_name || userMeta.full_name || userEmail.split("@"),
+            avatar: userMeta.avatar_url || userMeta.avatar || null,
+            tier: currentTier,
+            credits: userMeta.credits || 2500,
+            isGuest: false,
+          });
+        } else {
+          setUserState(typeof DEFAULT_USER_STATE !== "undefined" ? DEFAULT_USER_STATE : {
+            isGuest: true,
+            tier: "QUEST",
+            credits: 0,
+            displayName: "GUEST_ENTITY",
+          });
+        }
+
+        const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+          if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
+            const userMeta = session.user.user_metadata || {};
+            const userEmail = session.user.email || "";
+            const isMasterAdmin = userEmail.includes("nexus") || userEmail.includes("architect") || userMeta.tier === "ARCHITECT";
+            const currentTier = isMasterAdmin ? "ARCHITECT" : (userMeta.tier || "FREE");
+
+            setUserState({
+              id: session.user.id,
+              email: userEmail,
+              displayName: userMeta.display_name || userMeta.full_name || userEmail.split("@"),
+              avatar: userMeta.avatar_url || userMeta.avatar || null,
+              tier: currentTier,
+              credits: userMeta.credits || 2500,
+              isGuest: false,
+            });
+          } else if (event === "SIGNED_OUT") {
+            setUserState(typeof DEFAULT_USER_STATE !== "undefined" ? DEFAULT_USER_STATE : {
+              isGuest: true,
+              tier: "QUEST",
+              credits: 0,
+              displayName: "GUEST_ENTITY",
+            });
+          }
+        });
+
+        authListener = listener?.subscription;
+      } catch (err) {
+        console.warn("⚠️ [NEXUS AUTH HYDRATION ERROR]:", err);
+      }
+    };
+
+    initAuthSession();
+
+    return () => {
+      if (authListener) authListener.unsubscribe();
+    };
+  }, []);
 
   const handleSubdomainChange = (subId) => {
     navigate(`/subdomeny?id=${encodeURIComponent(subId)}`);
@@ -706,50 +934,7 @@ export default function App() {
     };
   }, []);
 
-  // PREPÍSANÁ FUNKCIA PRE NAVIGÁCIU (Prepojenie tlačidiel na URL)
-  const navigateTo = (targetId) => {
-    if (!targetId) return;
-    if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
-
-    const isLocalhost =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1");
-
-    // 1. TLAČIDLO AGENCY (LOCALHOST VS PRODUCTION TELEPORT)
-    if (targetId === "agency") {
-      if (!isLocalhost) {
-        window.location.href = "https://agency.projekt-nexus.sk";
-        return;
-      }
-    }
-
-    // 2. TLAČIDLO HOME (ÚNIK ZO SUBDOMÉN NA HLAVNÝ PORTÁL)
-    if (targetId === "home") {
-      setSelectedSubId(null);
-      const isAgency =
-        typeof getIsAgencySubdomain === "function" && getIsAgencySubdomain();
-      const isAdmin =
-        typeof getIsAdminSubdomain === "function" && getIsAdminSubdomain();
-
-      if (!isLocalhost && (isAgency || isAdmin)) {
-        window.location.href = "https://projekt-nexus.sk";
-        return;
-      }
-    }
-
-    // 3. SYNCHRÓNNA KOREKCIA STAVU A ROUTERU
-    setActiveTab(targetId);
-
-    if (targetId === "uplinkmodal") {
-      navigate("/uplinkmodal");
-    } else if (targetId === "home") {
-      navigate("/");
-    } else {
-      navigate(`/${targetId.toLowerCase()}`);
-    }
-  };
-
+  
   useEffect(() => {
     const handleUrlSync = () => {
       const host = window.location.hostname;
@@ -1107,24 +1292,39 @@ export default function App() {
     setShowUplink(false);
   };
 
-  const handleLogout = async () => {
-    if (typeof SoundFX !== "undefined" && SoundFX.click) SoundFX.click();
+ const handleLogout = async () => {
+    if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
     try {
-      await supabase.auth.signOut();
+      if (typeof supabase !== "undefined" && supabase?.auth) {
+        await supabase.auth.signOut();
+      }
     } catch (e) {
-      console.error("Supabase SignOut Error:", e);
+      console.error("⚠️ [NEXUS AUTH]: Supabase SignOut Error:", e);
     } finally {
       if (typeof clearNexusCookie === "function") clearNexusCookie();
+
       // Automatický výmaz VŠETKÝCH súčasných aj BUDÚCICH nexus_* kľúčov
-      Object.keys(localStorage).forEach((key) => {
+      Object.keys(localStorage || {}).forEach((key) => {
         if (key.startsWith("nexus_")) localStorage.removeItem(key);
       });
-      Object.keys(sessionStorage).forEach((key) => {
+      Object.keys(sessionStorage || {}).forEach((key) => {
         if (key.startsWith("nexus_")) sessionStorage.removeItem(key);
       });
 
-      // Tvrdý reštart pre 100% prečistenie React RAM a návrat na Uplink
-      window.location.href = "/login";
+      const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
+      const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+
+      if (isLocalhost) {
+        // Na Localhoste zostávame na vývojovom porte!
+        if (typeof navigate === "function") {
+          navigate("/uplinkmodal");
+        } else {
+          window.location.href = "/uplinkmodal";
+        }
+      } else {
+        // Na Produkcii smerujeme na centrálny Uplink
+        window.location.href = "https://projekt-nexus.sk/login";
+      }
     }
   };
 
@@ -1344,11 +1544,12 @@ export default function App() {
                   activeColor={themeColor}
                   onSelectSub={(subId) => {
                     setSelectedSubId(subId);
-                    // Ak používate stavové prepínanie modulov v App.jsx:
-                    if (typeof setCurrentModule === "function") {
+                    // ⚡ Ošetrenie pre prechod na subdoménu pri výbere z dropdownu
+                    const mappedId = String(subId || "").toLowerCase().replace("sub_", "").replace(" ", "");
+                    if (NEXUS_SUBDOMAIN_MAP[mappedId]) {
+                      navigateTo(mappedId);
+                    } else if (typeof setCurrentModule === "function") {
                       setCurrentModule("subdomains");
-                    } else if (typeof navigateTo === "function") {
-                      navigateTo("subdomains");
                     }
                   }}
                 />
@@ -1559,24 +1760,60 @@ export default function App() {
                   <Route
                     path="/login/*"
                     element={
-                      <PublicRoute>
-                        <UplinkModal />
+                      <PublicRoute userState={userState}>
+                        <UplinkModal
+                          userState={userState}
+                          setUserState={setUserState}
+                          onSuccess={() => {
+                            const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
+                            const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+                            if (isLocalhost) {
+                              navigate("/");
+                            } else {
+                              window.location.href = "https://projekt-nexus.sk";
+                            }
+                          }}
+                        />
                       </PublicRoute>
                     }
                   />
                   <Route
                     path="/register/*"
                     element={
-                      <PublicRoute>
-                        <UplinkModal />
+                      <PublicRoute userState={userState}>
+                        <UplinkModal
+                          userState={userState}
+                          setUserState={setUserState}
+                          onSuccess={() => {
+                            const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
+                            const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+                            if (isLocalhost) {
+                              navigate("/");
+                            } else {
+                              window.location.href = "https://projekt-nexus.sk";
+                            }
+                          }}
+                        />
                       </PublicRoute>
                     }
                   />
                   <Route
                     path="/uplinkmodal/*"
                     element={
-                      <PublicRoute>
-                        <UplinkModal />
+                      <PublicRoute userState={userState}>
+                        <UplinkModal
+                          userState={userState}
+                          setUserState={setUserState}
+                          onSuccess={() => {
+                            const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
+                            const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+                            if (isLocalhost) {
+                              navigate("/");
+                            } else {
+                              window.location.href = "https://projekt-nexus.sk";
+                            }
+                          }}
+                        />
                       </PublicRoute>
                     }
                   />
@@ -1936,7 +2173,38 @@ export default function App() {
                   <Route path="/links/*" element={<SYS05_Directory />} />
 
                   {/* ======================================================= */}
-                  {/* ⚖️ 8. PRÁVNA INTEGRITA & DOKUMENTY                      */}
+                  {/* 🌌 8. SUBDOMÉNY OS GENESIS (SUB 00 - SUB 15 REGISTER)    */}
+                  {/* ======================================================= */}
+                  {[
+                    "00", "01", "02", "03", "04", "05", "06", "07",
+                    "08", "09", "10", "11", "12", "13", "14", "15"
+                  ].flatMap((num) => [
+                    <Route
+                      key={`sub-dash-${num}`}
+                      path={`/sub-${num}/*`}
+                      element={
+                        <SubdomainStandbyPage
+                          subId={`SUB ${num}`}
+                          onThemeChange={setThemeColor}
+                          onBackToHome={() => setSelectedSubId(null)}
+                        />
+                      }
+                    />,
+                    <Route
+                      key={`sub-lower-${num}`}
+                      path={`/sub${num}/*`}
+                      element={
+                        <SubdomainStandbyPage
+                          subId={`SUB ${num}`}
+                          onThemeChange={setThemeColor}
+                          onBackToHome={() => setSelectedSubId(null)}
+                        />
+                      }
+                    />,
+                  ])}
+
+                  {/* ======================================================= */}
+                  {/* ⚖️ 9. PRÁVNA INTEGRITA & DOKUMENTY                      */}
                   {/* ======================================================= */}
                   <Route
                     path="/vop/*"
@@ -1956,7 +2224,7 @@ export default function App() {
                   />
 
                   {/* ======================================================= */}
-                  {/* 🎯 9. DYNAMICKÝ PARAMETER UZLA (Až za konkrétnymi ID)    */}
+                  {/* 🎯 10. DYNAMICKÝ PARAMETER UZLA (Až za konkrétnymi ID)    */}
                   {/* ======================================================= */}
                   <Route
                     path="/:nodeId/*"
@@ -1968,7 +2236,7 @@ export default function App() {
                   />
 
                   {/* ======================================================= */}
-                  {/* 🛑 10. ZÁCHRANNÁ BRZDA 404 (ÚPLNE POSLEDNÁ)              */}
+                  {/* 🛑 11. ZÁCHRANNÁ BRZDA 404 (ÚPLNE POSLEDNÁ)              */}
                   {/* ======================================================= */}
                   <Route
                     path="*"
@@ -1990,25 +2258,26 @@ export default function App() {
           location.pathname !== "/login" && (
             <GlobalFooter
               userTier={
-                typeof userTier !== "undefined"
-                  ? userTier
-                  : typeof tier !== "undefined"
-                    ? tier
-                    : typeof userState !== "undefined" && userState?.tier
-                      ? userState.tier
-                      : typeof user !== "undefined" && user?.tier
-                        ? user.tier
-                        : "QUEST"
+                userState?.isGuest || !userState?.email || userState?.tier === "QUEST"
+                  ? "QUEST"
+                  : userState?.tier || "FREE"
               }
               themeColor={
                 typeof themeColor !== "undefined" ? themeColor : "#39FF14"
               }
-              activeTab={typeof activeTab !== "undefined" ? activeTab : "home"}
-              onNavigate={
-                typeof handleNavigate === "function"
-                  ? handleNavigate
-                  : (path) => typeof navigate === "function" && navigate(path)
+              activeTab={
+                location.pathname === "/"
+                  ? "home"
+                  : location.pathname.replace(/^\//, "").split("/") || activeTab || "home"
               }
+              onNavigate={(path) => {
+                const cleanId = String(path || "").replace(/^\//, "");
+                if (typeof navigateTo === "function") {
+                  navigateTo(cleanId || "home");
+                } else if (typeof navigate === "function") {
+                  navigate(path);
+                }
+              }}
               onOpenSystemLog={() =>
                 typeof setIsSystemLogOpen === "function" &&
                 setIsSystemLogOpen(true)

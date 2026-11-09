@@ -5,11 +5,23 @@ import { createClient } from "@supabase/supabase-js";
 // import { pingEngine } from "../utils/NexusPingEngine"; // 🛑 ZAKOMENTOVANÉ: Modul leží v @settings/utils
 const pingEngine = { ping: () => {}, log: () => {} }; // Defenzívny V20 mock pre nulové runtime chyby
 
-// ⚡ PRIDANÝ EXPORT: Aby sme mohli 'supabase' volať z akéhokoľvek komponentu (napr. SettingsPage)
-export const supabase = createClient(
-  EXODUS_CONFIG.SUPABASE_URL,
-  EXODUS_CONFIG.SUPABASE_ANON_KEY,
-);
+const rawUrl = EXODUS_CONFIG?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || "";
+const rawKey = EXODUS_CONFIG?.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+
+const isValidUrl = Boolean(rawUrl && !rawUrl.includes("placeholder") && rawUrl.startsWith("https://"));
+
+const supabaseUrl = isValidUrl ? rawUrl : "https://ljyvsolsgliephsfkfgx.supabase.co";
+const supabaseAnonKey = (isValidUrl && rawKey) ? rawKey : "sb_publishable_0RCfN1RFadZ_5mpv2DQF1g_YaK3pt67";
+
+// ⚡ PRIDANÝ EXPORT: Jednotná inštancia klienta bez rizika placeholder pádu
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
+
 
 // ⚡ BEZPEČNÝ PARSER REAKCIÍ
 const safeParseReactions = (rawReactions) => {

@@ -1,5 +1,3 @@
-import { SoundFX } from "@shared/utils/SoundEngine.js";
-import { CheckCircle2, ChevronDown, ChevronUp, GitCommit, History, Shield, Terminal, X, Zap } from "lucide-react";
 /* eslint-disable no-undef */
 
 // ============================================================================
@@ -10,56 +8,100 @@ import { CheckCircle2, ChevronDown, ChevronUp, GitCommit, History, Shield, Termi
 // ============================================================================
 
 import React, { useEffect, useState } from "react";
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  GitCommit,
+  History,
+  Shield,
+  Terminal,
+  X,
+  Zap,
+} from "lucide-react";
+import { SoundFX } from "@shared/utils/SoundEngine.js";
+import { NexusDB } from "@shared/services/NexusDB_Core.js";
 
-// 🗄️ VÝCHODISKOVÝ CHANGELOG DÁTOVÝ SÚBOR (PRIPRAVENÝ AŽ NA 30 ZÁZNAMOV)
-  const defaultChangelog = [
-    {
-      id: "LOG-2095-01",
-      tag: "AGENCY_SYNC",
-      title: "1:1 Synchronizácia Headerov a Typografie",
-      summary: "Zosynchronizovaný vizuálny kánon pre Agency, HomePage a Blog.",
-      desc: "Implementovaný unifikovaný Header komponent s podporou dynamických farieb (Neónová Zelená #39FF14, Kybernetický Cyan #00f3ff, Magenta #E91E63 a Oranžová #FFAA00). Dekonštruovaný CSS Stacking Context.",
-      date: "06.11.2026",
-      color: "#00f3ff",
-    },
-    {
-      id: "LOG-2095-02",
-      tag: "UI_V20_NAV",
-      title: "Responsive Collision Shield pre Peňaženku a Chronometer",
-      summary: "Kompaktný ikonový režim pre stredné monitory s instantnými hover tooltipmi.",
-      desc: "Upravené z-index hranice pre mobilné viewporty. Pridané defenzívne ošetrenie String(val || '') na zabránenie TypeError pri rýchlom prepínaní dimenzií.",
-      date: "05.11.2026",
-      color: "#10B981",
-    },
-    {
-      id: "LOG-2095-03",
-      tag: "VITE_CONFIG",
-      title: "Build-Time Git Hash Injekcia",
-      summary: "Automatický detektor nových deployov a zmenových logov z repozitára.",
-      desc: "Prepojenie VITE_GIT_COMMIT_HASH prostredníctvom Vite bundlera s automatickým trigerom SystemLogModal pri detekcii novej verzionalizácie.",
-      date: "04.11.2026",
-      color: "#F59E0B",
-    },
-    {
-      id: "LOG-2095-04",
-      tag: "OPERATORS_CORE",
-      title: "Level 48 Operators Control Panel & HUD Tachometre",
-      summary: "Nasadenie Neónovo Oranžového (#FFAA00) kánonu pre Operators rozhranie.",
-      desc: "Prepojené stavové tachometre Online/Sleep/Offline entít s reálnou kapacitou siete. Registrácia routy vo Vite zbernici pod aliasom @operators.",
-      date: "03.11.2026",
-      color: "#FFAA00",
-    },
-    {
-      id: "LOG-2095-05",
-      tag: "ROUTING_HOTFIX",
-      title: "Route Theme Reset Eliminácia Memory Leakom",
-      summary: "Automatické prepínanie sémantických farieb pri zmene URL location.pathname.",
-      desc: "Pridaný odpočúvač useEffect vo webovej zbernici App.jsx, ktorý zabraňuje pretekaniu farieb medzi Homepage, Agency, Blogom a Shopom.",
-      date: "02.11.2026",
-      color: "#3B82F6",
-    },
-  ];
+// ⚡⚡⚡ V20 CYBER MARKDOWN PARSER PRE RELEASE NOTES A CHANGELOGY ⚡⚡⚡
+const renderCyberMarkdown = (text) => {
+  if (!text) return null;
+  const lines = String(text).split("\n");
 
+  return lines.map((line, i) => {
+    const trimmed = line.trim();
+
+    // 1. Deliace čiary (---)
+    if (trimmed === "---") {
+      return <hr key={i} className="my-2 border-t border-cyan-500/30" />;
+    }
+    // 2. Hlavné H1 / H2 Nadpisy (# alebo ##)
+    if (trimmed.startsWith("# ") || trimmed.startsWith("## ")) {
+      return (
+        <h3 key={i} className="text-sm font-bold text-amber-400 mt-3 mb-1 tracking-wider flex items-center gap-2">
+          <span className="text-cyan-400">⚡</span> {trimmed.replace(/^#+\s*/, "")}
+        </h3>
+      );
+    }
+    // 3. Sekčné H3 Nadpisy (###)
+    if (trimmed.startsWith("### ")) {
+      return (
+        <h4 key={i} className="text-xs font-semibold text-cyan-300 mt-2 mb-1 tracking-wide uppercase">
+          {trimmed.replace(/^###\s*/, "")}
+        </h4>
+      );
+    }
+    // 4. Odrážky (- alebo *)
+    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      const content = trimmed.substring(2);
+      const parts = content.split(/(\*\*.*?\*\*)/g);
+      return (
+        <div key={i} className="pl-3 py-0.5 text-xs font-mono text-gray-300 flex items-start gap-2 border-l border-cyan-500/20 my-1">
+          <span className="text-emerald-400 font-bold">•</span>
+          <span>
+            {parts.map((part, pIdx) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                return (
+                  <strong key={pIdx} className="text-cyan-200 font-semibold bg-cyan-950/40 px-1 py-0.5 rounded border border-cyan-500/30">
+                    {part.slice(2, -2)}
+                  </strong>
+                );
+              }
+              return part;
+            })}
+          </span>
+        </div>
+      );
+    }
+    // 5. Bežné textové riadky
+    return (
+      <p key={i} className="text-xs font-mono text-gray-300 leading-relaxed min-h-[1.25rem] whitespace-pre-wrap">
+        {line}
+      </p>
+    );
+  });
+};
+
+// 🗄️ VÝCHODISKOVÝ CHANGELOG DÁTOVÝ SÚBOR (FALLBACK)
+const defaultChangelog = [
+  {
+    id: "LOG-2095-01",
+    tag: "AGENCY_SYNC",
+    title: "1:1 Synchronizácia Headerov a Typografie",
+    summary: "Zosynchronizovaný vizuálny kánon pre Agency, HomePage a Blog.",
+    desc: "Implementovaný unifikovaný Header komponent s podporou dynamických farieb (Neónová Zelená #39FF14, Kybernetický Cyan #00f3ff, Magenta #E91E63 a Oranžová #FFAA00). Dekonštruovaný CSS Stacking Context.",
+    date: "06.11.2026",
+    color: "#00f3ff",
+  },
+  {
+    id: "LOG-2095-02",
+    tag: "UI_V20_NAV",
+    title: "Responsive Collision Shield pre Peňaženku a Chronometer",
+    summary: "Kompaktný ikonový režim pre stredné monitory s instantnými hover tooltipmi.",
+    desc: "Upravené z-index hranice pre mobilné viewporty. Pridané defenzívne ošetrenie String(val || '') na zabránenie TypeError pri rýchlom prepínaní dimenzií.",
+    date: "05.11.2026",
+    color: "#10B981",
+  },
+];
 
 export const SystemLogModal = ({
   isOpen = false,
@@ -68,59 +110,30 @@ export const SystemLogModal = ({
   customLogs = null,
 }) => {
   const currentGitHash =
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_GIT_COMMIT_HASH) ||
+    (typeof import.meta !== "undefined" &&
+      import.meta.env?.VITE_GIT_COMMIT_HASH) ||
     "v20.95-master";
 
-const [gitLogs, setGitLogs] = useState([]);
+  const [gitLogs, setGitLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedLogId, setExpandedLogId] = useState(null);
 
+  // ⚡ AUTOMATICKÉ NAČÍTANIE ŽIVÝCH GITHUB LOGOV PRI OTVORENÍ
   useEffect(() => {
-    if (isOpen && !customLogs) {
+    if (isOpen) {
       setIsLoading(true);
-      fetch("[suspicious link removed]")
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          if (Array.isArray(data)) {
-            const formattedLogs = data.map((item, idx) => {
-              const rawMsg = item.commit?.message || "";
-              const msgLines = String(rawMsg).split("\n").filter((line) => line.trim() !== "");
-              const commitTitle = msgLines || "Git Update";
-              const commitBody = msgLines.slice(1).join(" ").trim() || "Commit evidovaný vo zbernici GitHub.";
-              const commitDate = item.commit?.author?.date
-                ? new Date(item.commit.author.date).toLocaleDateString("sk-SK", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })
-                : "DNEŠNÝ PUSH";
-
-              return {
-                id: item.sha ? item.sha.substring(0, 7) : `LOG-${idx}`,
-                tag: idx === 0 ? "LATEST_PUSH" : "GIT_COMMIT",
-                title: commitTitle,
-                summary: commitBody.substring(0, 140) + (commitBody.length > 140 ? "..." : ""),
-                desc: `Commit SHA: ${item.sha} | Autor: ${item.commit?.author?.name || "Architekt"}`,
-                date: commitDate,
-                color: idx === 0 ? "#39FF14" : "#00f3ff",
-              };
-            });
-            setGitLogs(formattedLogs);
+      NexusDB.getSystemLogs(15)
+        .then((fetchedLogs) => {
+          if (fetchedLogs && Array.isArray(fetchedLogs) && fetchedLogs.length > 0) {
+            setGitLogs(fetchedLogs);
           }
-        })
-        .catch((err) => {
-          console.warn("⚠️ [NEXUS GIT API] Volanie zlyhalo, aktivujem fallback changelog:", err);
         })
         .finally(() => setIsLoading(false));
     }
-  }, [isOpen, customLogs]);
+  }, [isOpen]);
 
-  const displayLogs = customLogs || (gitLogs.length > 0 ? gitLogs : defaultChangelog);
-
-  // 🎯 STAV PRE ROZKLIKNUTÚ KARTIČKU (EXPANDABLE CARD ID)
-  const [expandedLogId, setExpandedLogId] = useState(null);
+  // 🎯 PRIORITY MATRIX: ŽIVÉ GITHUB LOGY > CUSTOMLOGS > DEFAULT
+  const displayLogs = (gitLogs && gitLogs.length > 0) ? gitLogs : (customLogs || defaultChangelog);
 
   useEffect(() => {
     if (isOpen) {
@@ -147,19 +160,18 @@ const [gitLogs, setGitLogs] = useState([]);
   const toggleExpandLog = (id) => {
     try {
       SoundFX?.playClick?.();
+      localStorage.setItem("nexus_last_seen_git_commit", currentGitHash);
+      sessionStorage.setItem("nexus_system_log_session_shown", "TRUE");
     } catch (err) {
       // quiet fallback
     }
     setExpandedLogId((prev) => (prev === id ? null : id));
   };
 
-  
-  
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono">
+    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 pt-20 pb-6 bg-black/85 backdrop-blur-md font-mono overflow-hidden">
       <div
-        className="w-full max-w-2xl bg-[#03070A] border rounded-2xl shadow-[0_0_50px_rgba(0,243,255,0.25)] overflow-hidden text-white flex flex-col max-h-[90vh]"
+        className="w-full max-w-2xl bg-[#03070A] border rounded-2xl shadow-[0_0_50px_rgba(0,243,255,0.25)] overflow-hidden text-white flex flex-col max-h-[calc(100vh-7rem)] relative my-auto"
         style={{ borderColor: `${themeColor}50` }}
       >
         {/* 1. HLAVIČKA MODÁLU */}
@@ -197,7 +209,8 @@ const [gitLogs, setGitLogs] = useState([]);
               <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">
                 <GitCommit className="w-3.5 h-3.5 text-cyan-400" />
                 <span>
-                  COMMIT: <strong className="text-white">{currentGitHash}</strong>
+                  COMMIT:{" "}
+                  <strong className="text-white">{currentGitHash}</strong>
                 </span>
                 <span>|</span>
                 <span>OS GENESIS V20.95</span>
@@ -214,7 +227,7 @@ const [gitLogs, setGitLogs] = useState([]);
           </button>
         </div>
 
-        {/* 2. OBSAH ZZNAMOV (LIMIT 30 + EXPANDABLE CARDS) */}
+        {/* 2. OBSAH ZÁZNAMOV */}
         <div className="p-5 overflow-y-auto space-y-3 flex-1 custom-scrollbar">
           <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center gap-3 text-xs text-cyan-300">
             <Zap className="w-5 h-5 text-cyan-400 shrink-0 animate-pulse" />
@@ -233,6 +246,15 @@ const [gitLogs, setGitLogs] = useState([]);
                 POSLEDNÝCH {displayLogs.length} ZÁZNAMOV
               </span>
             </div>
+
+            {/* V20 CYBER SKENOVACÍ LOADER */}
+            {isLoading && (
+              <div className="p-4 rounded-lg bg-cyan-950/30 border border-cyan-500/40 text-center animate-pulse">
+                <div className="text-xs font-mono text-cyan-400 font-semibold tracking-wider">
+                  ⚡ [NEXUS GIT API]: SKENUJE SA LIVE GITHUB MAINFRAME...
+                </div>
+              </div>
+            )}
 
             {displayLogs.map((log) => {
               const isExpanded = expandedLogId === log.id;
@@ -261,7 +283,9 @@ const [gitLogs, setGitLogs] = useState([]);
                       [{log.tag}]
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-gray-500">{log.date}</span>
+                      <span className="text-[10px] text-gray-500">
+                        {log.date}
+                      </span>
                       {isExpanded ? (
                         <ChevronUp className="w-4 h-4 text-gray-400" />
                       ) : (
@@ -278,10 +302,10 @@ const [gitLogs, setGitLogs] = useState([]);
                     <span>{log.title}</span>
                   </h3>
 
-                  {/* SUMMARY / PREVIEW */}
-                  <p className="text-[11px] text-gray-300 mt-1 leading-relaxed">
-                    {log.summary || log.desc}
-                  </p>
+                  {/* V20 CYBER MARKDOWN PARSED SUMMARY */}
+                  <div className="mt-2 space-y-1">
+                    {renderCyberMarkdown(log.summary)}
+                  </div>
 
                   {/* EXPANDED DETAILED DESCRIPTION */}
                   {isExpanded && log.desc && log.summary && (
@@ -306,7 +330,10 @@ const [gitLogs, setGitLogs] = useState([]);
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <Shield className="w-4 h-4 text-emerald-400" />
             <span>
-              STATUS: <strong className="text-emerald-400 uppercase">SYSTEM STABLE & GROUNDED</strong>
+              STATUS:{" "}
+              <strong className="text-emerald-400 uppercase">
+                SYSTEM STABLE & GROUNDED
+              </strong>
             </span>
           </div>
 

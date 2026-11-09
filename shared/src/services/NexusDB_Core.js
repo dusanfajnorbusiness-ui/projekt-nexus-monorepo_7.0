@@ -152,6 +152,58 @@ export const NexusDB = {
   getTelemetry,
   saveReactions, // ⚡ Nová funkcia pre lajky
 
+   getSystemLogs: async (limit = 15) => {
+    try {
+      const repo = import.meta.env.VITE_GITHUB_REPO || "dusanfajnorbusiness-ui/projekt-nexus-monorepo_7.0";
+      const token = import.meta.env.VITE_GITHUB_TOKEN || "";
+
+      console.log("🔑 [NEXUS GIT API]:", {
+        repo,
+        tokenDetected: Boolean(token),
+        tokenPrefix: token ? `${token.substring(0, 7)}...` : "NONE (VITE_GITHUB_TOKEN chýba v .env)"
+      });
+
+      const headers = {
+        Accept: "application/vnd.github.v3+json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      };
+
+      const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=${limit}`, { headers });
+      if (!res.ok) throw new Error(`GitHub API HTTP ${res.status}`);
+
+      const data = await res.json();
+      if (!Array.isArray(data)) return null;
+
+      return data.map((item, idx) => {
+        const rawMsg = item.commit?.message || "";
+        const msgLines = String(rawMsg).split("\n").filter((l) => l.trim() !== "");
+
+        const commitTitle = String(msgLines[0] || "Git Update").trim();
+        const commitBody = msgLines.slice(1).join("\n").trim() || "Commit evidovaný vo zbernici GitHub.";
+        const commitDate = item.commit?.author?.date
+          ? new Date(item.commit.author.date).toLocaleDateString("sk-SK", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+          : "DNEŠNÝ PUSH";
+
+        return {
+          id: item.sha ? item.sha.substring(0, 7) : `LOG-${idx}`,
+          tag: idx === 0 ? "LATEST_PUSH" : "GIT_COMMIT",
+          title: commitTitle,
+          summary: commitBody,
+          desc: `Commit SHA: ${item.sha} | Autor: ${item.commit?.author?.name || "Architekt"}`,
+          date: commitDate,
+          color: idx === 0 ? "#39FF14" : "#00f3ff",
+        };
+      });
+    } catch (err) {
+      console.warn("⚠️ [NEXUS DB CORE]: GitHub System Log fetch zlyhal:", err.message);
+      return null;
+    }
+  },
+
   // 🛡️ OMEGA PROTOKOL: Načítanie profilu pre Firewall (SUPABASE VERZIA)
   getUserProfile: async (email) => {
     try {
