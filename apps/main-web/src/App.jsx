@@ -174,9 +174,16 @@ export const NEXUS_SUBDOMAIN_MAP = {
 export function getSubIdFromHostname() {
   if (typeof window === "undefined") return null;
   const hostname = String(window.location.hostname || "").toLowerCase();
-  const port = String(window.location.port || ""); // 👈 FIX: Pridaná chýbajúca deklarácia
+  const pathname = String(window.location.pathname || "").toLowerCase();
+  const port = String(window.location.port || "");
   const searchParams = new URLSearchParams(window.location.search);
   const subParam = searchParams.get("sub");
+
+  // 0. DETEKCIA Z URL TRASY (/sub-00 až /sub-15)
+  const pathMatch = pathname.match(/\/sub-(\d{2})/);
+  if (pathMatch && pathMatch) {
+    return `SUB ${pathMatch}`;
+  }
 
   // 1. URL OVERRIDE
   if (subParam) {
@@ -483,23 +490,8 @@ const getIsAdminSubdomain = () => {
 };
 
 const AgencyTeleport = ({ themeColor, userState }) => {
-  const isLocalhost =
-    typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1");
-
-  useEffect(() => {
-    if (!isLocalhost) {
-      window.location.replace("https://agency.projekt-nexus.sk");
-    }
-  }, [isLocalhost]);
-
-  // 🎯 Na Localhoste zobrazíme priamo stránku Agency bez prerušenia na port 3001
-  if (isLocalhost) {
-    return <NexusAgencyPage themeColor={themeColor} userState={userState} />;
-  }
-
-  return null;
+  // Na produkcii aj localhoste zobrazujeme priamo Agency modul (Vercel Edge vybavil 301)
+  return <NexusAgencyPage themeColor={themeColor} userState={userState} />;
 };
 
 export default function App() {
