@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/",
       "has": [
         {
           "type": "host",
