@@ -1,6 +1,4 @@
-﻿// import { NexusAgencyPage } from "@shared/components/GlobalNexusMasterLayout";
-import  NexusAgencyPage  from "@agency/pages/NexusAgencyPage.jsx";
-/* eslint-disable no-undef */
+﻿/* eslint-disable no-undef */
 
 // ============================================================================
 // 👑 PROJECT NEXUS — OS GENESIS EDITION (AGENCY ROUTING APP V20.95)
@@ -11,16 +9,14 @@ import  NexusAgencyPage  from "@agency/pages/NexusAgencyPage.jsx";
 
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import NexusAgencyPage from "@agency/pages/NexusAgencyPage.jsx";
+import SharedPage from "@shared/pages/SharedPage.jsx";
 
-export const App = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<NexusAgencyPage />} />
-      <Route path="/agency" element={<NexusAgencyPage />} />
-      <Route path="/services" element={<NexusAgencyPage />} />
-      <Route path="*" element={<NexusAgencyPage />} />
-    </Routes>
-  );
-};
-
+export const App = () => (
+  <Routes>
+    <Route path="/" element={<NexusAgencyPage />} />
+    <Route path="/services" element={<NexusAgencyPage />} />
+    <Route path="*" element={<SharedPage nodeTitle="AGENCY NODE" subId="404 STANDBY" />} />
+  </Routes>
+);
 export default App;

@@ -492,7 +492,7 @@ const AgencyTeleport = ({ themeColor, userState }) => {
   return <NexusAgencyPage themeColor={themeColor} userState={userState} />;
 };
 
-export default function App() {
+export function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -2289,4 +2289,5 @@ export default function App() {
       </div>
     </HelmetProvider>
   );
-}
+};
+export default App;

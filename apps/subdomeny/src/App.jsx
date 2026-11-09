@@ -1,10 +1,14 @@
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import SharedPage from "@shared/pages/SharedPage.jsx";
+
 const getSubIdFromHostname = () => {
-  if (typeof window === "undefined") return null;
-  const host = window.location.hostname.toLowerCase();
-  const port = window.location.port;
+  if (typeof window === "undefined" || !window.location) return null;
+  const host = String(window.location.hostname || "").toLowerCase();
+  const port = String(window.location.port || "");
 
   if (host === "localhost" || host === "127.0.0.1") {
-    if (port === "5171") return null; // Main-web port -> Homepage
+    if (port === "5171") return null;
     if (port === "51800") return "SUB 00";
     if (port === "51801") return "SUB 01";
     if (port === "51802") return "SUB 02";
@@ -43,5 +47,19 @@ const getSubIdFromHostname = () => {
   if (host.includes("death")) return "SUB 15";
   if (host.includes("mentor")) return "SUB 00";
 
-  return null; // ZÁKAZ NATVRDO FALLBACKU "SUB 00"
+  return null;
 };
+
+// 👑 DUÁLNY EXPORT KOMPONENTU APP (NAMED + DEFAULT)
+export const App = () => {
+  const activeSubId = getSubIdFromHostname() || "SUBDOMENY";
+
+  return (
+    <Routes>
+      <Route path="/" element={<SharedPage nodeTitle="NEXUS DIMENZIE" subId={activeSubId} />} />
+      <Route path="*" element={<SharedPage nodeTitle="NEXUS DIMENZIE" subId={activeSubId} />} />
+    </Routes>
+  );
+};
+
+export default App;

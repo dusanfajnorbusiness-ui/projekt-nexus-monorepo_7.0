@@ -1,36 +1,37 @@
-import App from "@main-web/App.jsx";
 /* eslint-disable no-undef */
 
 // ============================================================================
-// 👑 PROJECT NEXUS — OS GENESIS EDITION (MAIN ENTRY POINT V20.95)
-// Súbor: main.jsx
-// Status: 100% GROUNDED // REACT 18 MOUNTING ENGINE V20
-// Author: Dušan Fajnor @nexus-core2Mb (CyberTech Architect)
+// 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS03 MASTER DATASET V20.95)
+// Súbor: @apps/[nazov-uzla]/src/main.jsx
+// Status: 100% GROUNDED // UNIVERSAL BOOTSTRAPPER // ZERO CRASH FALLBACK
+// CORE_VERSION: MAIN-BOOT-V20.95
 // ============================================================================
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { App } from "./App.jsx";
+import "./index.css";
 
-// ⚡ 1. DIAGNOSTICKÁ SONDA ŠTARTU
-console.log(
-  `%c[📡 OS GENESIS MAIN]: Inicializujem React 18 Root Engine na porte 5171...`,
-  "background: #050a0e; color: #00F3FF; font-weight: bold; border: 1px solid #00F3FF; padding: 3px;",
-);
+// ============================================================================
+// ⚠️ DEFENZÍVNY CENTRÁLNY BOOTSTRAPPER PRE OS GENESIS
+// ============================================================================
 
-// ⚡ 2. DEFENZÍVNA KONTROLA ELEMNETU #root
 const rootElement = document.getElementById("root");
 
-if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </React.StrictMode>,
+if (!rootElement) {
+  console.error(
+    "%c[NEXUS CRITICAL ERROR]: DOM SOCKET '#root' NEBOLA NÁJDENÁ!",
+    "color: #FF0055; font-weight: bold; background: #000; padding: 4px;"
   );
 } else {
-  console.error(
-    "🚨 [CRITICAL ERROR]: Element #root nebol nájdený v index.html!",
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+
+  console.log(
+    "%c[NEXUS OS]: UNIFIED_BOOT_SEQUENCE_COMPLETE // 100% READY",
+    "color: #39FF14; font-weight: bold; background: #000; padding: 4px 8px; border-radius: 4px;"
   );
 }
