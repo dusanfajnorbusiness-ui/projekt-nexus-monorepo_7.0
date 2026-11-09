@@ -17,9 +17,8 @@
     }
   ],
   "rewrites": [
-    { "source": "/sub-00/(.*)", "destination": "/subdomeny/index.html" },
-    { "source": "/sub-00", "destination": "/subdomeny/index.html" },
-    { "source": "/subdomeny/(.*)", "destination": "/subdomeny/index.html" },
+    { "source": "/sub-00(.*)", "destination": "/index.html" },
+    { "source": "/subdomeny(.*)", "destination": "/index.html" },
     { "source": "/agency/(.*)", "destination": "/agency/index.html" },
     { "source": "/shop/(.*)", "destination": "/shop/index.html" },
     { "source": "/operators/(.*)", "destination": "/operators/index.html" },

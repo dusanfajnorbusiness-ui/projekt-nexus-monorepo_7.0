@@ -75,6 +75,7 @@ import { Activity, AlertTriangle, Briefcase, Cpu, Database, Grid, LogOut, Mail, 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import SharedPage from "@shared/pages/SharedPage.jsx";
 
 export const CORE_VERSION = "SK-App V20.95_STABLE";
 
