@@ -6,7 +6,6 @@
 // Status: 100% GROUNDED // V20 ESM STRICT EXPORT // ZERO STANDBY FALLBACK
 // ============================================================================
 import AdminPage from "@admin/pages/AdminPage.jsx";
-import NexusAgencyPage from "@agency/pages/NexusAgencyPage.jsx";
 import BlogPage from "@blog/pages/BlogPage.jsx";
 import { GlobalDimensionHub } from "@main-web/components/GlobalDimensionHub.jsx";
 import { GlobalKeyboard } from "@main-web/components/GlobalKeyboard.jsx";
@@ -45,7 +44,11 @@ import { GlobalHamburgerMenu } from "@shared/components/GlobalHamburgerMenu.jsx"
 import { GlobalMessages } from "@shared/components/GlobalMessages.jsx";
 import { GlobalProfil } from "@shared/components/GlobalProfil.jsx";
 import MetaTags from "@shared/components/MetaTags.jsx";
-import { AuthRoute, PublicRoute, StrictRoute } from "@shared/components/NexusRouting.jsx";
+import {
+  AuthRoute,
+  PublicRoute,
+  StrictRoute,
+} from "@shared/components/NexusRouting.jsx";
 import { SystemLogModal } from "@shared/components/SystemLogModal.jsx";
 // 🗄️ 2. DÁTA A REGISTRE (@shared/data/)
 import { DIMENSIONS, getTierColor } from "@shared/data/nexusConfig.js";
@@ -67,15 +70,30 @@ import ShopDocumentsMedia from "@shop/components/ShopDocumentsMedia.jsx";
 import ShopImageMedia from "@shop/components/ShopImageMedia.jsx";
 import ShopVideoMedia from "@shop/components/ShopVideoMedia.jsx";
 import ShopPage from "@shop/pages/ShopPage.jsx";
-import { SubdomainDropdown } from "@subdomeny/components/SubdomainDropdown.jsx";
-import SubdomainStandbyPage from "@subdomeny/pages/SubdomainStandbyPage.jsx";
-import { SUBDOMAINS_ARRAY as SUBDOMAINS_LIST } from "@subdomeny/data/SubdomainsMasterData.js";
+
 import UplinkModal from "@uplink/pages/UplinkModal.jsx";
-import { Activity, AlertTriangle, Briefcase, Cpu, Database, Grid, LogOut, Mail, Settings, Shield, ShieldAlert, ShoppingCart, Terminal, User, Users, Wallet, Wand2 } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Briefcase,
+  Cpu,
+  Database,
+  Grid,
+  LogOut,
+  Mail,
+  Settings,
+  Shield,
+  ShieldAlert,
+  ShoppingCart,
+  Terminal,
+  User,
+  Users,
+  Wallet,
+  Wand2,
+} from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-
 
 export const CORE_VERSION = "SK-App V20.95_STABLE";
 
@@ -85,6 +103,7 @@ export const CORE_VERSION = "SK-App V20.95_STABLE";
 const PROTO = "https://";
 const DOMAIN = "projekt-nexus.sk";
 
+// ⚡⚡⚡ ZAČIATOK OPRAVA ⚡⚡⚡
 export const NEXUS_SUBDOMAIN_MAP = {
   // 🌐 CORE SUBDOMÉNY OS GENESIS
   home: `${PROTO}${DOMAIN}`,
@@ -95,8 +114,6 @@ export const NEXUS_SUBDOMAIN_MAP = {
   settings: `${PROTO}settings.${DOMAIN}`,
   admin: `${PROTO}admin.${DOMAIN}`,
   uplink: `${PROTO}uplink.${DOMAIN}`,
-  subdomains: `${PROTO}${DOMAIN}/subdomains`,
-  subdomeny: `${PROTO}${DOMAIN}/subdomains`,
 
   // 🛒 6 SÚRODENCOV OBCHODU (SHOP DIVÍZIE)
   documents: `${PROTO}shop.${DOMAIN}/documents`,
@@ -129,124 +146,20 @@ export const NEXUS_SUBDOMAIN_MAP = {
   id13: `${PROTO}${DOMAIN}/ID13`,
   id14: `${PROTO}${DOMAIN}/ID14`,
   id15: `${PROTO}${DOMAIN}/ID15`,
-
-  // 🌐 SUBDOMÉNY DIMENZIÍ (SUB 00 – SUB 15) -> INTERNÉ TRASY OS GENESIS
-  "sub 00": `${PROTO}${DOMAIN}/sub-00`,
-  "sub 01": `${PROTO}${DOMAIN}/sub-01`,
-  "sub 02": `${PROTO}${DOMAIN}/sub-02`,
-  "sub 03": `${PROTO}${DOMAIN}/sub-03`,
-  "sub 04": `${PROTO}${DOMAIN}/sub-04`,
-  "sub 05": `${PROTO}${DOMAIN}/sub-05`,
-  "sub 06": `${PROTO}${DOMAIN}/sub-06`,
-  "sub 07": `${PROTO}${DOMAIN}/sub-07`,
-  "sub 08": `${PROTO}${DOMAIN}/sub-08`,
-  "sub 09": `${PROTO}${DOMAIN}/sub-09`,
-  "sub 10": `${PROTO}${DOMAIN}/sub-10`,
-  "sub 11": `${PROTO}${DOMAIN}/sub-11`,
-  "sub 12": `${PROTO}${DOMAIN}/sub-12`,
-  "sub 13": `${PROTO}${DOMAIN}/sub-13`,
-  "sub 14": `${PROTO}${DOMAIN}/sub-14`,
-  "sub 15": `${PROTO}${DOMAIN}/sub-15`,
-
-  // BEZMEDZERATÉ SYNONYMÁ PRE SUB 00 – SUB 15
-  sub00: `${PROTO}${DOMAIN}/sub-00`,
-  sub01: `${PROTO}${DOMAIN}/sub-01`,
-  sub02: `${PROTO}${DOMAIN}/sub-02`,
-  sub03: `${PROTO}${DOMAIN}/sub-03`,
-  sub04: `${PROTO}${DOMAIN}/sub-04`,
-  sub05: `${PROTO}${DOMAIN}/sub-05`,
-  sub06: `${PROTO}${DOMAIN}/sub-06`,
-  sub07: `${PROTO}${DOMAIN}/sub-07`,
-  sub08: `${PROTO}${DOMAIN}/sub-08`,
-  sub09: `${PROTO}${DOMAIN}/sub-09`,
-  sub10: `${PROTO}${DOMAIN}/sub-10`,
-  sub11: `${PROTO}${DOMAIN}/sub-11`,
-  sub12: `${PROTO}${DOMAIN}/sub-12`,
-  sub13: `${PROTO}${DOMAIN}/sub-13`,
-  sub14: `${PROTO}${DOMAIN}/sub-14`,
-  sub15: `${PROTO}${DOMAIN}/sub-15`,
 };
- 
 
-
-// Použitie 'function' zaručuje 100% JS Hoisting v celom súbore pred prvým spustením useState
+// 🛡️ V20 DEFENZÍVNY GETTER (BEZ EXTERNÝCH SUBDOMÉNOVÝCH ZÁVISLOSTÍ)
 export function getSubIdFromHostname() {
   if (typeof window === "undefined") return null;
-  const hostname = String(window.location.hostname || "").toLowerCase();
   const pathname = String(window.location.pathname || "").toLowerCase();
-  const port = String(window.location.port || "");
-  const searchParams = new URLSearchParams(window.location.search);
-  const subParam = searchParams.get("sub");
 
-  // 0. DETEKCIA Z URL TRASY (/sub-00 až /sub-15)
+  // 1. ZÁKLADNÁ DETEKCIA Z URL TRASY (/sub-00 až /sub-15) PRE REDIRECT
   const pathMatch = pathname.match(/\/sub-(\d{2})/);
   if (pathMatch && pathMatch) {
     return `SUB ${pathMatch}`;
   }
 
-  // 1. URL OVERRIDE
-  if (subParam) {
-    const found = SUBDOMAINS_ARRAY?.find(
-      (s) =>
-        String(s.id || "").toLowerCase() ===
-          String(subParam || "").toLowerCase() ||
-        String(s.slug || "").toLowerCase() ===
-          String(subParam || "").toLowerCase(),
-    );
-    if (found) return found.id;
-  }
-
-  // 2. MONOREPO VITE DEV SERVERY (LOCALHOST RADAR)
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    // Port 5171 (main-web) a hlavné portály -> MUST RETURN null FOR HOMEPAGE
-    if (
-      ["5171", "5172", "5173", "5174", "5175", "5176", "5177"].includes(port)
-    ) {
-      return null;
-    }
-    // Porty 51800 - 51815 pre Subdomény
-    if (port === "51800") return "SUB 00";
-    if (port === "51801") return "SUB 01";
-    if (port === "51802") return "SUB 02";
-    if (port === "51803") return "SUB 03";
-    if (port === "51804") return "SUB 04";
-    if (port === "51805") return "SUB 05";
-    if (port === "51806") return "SUB 06";
-    if (port === "51807") return "SUB 07";
-    if (port === "51808") return "SUB 08";
-    if (port === "51809") return "SUB 09";
-    if (port === "51810") return "SUB 10";
-    if (port === "51811") return "SUB 11";
-    if (port === "51812") return "SUB 12";
-    if (port === "51813") return "SUB 13";
-    if (port === "51814") return "SUB 14";
-    if (port === "51815") return "SUB 15";
-    return null;
-  }
-
-  // 3. PRODUKČNÝ MAIN WEB (PROJEKT-NEXUS.SK)
-  if (hostname === "projekt-nexus.sk" || hostname === "www.projekt-nexus.sk") {
-    return null;
-  }
-
-  // 4. PRODUKČNÉ SUBDOMÉNY
-  if (hostname.includes("personal.")) return "SUB 01";
-  if (hostname.includes("work.")) return "SUB 02";
-  if (hostname.includes("finance.")) return "SUB 03";
-  if (hostname.includes("business.")) return "SUB 04";
-  if (hostname.includes("investments.")) return "SUB 05";
-  if (hostname.includes("study.")) return "SUB 06";
-  if (hostname.includes("professional.")) return "SUB 07";
-  if (hostname.includes("reader.")) return "SUB 08";
-  if (hostname.includes("player.")) return "SUB 09";
-  if (hostname.includes("home.")) return "SUB 10";
-  if (hostname.includes("recovery.")) return "SUB 11";
-  if (hostname.includes("codex.")) return "SUB 12";
-  if (hostname.includes("habits.")) return "SUB 13";
-  if (hostname.includes("blog.")) return "SUB 14";
-  if (hostname.includes("death.")) return "SUB 15";
-  if (hostname.includes("mentor.")) return "SUB 00";
-
+  // 2. MAIN-WEB JE VÝHRADNE HLAVNÝ PORTÁL -> VŽDY VRACIA NULL
   return null;
 }
 
@@ -473,26 +386,6 @@ const DimensionConstruction = ({ dimId, dimName, color, navigateTo }) => (
   </div>
 );
 
-const getIsAgencySubdomain = () => {
-  if (typeof window === "undefined") return false;
-  const urlParams = new URLSearchParams(window.location.search);
-  return (
-    window.location.hostname.startsWith("agency.") ||
-    urlParams.get("agency") === "true"
-  );
-};
-
-const getIsAdminSubdomain = () => {
-  if (typeof window === "undefined") return false;
-  const host = window.location.hostname;
-  return host.startsWith("admin.") || host.includes("admin-");
-};
-
-const AgencyTeleport = ({ themeColor, userState }) => {
-  // Na produkcii aj localhoste zobrazujeme priamo Agency modul (Vercel Edge vybavil 301)
-  return <NexusAgencyPage themeColor={themeColor} userState={userState} />;
-};
-
 export function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -500,7 +393,12 @@ export function App() {
   const [userState, setUserState] = useState(
     typeof DEFAULT_USER_STATE !== "undefined"
       ? DEFAULT_USER_STATE
-      : { isGuest: true, tier: "QUEST", credits: 0, displayName: "GUEST_ENTITY" }
+      : {
+          isGuest: true,
+          tier: "QUEST",
+          credits: 0,
+          displayName: "GUEST_ENTITY",
+        },
   );
   const [themeColor, setThemeColor] = useState("#39FF14");
   const [isSystemLogOpen, setIsSystemLogOpen] = useState(false);
@@ -510,7 +408,10 @@ export function App() {
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
-      const isAdminSub = typeof getIsAdminSubdomain === "function" ? getIsAdminSubdomain() : false;
+      const isAdminSub =
+        typeof getIsAdminSubdomain === "function"
+          ? getIsAdminSubdomain()
+          : false;
       if (isAdminSub || path.startsWith("/admin")) {
         return "admin";
       }
@@ -518,7 +419,7 @@ export function App() {
     return "home";
   });
 
-   const navigateTo = (targetId) => {
+  const navigateTo = (targetId) => {
     if (!targetId) return;
     try {
       if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
@@ -528,56 +429,40 @@ export function App() {
     const rawId = String(targetId).trim();
     const cleanId = rawId.replace(/^\//, "");
 
-    // 🎯 1. SUBDOMÉNOVÉ MODULY (/sub-00 až /sub-15)
-    const subMatch = cleanId.match(/^sub[\s_-]?(\d{2})$/i);
-    if (subMatch) {
-      const num = subMatch[1]; // 🎯 ZÍSKA VÝHRADNE "04" (INDEX 1 Z REGEXU)
-      const formattedSubId = `SUB ${num}`;
-
-      if (typeof setSelectedSubId === "function") {
-        setSelectedSubId(formattedSubId);
-      }
-      if (typeof setActiveTab === "function") {
-        setActiveTab("subdomains");
-      }
-
-      navigate(`/sub-${num}`);
+    // 🎯 1. AGENCY (OSTRÁ SUBDOMÉNA Z VIZITIEK)
+    if (cleanId.toLowerCase() === "agency") {
+      window.location.href =
+        NEXUS_SUBDOMAIN_MAP.agency || "https://agency.projekt-nexus.sk";
       return;
     }
 
-    // 🎯 2. KOGNITÍVNE DIMENZIE (/ID00 až /ID15)
+    // 🎯 2. KOGNITÍVNE DIMENZIE (/ID00 až /ID15 NA MAIN-WEB)
     const idMatch = cleanId.match(/^id[\s_-]?(\d{2})$/i);
     if (idMatch) {
-      const num = idMatch[1]; // 🎯 ZÍSKA VÝHRADNE "04" (INDEX 1 Z REGEXU)
+      const num = idMatch; // Získa index (napr. "04")
       if (typeof setActiveTab === "function") setActiveTab(`ID${num}`);
       navigate(`/ID${num}`);
       return;
     }
 
-    // 🎯 3. HLAVNÉ SEKTORY (agency, shop, blog, settings, home...)
+    // 🎯 3. SUBDOMÉNOVÉ MODULY (EXTERNÉ SMEROVANIE DO APPS/SUBDOMENY)
+    const subMatch = cleanId.match(/^sub[\s_-]?(\d{2})$/i);
+    if (subMatch) {
+      const num = subMatch;
+      // Presmerovanie na externú subdoménu alebo fallback
+      navigate(`/ID${num}`);
+      return;
+    }
+
+    // 🎯 4. HLAVNÉ SEKTORY MAIN-WEBU (shop, blog, settings, home...)
     const cleanKey = cleanId.toLowerCase();
     if (typeof setActiveTab === "function") setActiveTab(cleanKey);
     const targetRoute = cleanKey === "home" ? "/" : `/${cleanKey}`;
     navigate(targetRoute);
   };
 
-  const [selectedSubId, setSelectedSubId] = useState(() => {
-    if (typeof window === "undefined") return "SUB 00";
-    const host = window.location.hostname.toLowerCase();
-
-    if (typeof SUBDOMAINS_LIST !== "undefined" && Array.isArray(SUBDOMAINS_LIST)) {
-      const matchedSub = SUBDOMAINS_LIST.find(
-        (sub) => sub?.domain && host.includes(sub.domain.toLowerCase())
-      );
-      if (matchedSub) {
-        console.log("⚡ [NEXUS PROD ROUTER] Detekovaná subdoména z URL:", matchedSub.id, matchedSub.name);
-        return matchedSub.id;
-      }
-    }
-
-    const searchParams = new URLSearchParams(window.location.search);
-    return searchParams.get("id") || "SUB 00";
-  });
+  // 🛡️ OČISTENÝ STAV PRE MAIN-WEB (BEZ ZÁVISLOSTI NA SUBDOMAINS_LIST)
+  const [selectedSubId, setSelectedSubId] = useState("SUB 00");
 
   // 3. V20 DYNAMICKÉ PREMENNÉ PRE FOOTER A STROJOVŇU (userTier & currentSector)
   const userTier = useMemo(() => {
@@ -588,20 +473,30 @@ export function App() {
   }, [userState]);
 
   const currentSector = useMemo(() => {
-    const rawPathParts = String(location.pathname || "").replace(/^\//, "").split("/");
+    const rawPathParts = String(location.pathname || "")
+      .replace(/^\//, "")
+      .split("/");
     const firstSegment = String(rawPathParts || "").toLowerCase();
 
     if (!firstSegment || firstSegment === "home") return "home";
-    if (firstSegment === "login" || firstSegment === "uplinkmodal" || firstSegment === "register") return "uplink";
+    if (
+      firstSegment === "login" ||
+      firstSegment === "uplinkmodal" ||
+      firstSegment === "register"
+    )
+      return "uplink";
     if (firstSegment.startsWith("sub")) return selectedSubId || firstSegment;
     return firstSegment;
   }, [location.pathname, selectedSubId]);
 
   // 4. EFFECTY (GIT LOG PROTOKOL & SUPABASE AUTH HYDRATÁCIA)
   useEffect(() => {
-    const currentGitHash = import.meta.env.VITE_GIT_COMMIT_HASH || "v20.95-master";
+    const currentGitHash =
+      import.meta.env.VITE_GIT_COMMIT_HASH || "v20.95-master";
     const lastSeenHash = localStorage.getItem("nexus_last_seen_git_commit");
-    const sessionShown = sessionStorage.getItem("nexus_system_log_session_shown");
+    const sessionShown = sessionStorage.getItem(
+      "nexus_system_log_session_shown",
+    );
 
     if (lastSeenHash !== currentGitHash && !sessionShown && !isLogModalOpen) {
       setIsLogModalOpen(true);
@@ -616,57 +511,88 @@ export function App() {
       try {
         if (typeof supabase === "undefined" || !supabase?.auth) return;
 
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
         if (session?.user) {
           const userMeta = session.user.user_metadata || {};
           const userEmail = session.user.email || "";
-          const isMasterAdmin = userEmail.includes("nexus") || userEmail.includes("architect") || userMeta.tier === "ARCHITECT";
-          const currentTier = isMasterAdmin ? "ARCHITECT" : (userMeta.tier || "FREE");
+          const isMasterAdmin =
+            userEmail.includes("nexus") ||
+            userEmail.includes("architect") ||
+            userMeta.tier === "ARCHITECT";
+          const currentTier = isMasterAdmin
+            ? "ARCHITECT"
+            : userMeta.tier || "FREE";
 
           setUserState({
             id: session.user.id,
             email: userEmail,
-            displayName: userMeta.display_name || userMeta.full_name || userEmail.split("@"),
+            displayName:
+              userMeta.display_name ||
+              userMeta.full_name ||
+              userEmail.split("@"),
             avatar: userMeta.avatar_url || userMeta.avatar || null,
             tier: currentTier,
             credits: userMeta.credits || 2500,
             isGuest: false,
           });
         } else {
-          setUserState(typeof DEFAULT_USER_STATE !== "undefined" ? DEFAULT_USER_STATE : {
-            isGuest: true,
-            tier: "QUEST",
-            credits: 0,
-            displayName: "GUEST_ENTITY",
-          });
+          setUserState(
+            typeof DEFAULT_USER_STATE !== "undefined"
+              ? DEFAULT_USER_STATE
+              : {
+                  isGuest: true,
+                  tier: "QUEST",
+                  credits: 0,
+                  displayName: "GUEST_ENTITY",
+                },
+          );
         }
 
-        const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-          if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
-            const userMeta = session.user.user_metadata || {};
-            const userEmail = session.user.email || "";
-            const isMasterAdmin = userEmail.includes("nexus") || userEmail.includes("architect") || userMeta.tier === "ARCHITECT";
-            const currentTier = isMasterAdmin ? "ARCHITECT" : (userMeta.tier || "FREE");
+        const { data: listener } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            if (
+              (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") &&
+              session?.user
+            ) {
+              const userMeta = session.user.user_metadata || {};
+              const userEmail = session.user.email || "";
+              const isMasterAdmin =
+                userEmail.includes("nexus") ||
+                userEmail.includes("architect") ||
+                userMeta.tier === "ARCHITECT";
+              const currentTier = isMasterAdmin
+                ? "ARCHITECT"
+                : userMeta.tier || "FREE";
 
-            setUserState({
-              id: session.user.id,
-              email: userEmail,
-              displayName: userMeta.display_name || userMeta.full_name || userEmail.split("@"),
-              avatar: userMeta.avatar_url || userMeta.avatar || null,
-              tier: currentTier,
-              credits: userMeta.credits || 2500,
-              isGuest: false,
-            });
-          } else if (event === "SIGNED_OUT") {
-            setUserState(typeof DEFAULT_USER_STATE !== "undefined" ? DEFAULT_USER_STATE : {
-              isGuest: true,
-              tier: "QUEST",
-              credits: 0,
-              displayName: "GUEST_ENTITY",
-            });
-          }
-        });
+              setUserState({
+                id: session.user.id,
+                email: userEmail,
+                displayName:
+                  userMeta.display_name ||
+                  userMeta.full_name ||
+                  userEmail.split("@"),
+                avatar: userMeta.avatar_url || userMeta.avatar || null,
+                tier: currentTier,
+                credits: userMeta.credits || 2500,
+                isGuest: false,
+              });
+            } else if (event === "SIGNED_OUT") {
+              setUserState(
+                typeof DEFAULT_USER_STATE !== "undefined"
+                  ? DEFAULT_USER_STATE
+                  : {
+                      isGuest: true,
+                      tier: "QUEST",
+                      credits: 0,
+                      displayName: "GUEST_ENTITY",
+                    },
+              );
+            }
+          },
+        );
 
         authListener = listener?.subscription;
       } catch (err) {
@@ -682,29 +608,28 @@ export function App() {
   }, []);
 
   const handleSubdomainChange = (subId) => {
-    navigate(`/subdomeny?id=${encodeURIComponent(subId)}`);
-    
-    // Ak používaš navigateTo alebo setCurrentTab:
-    if (typeof navigateTo === "function") {
-      navigateTo("subdomains");
-    } else if (typeof setCurrentPage === "function") {
-      setCurrentPage("subdomains");
+    if (!subId) return;
+    const raw = String(subId).trim().toUpperCase();
+    const match = raw.match(/(\d{2})/);
+    if (match) {
+      // Na main-webe presmerujeme priamo do ostrej kognitívnej dimenzie
+      navigate(`/ID${match}`);
+    } else {
+      navigate("/");
     }
   };
 
-  // 2. Detekcia subdomény z URL domény (na projekt-nexus.sk vracia null)
+  // 2. Detekcia subdomény na Hlavnom Webe (na projekt-nexus.sk VŽDY vracia null)
   const detectedSubId =
     typeof getSubIdFromHostname === "function" ? getSubIdFromHostname() : null;
 
-  // 3. Aktívna subdoména (null = Hlavný Web)
-  // Na domovskej stránke MUSÍ byť hodnota null! Žiadne || "SUB 00"!
-  const activeSubId = selectedSubId || detectedSubId || null;
-
-  // 4. Na Hlavnom Webe MUSÍ byť currentSubId null, aby SubdomainDropdown nesvietil ako SUB 00!
-  const currentSubId = activeSubId;
-  const safeSubId = currentSubId;
+  // 3. Aktívna subdoména pre main-web (vždy null -> hlavný portál OS Genesis)
+  const activeSubId = null;
+  const currentSubId = null;
+  const safeSubId = null;
   const activeColor = themeColor || "#00f3ff";
 
+  // 4. Detekcia crawlerov pre Ghost Mode & SEO indexáciu
   const isBot =
     typeof navigator !== "undefined" &&
     /ReactSnap|HeadlessChrome|Puppeteer|bot|spider|crawl/i.test(
@@ -748,13 +673,10 @@ export function App() {
     } else if (path.includes("/home") || path === "/") {
       setActiveTab("home");
       setThemeColor("#39FF14");
-    } else if (path.includes("/agency") || urlParams.get("agency") === "true") {
-      setActiveTab("agency");
-      setThemeColor("#00f3ff");
     } else if (path.includes("/blog")) {
       setActiveTab("blog");
       setThemeColor("#E91E63");
-      } else if (path.includes("/operators")) {
+    } else if (path.includes("/operators")) {
       setActiveTab("operators");
       setThemeColor("#FFAA00");
     } else if (path.includes("/shop")) {
@@ -929,7 +851,6 @@ export function App() {
     };
   }, []);
 
-  
   useEffect(() => {
     const handleUrlSync = () => {
       const host = window.location.hostname;
@@ -1033,19 +954,24 @@ export function App() {
   const getThemeColorDyn = () => {
     if (activeTab === "uplink") return "#8A2BE2";
     if (activeTab === "home") return "#39FF14";
-    if (activeTab === "agency") return "#00f3ff";
+
     if (activeTab === "blog") return "#FF1493";
     if (activeTab === "operators") return "#FFAA00";
     if (activeTab === "shop") return "#FFD700";
-    
+
     if (activeTab === "settings") return "#8A2BE2";
 
     if (activeTab === "admin") return "#FF003C"; // ⚡ PRIDANÉ: Farba Architekta pre Admin Panel
-    if (activeTab === "sys01" || activeTab === "Sys01_VideoNodes") return "#FF0000";
-    if (activeTab === "sys02" || activeTab === "Sys02_Mentoring") return "#E91E63";
-    if (activeTab === "sys03" || activeTab === "Sys03_ImgGallery" ) return "#BF00FF";
-    if (activeTab === "sys04" || activeTab === "Sys04_VideoGallery" ) return "#FF0000";
-    if (activeTab === "sys05" || activeTab === "SYS05_Directory" ) return "#39FF14";
+    if (activeTab === "sys01" || activeTab === "Sys01_VideoNodes")
+      return "#FF0000";
+    if (activeTab === "sys02" || activeTab === "Sys02_Mentoring")
+      return "#E91E63";
+    if (activeTab === "sys03" || activeTab === "Sys03_ImgGallery")
+      return "#BF00FF";
+    if (activeTab === "sys04" || activeTab === "Sys04_VideoGallery")
+      return "#FF0000";
+    if (activeTab === "sys05" || activeTab === "SYS05_Directory")
+      return "#39FF14";
 
     const dimPrefix = activeTab?.split("-")[0];
     const dimObj = DIMENSIONS?.find((d) => d.id === dimPrefix);
@@ -1289,7 +1215,7 @@ export function App() {
     setShowUplink(false);
   };
 
- const handleLogout = async () => {
+  const handleLogout = async () => {
     if (typeof SoundFX !== "undefined" && SoundFX?.click) SoundFX.click();
     try {
       if (typeof supabase !== "undefined" && supabase?.auth) {
@@ -1308,7 +1234,10 @@ export function App() {
         if (key.startsWith("nexus_")) sessionStorage.removeItem(key);
       });
 
-      const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
+      const hostname =
+        typeof window !== "undefined"
+          ? String(window.location.hostname || "")
+          : "";
       const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
 
       if (isLocalhost) {
@@ -1441,24 +1370,20 @@ export function App() {
     `}</style>
         {/* ⚡ INJEKTÁŽ RÝCHLEHO NAVIGAČNÉHO UZLA (CHAMELEÓN) ⚡ */}
         {/* ⚡ ABSOLÚTNA KARANTÉNA: NA LOGINE VYPÍNAME GLOBÁLNE MENU */}
-        {location.pathname !== "/login" &&
-           (
-            <div
-              className={`relative z-50 pointer-events-none transition-all duration-300 ${showGlobalProfile ? "opacity-0 invisible" : "opacity-100 visible"}`}
-            >
-              <div className="pointer-events-auto">
-                <GlobalHamburgerMenu
-                  activeTab={activeTab}
-                  themeColor={themeColor}
-                />
-                {/* 📡 DÁTOVÝ MOST: Posielame identitu priamo do motora pre overenie v Ústave */}
-                <GlobalComponents
-                  themeColor={themeColor}
-                  userState={userState}
-                />
-              </div>
+        {location.pathname !== "/login" && (
+          <div
+            className={`relative z-50 pointer-events-none transition-all duration-300 ${showGlobalProfile ? "opacity-0 invisible" : "opacity-100 visible"}`}
+          >
+            <div className="pointer-events-auto">
+              <GlobalHamburgerMenu
+                activeTab={activeTab}
+                themeColor={themeColor}
+              />
+              {/* 📡 DÁTOVÝ MOST: Posielame identitu priamo do motora pre overenie v Ústave */}
+              <GlobalComponents themeColor={themeColor} userState={userState} />
             </div>
-          )}
+          </div>
+        )}
         <GlobalProfil
           isOpen={showGlobalProfile}
           onClose={() => {
@@ -1517,7 +1442,7 @@ export function App() {
               {/* CYBER-DOCK IKONY / TLAČIDLÁ (PRESVETLENÉ PRE MOBIL) */}
               <div className="flex items-center gap-1 overflow-x-auto hide-scroll py-0.5 max-w-full">
                 <NavButton id="home" icon={Grid} label="Home" />
-                <NavButton id="agency" icon={Briefcase} label="Agency" />
+
                 <NavButton id="blog" icon={Terminal} label="Blog" />
                 <NavButton id="operators" icon={Users} label="Operators" />
                 <NavButton id="shop" icon={ShoppingCart} label="Shop" />
@@ -1531,24 +1456,6 @@ export function App() {
 
             {/* 🪙 PRAVÁ ČASŤ: SUBDOMÉNY + PEŇAŽENKA + INBOX + PROFIL + LOGOUT */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* INTEGRÁCIA SUBDOMÉNOVÉHO DROPDOWNU (BEZPEČNE UMIESTNENÝ V PRAVEJ ZBERNICI) */}
-              <div className="shrink-0">
-                <SubdomainDropdown
-                  currentSubId={selectedSubId}
-                  activeColor={themeColor}
-                  onSelectSub={(subId) => {
-                    setSelectedSubId(subId);
-                    // ⚡ Ošetrenie pre prechod na subdoménu pri výbere z dropdownu
-                    const mappedId = String(subId || "").toLowerCase().replace("sub_", "").replace(" ", "");
-                    if (NEXUS_SUBDOMAIN_MAP[mappedId]) {
-                      navigateTo(mappedId);
-                    } else if (typeof setCurrentModule === "function") {
-                      setCurrentModule("subdomains");
-                    }
-                  }}
-                />
-              </div>
-
               {/* KONTROLA PEŇAŽENKY S TOOLTIPOM */}
               <div className="relative group flex items-center shrink-0">
                 <div className="transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(234,179,8,0.3)] rounded-xl">
@@ -1692,18 +1599,14 @@ export function App() {
 
         <main
           className={
-            getIsAdminSubdomain() ||
-            getIsAgencySubdomain() ||
-            location.pathname.includes("/agency")
+            typeof getIsAdminSubdomain === "function" && getIsAdminSubdomain()
               ? "pt-24 flex-1 relative z-10"
               : "pt-24 flex-1 px-2 md:px-8 pb-20 text-left relative z-10"
           }
         >
           <div
             className={
-              getIsAdminSubdomain() ||
-              getIsAgencySubdomain() ||
-              location.pathname.includes("/agency")
+              typeof getIsAdminSubdomain === "function" && getIsAdminSubdomain()
                 ? "w-full"
                 : "max-w-7xl mx-auto w-full text-left"
             }
@@ -1713,7 +1616,8 @@ export function App() {
               {/* 🏰 0. Globálna Klávesnica (Aktívna pre celý OS Genesis) */}
               <GlobalKeyboard />
 
-              {getIsAdminSubdomain() ? (
+              {typeof getIsAdminSubdomain === "function" &&
+              getIsAdminSubdomain() ? (
                 /* 🏰 1. ADMIN SUBDOMÉNA */
                 <AdminPage
                   setActiveTab={setActiveTab}
@@ -1725,29 +1629,16 @@ export function App() {
               ) : (
                 /* 🌍 2. HLAVNÝ MATRIX (V20 BYPASS ROUTING) */
                 <Routes>
-                  {/* ALIAS TRASA 1 (ENGLISH URL) */}
+                  {/* ALIAS TRASY PRE SUBDOMÉNY (ODDELENÉ DO APPS/SUBDOMENY) */}
                   <Route
                     path="/subdomains/*"
-                    element={
-                      <SubdomainStandbyPage
-                        subId={selectedSubId || "SUB 00"}
-                        onThemeChange={setThemeColor}
-                        onBackToHome={() => setSelectedSubId(null)}
-                      />
-                    }
+                    element={<Navigate to="/" replace />}
                   />
-
-                  {/* ALIAS TRASA 2 (SLOVAK URL) */}
                   <Route
                     path="/subdomeny/*"
-                    element={
-                      <SubdomainStandbyPage
-                        subId={selectedSubId || "SUB 00"}
-                        onThemeChange={setThemeColor}
-                        onBackToHome={() => setSelectedSubId(null)}
-                      />
-                    }
+                    element={<Navigate to="/" replace />}
                   />
+
                   {/* ======================================================= */}
                   {/* 🚪 1. MODALS & AUTH GATEWAY                             */}
                   {/* ======================================================= */}
@@ -1759,8 +1650,13 @@ export function App() {
                           userState={userState}
                           setUserState={setUserState}
                           onSuccess={() => {
-                            const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
-                            const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+                            const hostname =
+                              typeof window !== "undefined"
+                                ? String(window.location.hostname || "")
+                                : "";
+                            const isLocalhost =
+                              hostname === "localhost" ||
+                              hostname === "127.0.0.1";
                             if (isLocalhost) {
                               navigate("/");
                             } else {
@@ -1779,8 +1675,13 @@ export function App() {
                           userState={userState}
                           setUserState={setUserState}
                           onSuccess={() => {
-                            const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
-                            const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+                            const hostname =
+                              typeof window !== "undefined"
+                                ? String(window.location.hostname || "")
+                                : "";
+                            const isLocalhost =
+                              hostname === "localhost" ||
+                              hostname === "127.0.0.1";
                             if (isLocalhost) {
                               navigate("/");
                             } else {
@@ -1799,8 +1700,13 @@ export function App() {
                           userState={userState}
                           setUserState={setUserState}
                           onSuccess={() => {
-                            const hostname = typeof window !== "undefined" ? String(window.location.hostname || "") : "";
-                            const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+                            const hostname =
+                              typeof window !== "undefined"
+                                ? String(window.location.hostname || "")
+                                : "";
+                            const isLocalhost =
+                              hostname === "localhost" ||
+                              hostname === "127.0.0.1";
                             if (isLocalhost) {
                               navigate("/");
                             } else {
@@ -1841,18 +1747,6 @@ export function App() {
                           onThemeChange={setThemeColor}
                         />
                       </PublicRoute>
-                    }
-                  />
-
-                  <Route
-                    path="/agency/*"
-                    element={
-                      <NexusAgencyPage
-                        userState={userState}
-                        getTierColor={getTierColor}
-                        themeColor={themeColor}
-                        onThemeChange={setThemeColor}
-                      />
                     }
                   />
 
@@ -2169,21 +2063,7 @@ export function App() {
                   {/* ======================================================= */}
                   {/* 🌌 8. SUBDOMÉNY OS GENESIS (SUB 00 - SUB 15 REGISTER)    */}
                   {/* ======================================================= */}
-                  {[
-                    "00", "01", "02", "03", "04", "05", "06", "07",
-                    "08", "09", "10", "11", "12", "13", "14", "15"
-                  ].flatMap((num) => [
-                    <Route
-                      key={`sub-dash-${num}`}
-                      path={`/sub-${num}/*`}
-                      element={<SharedPage nodeTitle="NEXUS DIMENZIE" subId={`SUB ${num}`} />}
-                    />,
-                    <Route
-                      key={`sub-lower-${num}`}
-                      path={`/sub${num}/*`}
-                      element={<SharedPage nodeTitle="NEXUS DIMENZIE" subId={`SUB ${num}`} />}
-                    />,
-                  ])}
+                  {/* zrušene, presunute do samostanej apps/subdomeny/app.jsx  */}
 
                   {/* ======================================================= */}
                   {/* ⚖️ 9. PRÁVNA INTEGRITA & DOKUMENTY                      */}
@@ -2238,38 +2118,42 @@ export function App() {
           !location.pathname.includes("nexus_") &&
           !location.pathname.includes("video_") &&
           location.pathname !== "/login" && ( */}
-          {(
-            <GlobalFooter
-              userTier={
-                userState?.isGuest || !userState?.email || userState?.tier === "QUEST"
-                  ? "QUEST"
-                  : userState?.tier || "FREE"
+        {
+          <GlobalFooter
+            userTier={
+              userState?.isGuest ||
+              !userState?.email ||
+              userState?.tier === "QUEST"
+                ? "QUEST"
+                : userState?.tier || "FREE"
+            }
+            themeColor={
+              typeof themeColor !== "undefined" ? themeColor : "#39FF14"
+            }
+            activeTab={
+              location.pathname === "/"
+                ? "home"
+                : location.pathname.replace(/^\//, "").split("/") ||
+                  activeTab ||
+                  "home"
+            }
+            onNavigate={(path) => {
+              const cleanId = String(path || "").replace(/^\//, "");
+              if (typeof navigateTo === "function") {
+                navigateTo(cleanId || "home");
+              } else if (typeof navigate === "function") {
+                navigate(path);
               }
-              themeColor={
-                typeof themeColor !== "undefined" ? themeColor : "#39FF14"
-              }
-              activeTab={
-                location.pathname === "/"
-                  ? "home"
-                  : location.pathname.replace(/^\//, "").split("/") || activeTab || "home"
-              }
-              onNavigate={(path) => {
-                const cleanId = String(path || "").replace(/^\//, "");
-                if (typeof navigateTo === "function") {
-                  navigateTo(cleanId || "home");
-                } else if (typeof navigate === "function") {
-                  navigate(path);
-                }
-              }}
-              onOpenSystemLog={() =>
-                typeof setIsSystemLogOpen === "function" &&
-                setIsSystemLogOpen(true)
-              }
-              uptime={
-                typeof coreUptimeSeconds !== "undefined" ? coreUptimeSeconds : 0
-              }
-            />
-          )}
+            }}
+            onOpenSystemLog={() =>
+              typeof setIsSystemLogOpen === "function" &&
+              setIsSystemLogOpen(true)
+            }
+            uptime={
+              typeof coreUptimeSeconds !== "undefined" ? coreUptimeSeconds : 0
+            }
+          />
+        }
         <SystemLogModal
           isOpen={isSystemLogOpen}
           onClose={() => setIsSystemLogOpen(false)}
@@ -2278,5 +2162,5 @@ export function App() {
       </div>
     </HelmetProvider>
   );
-};
+}
 export default App;
