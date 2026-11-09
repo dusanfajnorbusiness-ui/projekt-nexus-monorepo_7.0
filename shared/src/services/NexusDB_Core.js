@@ -155,22 +155,16 @@ export const NexusDB = {
    getSystemLogs: async (limit = 15) => {
     try {
       const repo = import.meta.env.VITE_GITHUB_REPO || "dusanfajnorbusiness-ui/projekt-nexus-monorepo_7.0";
-      const token = import.meta.env.VITE_GITHUB_TOKEN || "";
-
-      console.log("🔑 [NEXUS GIT API]:", {
-        repo,
-        tokenDetected: Boolean(token),
-        tokenPrefix: token ? `${token.substring(0, 7)}...` : "NONE (VITE_GITHUB_TOKEN chýba v .env)"
-      });
-
-      if (!token) {
-        console.warn("⚠️ [NEXUS GIT API]: VITE_GITHUB_TOKEN nie je v .env. GitHub fetch vynechaný (Private Repo).");
-        return null;
-      }
+      const token =
+        import.meta.env.VITE_GITHUB_TOKEN ||
+        import.meta.env.VITE_GH_TOKEN ||
+        import.meta.env.VITE_GITHUB_PAT ||
+        import.meta.env.VITE_NEXUS_TOKEN ||
+        "";
 
       const headers = {
         Accept: "application/vnd.github.v3+json",
-        Authorization: `Bearer ${token}`,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
 
       const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=${limit}`, { headers });
