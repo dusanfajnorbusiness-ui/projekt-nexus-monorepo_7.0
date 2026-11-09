@@ -74,12 +74,19 @@ export function SubdomainStandbyPage({ subId: propSubId = "SUB 00", onThemeChang
       />
 
       {/* 1. HLAVIČKA AGENTÚRY / SUBDOMÉNY */}
-      <SubdomainHeader
-        themeColor={activeColor}
-        subId={subId}
-        dimensionName={subName}
-        subTitle="SYSTEM STANDBY AWAITING"
-      />
+      {typeof SubdomainHeader === "function" ? (
+        <SubdomainHeader
+          themeColor={activeColor}
+          subId={subId}
+          dimensionName={subName}
+          subTitle="SYSTEM STANDBY AWAITING"
+        />
+      ) : (
+        <header className="p-4 border-b border-white/10 flex justify-between items-center z-10">
+          <span className="font-bold text-sm tracking-widest text-white">{subId} // {subName}</span>
+          <span className="text-xs px-2 py-0.5 rounded border" style={{ borderColor: activeColor, color: activeColor }}>STANDBY</span>
+        </header>
+      )}
 
       {/* 2. HLAVNÝ STANDBY OBSAH */}
       <main className="relative z-10 max-w-5xl mx-auto px-4 py-8 md:py-14 w-full my-auto space-y-8 text-center">
@@ -94,7 +101,9 @@ export function SubdomainStandbyPage({ subId: propSubId = "SUB 00", onThemeChang
           </div>
 
           {/* GLOBÁLNE DROPDOWN TLAČIDLO SUB */}
-          <SubdomainDropdown currentSubId={subId} activeColor={activeColor} />
+          {typeof SubdomainDropdown === "function" && (
+            <SubdomainDropdown currentSubId={subId} activeColor={activeColor} />
+          )}
 
           <span className="px-3 py-1 rounded-full bg-white/10 text-zinc-300 text-xs font-extrabold border border-white/20 uppercase">
             TIER: {subTier}
@@ -118,11 +127,17 @@ export function SubdomainStandbyPage({ subId: propSubId = "SUB 00", onThemeChang
 
         {/* 🎬 MASTER MEDIA PLAYER INTEGRÁCIA */}
         <div className="w-full max-w-4xl mx-auto my-6 animate-in fade-in duration-700">
-          <GlobalMediaPlayer
-            mediaId="MANIFESTO_GENESIS"
-            dimColor={activeColor}
-          />
-        </div>
+          {typeof GlobalMediaPlayer === "function" ? (
+            <GlobalMediaPlayer
+              mediaId="MANIFESTO_GENESIS"
+              dimColor={activeColor}
+            />
+          ) : (
+            <div className="p-6 border border-white/10 bg-black/40 rounded-xl text-xs text-zinc-500">
+              [ ⚡ SYSTEM MEDIA STREAM STANDBY ]
+            </div>
+          )}
+          </div>
 
         {/* STANDBY OPERATOR GATEWAY PANEL */}
         {/* zmazane */}
