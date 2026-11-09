@@ -3,6 +3,19 @@
   "buildCommand": "npm run build",
   "outputDirectory": "apps/main-web/dist",
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "mentor.projekt-nexus.sk"
+        }
+      ],
+      "destination": "https://www.projekt-nexus.sk/sub-00",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
