@@ -102,8 +102,8 @@ export const NexusAgencyPage = ({
       {/* CYBER GRID BACKGROUND */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#1f293715_1px,transparent_1px),linear-gradient(to_bottom,#1f293715_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none z-0" />
 
-      {/* 1. HLAVIČKA AGENTÚRY */}
-      <AgencyHeader />
+      {/* 1. HLAVIČKA AGENTÚRY JE UŽ V APP.JSX — TENTO RIADOK ODSTRÁŇ / ZAKOMENTUJ: */}
+      {/* <AgencyHeader /> */}
 
       {/* MAIN CONTENT CONTAINER */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-12">
