@@ -1,19 +1,12 @@
-/* eslint-disable no-undef */
-
-// ============================================================================
-// 👑 PROJECT NEXUS — OS GENESIS EDITION (SYS03 MASTER DATASET V20.95)
-// Súbor: @apps/[nazov-uzla]/src/main.jsx
-// Status: 100% GROUNDED // UNIVERSAL BOOTSTRAPPER // ZERO CRASH FALLBACK
-// CORE_VERSION: MAIN-BOOT-V20.95
-// ============================================================================
-
 import React from "react";
 import ReactDOM from "react-dom/client";
+// ⚡⚡⚡ ZAČIATOK OPRAVA ⚡⚡⚡
+import { BrowserRouter } from "react-router-dom";
 import { App } from "./App.jsx";
 import "./index.css";
 
 // ============================================================================
-// ⚠️ DEFENZÍVNY CENTRÁLNY BOOTSTRAPPER PRE OS GENESIS
+// ⚠️ DEFENZÍVNY CENTRÁLNY BOOTSTRAPPER PRE OS GENESIS (S ROUTER ENGINE)
 // ============================================================================
 
 const rootElement = document.getElementById("root");
@@ -26,7 +19,9 @@ if (!rootElement) {
 } else {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </React.StrictMode>
   );
 

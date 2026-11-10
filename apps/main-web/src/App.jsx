@@ -1629,15 +1629,7 @@ export function App() {
               ) : (
                 /* 🌍 2. HLAVNÝ MATRIX (V20 BYPASS ROUTING) */
                 <Routes>
-                  {/* ALIAS TRASY PRE SUBDOMÉNY (ODDELENÉ DO APPS/SUBDOMENY) */}
-                  <Route
-                    path="/subdomains/*"
-                    element={<Navigate to="/" replace />}
-                  />
-                  <Route
-                    path="/subdomeny/*"
-                    element={<Navigate to="/" replace />}
-                  />
+                  
 
                   {/* ======================================================= */}
                   {/* 🚪 1. MODALS & AUTH GATEWAY                             */}
