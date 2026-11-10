@@ -1,3 +1,4 @@
+
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
@@ -21,6 +22,16 @@
           "value": "agency.projekt-nexus.sk"
         }
       ],
+      "destination": "/agency/$1"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "agency.projekt-nexus.sk"
+        }
+      ],
       "destination": "/agency/index.html"
     },
     { "source": "/sub-00", "destination": "/index.html" },
@@ -30,6 +41,7 @@
     { "source": "/subdomeny/(.*)", "destination": "/index.html" },
     { "source": "/subdomains", "destination": "/index.html" },
     { "source": "/subdomains/(.*)", "destination": "/index.html" },
+    { "source": "/agency", "destination": "/agency/index.html" },
     { "source": "/agency/(.*)", "destination": "/agency/index.html" },
     { "source": "/shop/(.*)", "destination": "/shop/index.html" },
     { "source": "/operators/(.*)", "destination": "/operators/index.html" },
