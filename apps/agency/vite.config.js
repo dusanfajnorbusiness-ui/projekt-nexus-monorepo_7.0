@@ -22,4 +22,7 @@
 
 import createViteConfig from "../../vite.config.base.js";
 
-export default createViteConfig(__dirname, 5172);
+const config = createViteConfig(__dirname, 5172);
+config.base = "./";
+
+export default config;

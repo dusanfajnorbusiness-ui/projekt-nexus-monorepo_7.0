@@ -2,20 +2,17 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "apps/main-web/dist",
-  "redirects": [
+  "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/assets/(.*)",
       "has": [
         {
           "type": "host",
-          "value": "mentor.projekt-nexus.sk"
+          "value": "agency.projekt-nexus.sk"
         }
       ],
-      "destination": "https://www.projekt-nexus.sk/sub-00",
-      "permanent": true
-    }
-  ],
-  "rewrites": [
+      "destination": "/agency/assets/$1"
+    },
     {
       "source": "/(.*)",
       "has": [
