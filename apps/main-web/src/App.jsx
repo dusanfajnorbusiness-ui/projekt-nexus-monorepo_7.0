@@ -1234,22 +1234,16 @@ export function App() {
         if (key.startsWith("nexus_")) sessionStorage.removeItem(key);
       });
 
-      const hostname =
-        typeof window !== "undefined"
-          ? String(window.location.hostname || "")
-          : "";
-      const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+      // 1. Defenzívne prepnutie do čistého QUEST režimu bez tvrdého reloadu
+      if (typeof setUserState === "function") {
+        setUserState(DEFAULT_USER_STATE);
+      }
 
-      if (isLocalhost) {
-        // Na Localhoste zostávame na vývojovom porte!
-        if (typeof navigate === "function") {
-          navigate("/uplinkmodal");
-        } else {
-          window.location.href = "/uplinkmodal";
-        }
+      // 2. Zjednotený skok na kanonickú trasu /login
+      if (typeof navigate === "function") {
+        navigate("/login");
       } else {
-        // Na Produkcii smerujeme na centrálny Uplink
-        window.location.href = "https://projekt-nexus.sk/login";
+        window.location.href = "/login";
       }
     }
   };
@@ -1634,6 +1628,24 @@ export function App() {
                   {/* ======================================================= */}
                   {/* 🚪 1. MODALS & AUTH GATEWAY                             */}
                   {/* ======================================================= */}
+                  <Route
+                    path="/login"
+                    element={
+                      <PublicRoute userState={userState}>
+                        <UplinkModal
+                          userState={userState}
+                          setUserState={setUserState}
+                          onSuccess={() => {
+                            if (typeof navigate === "function") {
+                              navigate("/");
+                            } else {
+                              window.location.href = "/";
+                            }
+                          }}
+                        />
+                      </PublicRoute>
+                    }
+                  />
                   <Route
                     path="/uplinkmodal/login/*"
                     element={
