@@ -16,7 +16,7 @@
     "dev:agency": "npm run dev --workspace=apps/agency -- --open",
     "dev:main": "npm run dev --workspace=apps/main-web -- --open",
     "snap": "node ./scripts/prerender-seo.mjs",
-    "postbuild": "node --input-type=module -e \"import fs from 'fs'; if(fs.existsSync('apps/subdomeny/dist')) { fs.cpSync('apps/subdomeny/dist', 'apps/main-web/dist/subdomeny', { recursive: true }); console.log('⚡ [V20 BUILD]: Subdomény úspešne zlúčené do main-web/dist!'); }\" && npm run snap",
+    "postbuild": "node --input-type=module -e \"import fs from 'fs'; if(fs.existsSync('apps/subdomeny/dist')) { fs.cpSync('apps/subdomeny/dist', 'apps/main-web/dist/subdomeny', { recursive: true }); console.log('⚡ [V20 BUILD]: Subdomény úspešne zlúčené!'); } if(fs.existsSync('apps/agency/dist')) { fs.cpSync('apps/agency/dist', 'apps/main-web/dist/agency', { recursive: true }); console.log('⚡ [V20 BUILD]: Agency úspešne zlúčená do main-web/dist/agency!'); }\" && npm run snap",
     "snap:vercel": "npm run build && vercel --prod --yes",
     "snap:git": "git add . && git commit -m \"⚡ [V20 SNAPSHOT]: Operational Checkpoint Deployment\" && git push origin main"
   },

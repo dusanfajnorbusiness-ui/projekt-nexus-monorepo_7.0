@@ -16,6 +16,16 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "agency.projekt-nexus.sk"
+        }
+      ],
+      "destination": "/agency/index.html"
+    },
     { "source": "/sub-00", "destination": "/index.html" },
     { "source": "/sub-00/(.*)", "destination": "/index.html" },
     { "source": "/sub-(.*)", "destination": "/index.html" },
